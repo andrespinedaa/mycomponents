@@ -17,6 +17,38 @@ export const defaultThemeComponents: ThemeComponents = {
   },
 
   /* Components */
+  Alert: {
+    prefix: "alert",
+    defaultProps: { severity: "info", variant: "Subtle" },
+  },
+  Avatar: {
+    prefix: "avatar",
+    defaultProps: { shape: "circle", size: "md" },
+  },
+  Badge: {
+    prefix: "badge",
+    defaultProps: { variant: "Filled", size: "md" },
+    variants: {
+      Filled: {
+        base: { bg: "primary.500", color: "neutral.50" },
+      },
+      Subtle: {
+        base: { bg: "primary.100", color: "primary.700" },
+      },
+      Outlined: {
+        base: {
+          bg: "transparent",
+          color: "primary.600",
+          border: "1px solid",
+          borderColor: "primary.400",
+        },
+      },
+    },
+  },
+  Input: {
+    prefix: "input",
+    defaultProps: { size: "md", variant: "Default" },
+  },
   Button: {
     prefix: "btn",
     defaultProps: { variant: "Filled" },

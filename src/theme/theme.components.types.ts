@@ -1,5 +1,9 @@
+import type { AlertConfig } from "../components/Alert/Alert";
+import type { AvatarConfig } from "../components/Avatar/Avatar";
+import type { BadgeConfig } from "../components/Badge/Badge";
 import type { ButtonConfig } from "../components/Button/Button";
 import type { CardConfig } from "../components/Card/Card";
+import type { InputConfig } from "../components/Input/Input";
 import type { BoxConfig } from "../components/Primitives/Box/Box";
 import type { DividerConfig } from "../components/Primitives/Divider/Divider";
 import type { FlexConfig } from "../components/Primitives/Flex/Flex";
@@ -20,8 +24,12 @@ export type ComponentConfigs = {
   Image: ImgConfig;
   Stack: StackConfig;
   /* Components */
+  Alert: AlertConfig;
+  Avatar: AvatarConfig;
+  Badge: BadgeConfig;
   Button: ButtonConfig;
   Card: CardConfig;
+  Input: InputConfig;
 };
 
 export type ThemeComponentConfig<DefaultProps = object> = {
