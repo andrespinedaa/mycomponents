@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import {
   ComponentFactory,
   type ComponentConfig,
@@ -9,7 +8,7 @@ import { Box } from "../Box";
 
 export interface TextOwnProps {
   size?: FontSizeValue;
-  weight?: CSSProperties["fontWeight"];
+  weight?: React.CSSProperties["fontWeight"];
   truncate?: boolean;
   lineClamp?: number;
 }
@@ -25,25 +24,28 @@ export type TextConfig = ComponentConfig<{
 export const Text = ComponentFactory<TextConfig>({
   componentName: "Text",
   defaultTag: "p",
-  render: ({ size, weight, truncate, lineClamp, style, children, ...rest }, ref) => {
-    const extraStyle: CSSProperties = {};
-    if (truncate) {
-      extraStyle.overflow = "hidden";
-      extraStyle.whiteSpace = "nowrap";
-      extraStyle.textOverflow = "ellipsis";
-    }
+  render: ({ size, weight, truncate, lineClamp, apply, children, ...rest }, ref) => {
+    const applyMacros: string[] = Array.isArray(apply)
+      ? [...apply]
+      : apply
+      ? [apply]
+      : [];
+
+    if (truncate) applyMacros.push("@truncate");
+
+    const extraStyle: React.CSSProperties = {};
     if (lineClamp) {
-      extraStyle.display = "-webkit-box";
+      applyMacros.push("@lineClamp");
       extraStyle.WebkitLineClamp = lineClamp;
-      extraStyle.WebkitBoxOrient = "vertical";
-      extraStyle.overflow = "hidden";
     }
+
     return (
       <Box
         ref={ref}
         fontSize={size}
         fontWeight={weight}
-        style={{ ...extraStyle, ...style }}
+        apply={applyMacros as any}
+        style={Object.keys(extraStyle).length ? extraStyle : undefined}
         {...rest}
       >
         {children}
