@@ -1,94 +1,71 @@
-import React, { type CSSProperties, type ElementType } from "react";
+import { type CSSProperties, type ElementType } from "react";
+import { useResolvedProps } from "../hooks/useResolveProps";
 import { extractStyleProps } from "../system/extract-style-props";
-import { useThemeContext } from "../theme/ThemeContext";
-import { getMod } from "../utils/get-mod";
-import { resolvedStyles } from "../utils/resolve-styles";
-import { typedForwardRef } from "../utils/typedForwardRef";
-import type {
-  FactoryComponentProps,
-  FactoryRenderProps,
-  PolymorphicComponent,
-  SlotProps,
-} from "./factory.types";
+/* import { resolvedStyles } from "../system/resolve-styles"; */
+import type { PolymorphicPropsConfig } from "../types/polimorphic.types";
+import { typedRef } from "../utils/typedRef";
+import type { FactoryComponentReturn, FactoryConfig } from "./factories.types";
+import { factoryMeta } from "./factoryMeta";
+import type { PolymorphicFactoryOptions } from "./PolimorphicFactory.types";
+import { useTheme } from "../hooks";
+import { resolvedStyles } from "../system/resolve-styles";
 
-export function PolymorphicFactoryFn<
-  DefaultTag extends ElementType,
-  OwnProps = object,
-  Statics extends Record<string, unknown> = Record<string, never>,
->(
-  defaultTag: DefaultTag,
-  render?: (
-    renderProps: FactoryRenderProps<DefaultTag, OwnProps>,
-  ) => React.ReactElement | null,
-  statics?: Statics,
-) {
-  const PrimitiveComponent = typedForwardRef<
-    HTMLElement,
-    FactoryComponentProps<DefaultTag, OwnProps>
-  >(function PolymorphicComponent(props, ref) {
-    const {
-      as,
-      vars,
-      unstyled = false,
-      slot,
-      mod,
-      renderRoot,
-      className,
-      style,
-      ...rest
-    } = props;
+export function PolymorphicFactory<Config extends FactoryConfig>({
+  componentName,
+  defaultTag,
+  render,
+  statics,
+  defaultProps,
+}: PolymorphicFactoryOptions<Config>): FactoryComponentReturn<Config> {
+  const PolyComponent = typedRef<HTMLElement, PolymorphicPropsConfig<Config>>(
+    function PolymorphicComponent(props, ref) {
+      const { theme } = useTheme();
+      const {
+        as,
+        vars,
+        unstyled = false,
+        renderRoot,
+        style,
+        apply,
+        ...rest
+      } = useResolvedProps<Config>(componentName, props, defaultProps);
+      const { styleProps, componentProps } = extractStyleProps(rest);
+      const Component = (as ?? defaultTag) as ElementType;
 
-    const { theme } = useThemeContext();
-    const Component = (as ?? defaultTag) as any;
-    const { styleProps, elementProps } = extractStyleProps<
-      DefaultTag,
-      OwnProps
-    >(rest);
-    const modProps = getMod(mod);
-    const slotProps: SlotProps = slot ? { "data-slot": slot } : {};
-    const getStyle = (extraStyle?: CSSProperties) =>
-      resolvedStyles({ styleProps, vars, style, theme, extraStyle, unstyled });
+      const getStyle = (extraStyle?: CSSProperties) =>
+        resolvedStyles({
+          styleProps,
+          vars,
+          style,
+          extraStyle,
+          unstyled,
+          apply,
+          theme,
+        });
 
-    if (renderRoot) {
-      return (
-        renderRoot as (props: Record<string, unknown>) => React.ReactElement
-      )({
+      if (renderRoot) return renderRoot({ ref, ...componentProps });
+
+      if (!render) {
+        const { styles, hasResponsive } = getStyle();
+        return (
+          <Component
+            ref={ref}
+            style={styles}
+            data-responsive={hasResponsive ? "" : undefined}
+            {...componentProps}
+          />
+        );
+      }
+
+      return render({
         ref,
-        className,
-        ...elementProps,
-        ...slotProps,
-        ...modProps,
+        props,
+        Component,
+        componentProps,
+        getStyle,
       });
-    }
+    },
+  ) as unknown as FactoryComponentReturn<Config>;
 
-    if (!render) {
-      return (
-        <Component
-          ref={ref}
-          className={className}
-          style={getStyle()}
-          {...elementProps}
-          {...slotProps}
-          {...modProps}
-        />
-      );
-    }
-
-    return render({
-      ref,
-      props,
-      Component,
-      elementProps,
-      modProps,
-      slotProps,
-      getStyle,
-    });
-  });
-
-  if (statics) Object.assign(PrimitiveComponent, statics);
-  return PrimitiveComponent as unknown as PolymorphicComponent<
-    DefaultTag,
-    OwnProps,
-    Statics
-  >;
+  return factoryMeta(PolyComponent, componentName, statics);
 }

@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import { playwright } from "@vitest/browser-playwright";
 import dts from "vite-plugin-dts";
+
 const dirname =
   typeof __dirname !== "undefined"
     ? __dirname
@@ -17,10 +18,9 @@ const dirname =
 export default defineConfig({
   plugins: [
     react(),
-    dts({
-      insertTypesEntry: true,
-    }),
-  ],
+    process.env.NODE_ENV === "production" && dts({ insertTypesEntry: true }),
+  ].filter(Boolean),
+
   build: {
     lib: {
       entry: resolve(dirname, "src/index.ts"),
@@ -41,13 +41,33 @@ export default defineConfig({
       ],
     },
   },
+
   test: {
+    ui: true,
+
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html"],
+      include: ["src/**/*.ts", "src/**/*.tsx"],
+      exclude: ["src/**/*.test.*", "src/**/*.stories.*", "src/test/**"],
+    },
+
     projects: [
+      // Proyecto 1 — tests unitarios con jsdom
+      {
+        extends: true,
+        test: {
+          name: "unit",
+          environment: "jsdom",
+          globals: true,
+          include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+          setupFiles: ["./src/test/setup.ts"],
+        },
+      },
+      // Proyecto 2 — storybook con browser
       {
         extends: true,
         plugins: [
-          // The plugin will run tests for the stories defined in your Storybook config
-          // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
           storybookTest({
             configDir: path.join(dirname, ".storybook"),
           }),
@@ -55,19 +75,19 @@ export default defineConfig({
         test: {
           name: "storybook",
           environment: "happy-dom",
-          include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
           browser: {
             enabled: true,
             headless: true,
             provider: playwright({}),
-            instances: [
-              {
-                browser: "chromium",
-              },
-            ],
+            instances: [{ browser: "chromium" }],
           },
         },
       },
     ],
+  },
+
+  server: {
+    host: "127.0.0.1",
+    port: 5173,
   },
 });

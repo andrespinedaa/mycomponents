@@ -1,37 +1,26 @@
-import type { FactoryRenderProps } from "../../factory/factory.types";
+import type { Variant } from "../../theme/theme.variants";
+import {
+  ComponentFactory,
+  type ComponentConfig,
+  type EmptyStatics,
+} from "../../factory";
+import { Box } from "../Primitives/Box";
 
 export interface ButtonOwnProps {
-  variant?: "solid" | "outline" | "ghost";
-  size?: "sm" | "md" | "lg";
+  variant?: Variant<"Elevated" | "Filled" | "Outlined">;
 }
+export type ButtonConfig = ComponentConfig<{
+  componentName: "Button";
+  defaultTag: "button";
+  ownProps: ButtonOwnProps;
+  statics: EmptyStatics;
+  defaultProps: {};
+}>;
 
-// _Button recibe exactamente FactoryRenderProps — mismo tipo que la factory
-function _Button({
-  ref,
-  props,
-  Component,
-  elementProps,
-  modProps,
-  slotProps,
-  getStyle,
-}: FactoryRenderProps<"button", ButtonOwnProps>) {
-  const { className, variant = "solid", size = "md" } = props;
-
-  return (
-    <Component
-      ref={ref}
-      className={className}
-      style={getStyle()}
-      data-variant={variant}
-      data-size={size}
-      {...slotProps}
-      {...modProps}
-      {...elementProps}
-    />
-  );
-}
-
-// Le pasas _Button directamente a la factory
-export const Button = () => <button>hola</button>;
+export const Button = ComponentFactory<ButtonConfig>({
+  componentName: "Button",
+  defaultTag: "button",
+  render: (resolvedProps) => <Box {...resolvedProps} />,
+});
 
 Button.displayName = "Button";

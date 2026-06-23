@@ -1,4 +1,6 @@
-import type { Theme } from "./types";
+import { defaultThemeComponents } from "./theme.components.data";
+import { defaultThemeMacros } from "./theme.macros.data";
+import type { Theme } from "./theme.types";
 
 export const defaultTheme: Theme = {
   cssVarPrefix: "mycomponents",
@@ -99,4 +101,8 @@ export const defaultTheme: Theme = {
     lg: "1024px",
     xl: "1280px",
   },
+
+  macros: defaultThemeMacros,
+
+  components: defaultThemeComponents,
 };

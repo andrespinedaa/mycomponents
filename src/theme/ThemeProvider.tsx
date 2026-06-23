@@ -1,57 +1,88 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useInsertionEffect, useEffect, useRef, useState, type ReactNode } from "react";
 import { ThemeContextProvider } from "./ThemeContext";
-import { mergeTheme } from "./merge-theme";
-import { resolveThemeToCss } from "./resolve-theme";
-import type { ColorScheme, ThemeOverride } from "./types";
+import type { ColorScheme, Theme } from "./theme.types";
+import { generateTokens } from "./generators/generateTokens";
+import { generateResponsive } from "./generators/generateResponsive";
+import { generateVariants } from "./generators/generateVariants";
+import { generateBases } from "./generators/generateBases";
 
 interface ThemeProviderProps {
-  theme?: ThemeOverride;
+  theme: Theme;
   defaultColorScheme?: ColorScheme;
-  /** Atributo del DOM donde se aplica el color scheme. Default: document.documentElement */
-  colorSchemeTarget?: "html" | "body";
   children: ReactNode;
 }
 
+export function injectStyle(id: string, css: string): void {
+  if (!css || typeof document === "undefined") return;
+  let el = document.getElementById(id) as HTMLStyleElement | null;
+  if (!el) {
+    el = document.createElement("style");
+    el.id = id;
+    document.head.appendChild(el);
+  }
+  el.textContent = css;
+}
+
 export function ThemeProvider({
-  theme: themeOverride = {},
+  theme,
   defaultColorScheme = "light",
-  colorSchemeTarget = "html",
   children,
 }: ThemeProviderProps) {
-  const theme = useMemo(() => mergeTheme(themeOverride), [themeOverride]);
-  const [colorScheme, setColorScheme] =
-    useState<ColorScheme>(defaultColorScheme);
-
-  // Inyecta las CSS variables en el DOM
-  useEffect(() => {
-    const lightCss = resolveThemeToCss(theme, ":root");
-    // Para dark mode, el consumer sobreescribe los valores que cambien
-    const styleId = `${theme.cssVarPrefix}-theme`;
-    let el = document.getElementById(styleId) as HTMLStyleElement | null;
-
-    if (!el) {
-      el = document.createElement("style");
-      el.id = styleId;
-      document.head.appendChild(el);
-    }
-
-    el.textContent = lightCss;
-  }, [theme]);
-
-  // Aplica data-color-scheme al elemento raíz — sin re-render de componentes
-  useEffect(() => {
-    const target =
-      colorSchemeTarget === "body" ? document.body : document.documentElement;
-    target.setAttribute("data-color-scheme", colorScheme);
-  }, [colorScheme, colorSchemeTarget]);
-
+  const [colorScheme, setColorScheme] = useState<ColorScheme>(defaultColorScheme);
   const toggleColorScheme = () =>
     setColorScheme((s) => (s === "light" ? "dark" : "light"));
 
-  const value = useMemo(
-    () => ({ theme, colorScheme, setColorScheme, toggleColorScheme }),
-    [theme, colorScheme],
-  );
+  const prevTokensRef = useRef<string>("");
+  const prevResponsiveRef = useRef<string>("");
+  const prevVariantsRef = useRef<string>("");
+  const prevBasesRef = useRef<string>("");
 
-  return <ThemeContextProvider value={value}>{children}</ThemeContextProvider>;
+  useInsertionEffect(() => {
+    const prefix = theme.cssVarPrefix;
+
+    const tokensCss = generateTokens(theme);
+    if (tokensCss !== prevTokensRef.current) {
+      prevTokensRef.current = tokensCss;
+      injectStyle(`${prefix}-tokens`, tokensCss);
+    }
+
+    const responsiveCss = generateResponsive(theme);
+    if (responsiveCss !== prevResponsiveRef.current) {
+      prevResponsiveRef.current = responsiveCss;
+      injectStyle(`${prefix}-responsive`, responsiveCss);
+    }
+
+    const variantCss = generateVariants(theme);
+    if (variantCss !== prevVariantsRef.current) {
+      prevVariantsRef.current = variantCss;
+      injectStyle(`${prefix}-variants`, variantCss);
+    }
+
+    const basesCss = generateBases(theme);
+    if (basesCss !== prevBasesRef.current) {
+      prevBasesRef.current = basesCss;
+      injectStyle(`${prefix}-base`, basesCss);
+    }
+
+    return () => {
+      const ids = [`${prefix}-tokens`, `${prefix}-responsive`, `${prefix}-variants`, `${prefix}-base`];
+      ids.forEach((id) => document.getElementById(id)?.remove());
+    };
+  }, [theme]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.dataset.colorScheme = colorScheme;
+    return () => {
+      delete document.documentElement.dataset.colorScheme;
+    };
+  }, [colorScheme]);
+
+  return (
+    <ThemeContextProvider
+      value={{ theme, colorScheme, setColorScheme, toggleColorScheme }}
+    >
+      {children}
+    </ThemeContextProvider>
+  );
 }

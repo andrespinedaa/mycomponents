@@ -1,9 +1,11 @@
-// src/theme/merge-theme.ts
-import type { ColorScale, Theme, ThemeColors, ThemeOverride } from "./types";
+import type {
+  ColorScale,
+  Theme,
+  ThemeColors,
+  ThemeOverride,
+} from "./theme.types";
 
-// ─── Mergers para colors ──────────────────────────────────────────────────────
-
-function mergeColors(
+export function mergeColors(
   base: ThemeColors,
   override: ThemeOverride["colors"],
 ): ThemeColors {
@@ -25,9 +27,7 @@ function mergeColors(
   );
 }
 
-// ─── Mergers por sección ──────────────────────────────────────────────────────
-
-function mergeRecord<T extends Record<string, string>>(
+export function mergeRecord<T extends Record<string, string>>(
   base: T,
   override: Partial<T> | undefined,
 ): T {
@@ -35,15 +35,55 @@ function mergeRecord<T extends Record<string, string>>(
   return { ...base, ...override } as T;
 }
 
-// ─── merge principal ──────────────────────────────────────────────────────────
+export function mergeComponents(
+  base: Theme["components"],
+  override: ThemeOverride["components"],
+): Theme["components"] {
+  if (!override) return base;
+  const result = { ...base } as Theme["components"];
 
-export function mergeTheme(base: Theme, override: ThemeOverride = {}): Theme {
+  for (const key of Object.keys(override) as (keyof typeof override)[]) {
+    const overrideEntry = override[key];
+    if (!overrideEntry) continue;
+
+    const baseEntry = (result as any)[key];
+    (result as any)[key] = {
+      ...baseEntry,
+      ...overrideEntry,
+      defaultProps: {
+        ...(baseEntry?.defaultProps ?? {}),
+        ...(overrideEntry.defaultProps ?? {}),
+      },
+      variants: {
+        ...(baseEntry?.variants ?? {}),
+        ...(overrideEntry.variants ?? {}),
+      },
+    };
+  }
+
+  return result;
+}
+
+export function mergeTheme(base: Theme, override: ThemeOverride): Theme {
   return {
+    ...base,
+
     cssVarPrefix: override.cssVarPrefix ?? base.cssVarPrefix,
+
     colors: mergeColors(base.colors, override.colors),
+
     spacing: mergeRecord(base.spacing, override.spacing),
+
     radii: mergeRecord(base.radii, override.radii),
+
     fontSizes: mergeRecord(base.fontSizes, override.fontSizes),
+
     breakpoints: mergeRecord(base.breakpoints, override.breakpoints),
+
+    macros: { ...base.macros, ...override.macros },
+
+    components: mergeComponents(base.components, override.components),
+
+    dark: override.dark ?? base.dark,
   };
 }

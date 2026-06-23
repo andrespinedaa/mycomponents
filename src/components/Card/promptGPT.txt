@@ -1,0 +1,3 @@
+Diseña el componente como una hoja de documentación de design system. Incluye anatomía del componente, slots, tokens CSS, paleta de colores, spacing, radii, sombras, tipografía, medidas y ejemplos de uso.
+
+Genera una guía visual estilo Mantine/Material UI para el componente X. Incluye anatomía, slots, variantes, estados, CSS variables, spacing, radii, sombras, ejemplos de uso y medidas.

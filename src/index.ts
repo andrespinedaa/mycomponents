@@ -1,12 +1,13 @@
-// Componentes
-export { Box } from "./components/Box";
-export type { BoxProps, BoxOwnProps } from "./components/Box";
-
-export type {
-  PolymorphicProps,
-  PolymorphicRef,
-  AsProp,
-} from "./utils/polimorphic";
-
-export { ThemeProvider, useTheme, defaultTheme } from "./theme";
-export type { Theme, ThemeOverride, ColorScheme } from "./theme";
+export { default as App } from './App';
+export * from './components/Primitives/Box';
+export * from './components/Button/Button';
+export * from './components/Primitives/Text/Text';
+export * from './factory';
+export * from './hooks';
+export * from './main';
+export * from './system';
+export * from './test/setup';
+export * from './theme';
+export * from './types/polimorphic.types';
+export * from './types/utils.types';
+export * from './utils';

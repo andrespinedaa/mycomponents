@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ThemeProvider, useTheme } from "./index";
+import { useTheme } from "../hooks/useTheme";
+import { ThemeContextProvider } from "./ThemeContext";
+import { defaultTheme } from "./default-theme";
 
 function ThemeDemo() {
   const { vars } = useTheme();
@@ -21,15 +23,15 @@ function ThemeDemo() {
 
 const meta = {
   title: "Theme/ThemeProvider",
-  component: ThemeProvider,
+  component: ThemeContextProvider,
   decorators: [
     (Story) => (
-      <ThemeProvider>
+      <ThemeContextProvider value={{ theme: defaultTheme }}>
         <Story />
-      </ThemeProvider>
+      </ThemeContextProvider>
     ),
   ],
-} satisfies Meta<typeof ThemeProvider>;
+} satisfies Meta<typeof ThemeContextProvider>;
 
 export default meta;
 
@@ -37,27 +39,29 @@ export const Default: StoryObj = {
   render: () => <ThemeDemo />,
 };
 
-export const CustomPrimary: StoryObj = {
+/* export const CustomPrimary: StoryObj = {
   render: () => (
-    <ThemeProvider
-      theme={{
-        colors: {
-          primary: {
-            50: "#fdf4ff",
-            100: "#fae8ff",
-            200: "#f5d0fe",
-            300: "#f0abfc",
-            400: "#e879f9",
-            500: "#d946ef",
-            600: "#c026d3",
-            700: "#a21caf",
-            800: "#86198f",
-            900: "#701a75",
+    <ThemeContextProvider
+      value={{
+        theme: {
+          colors: {
+            primary: {
+              50: "#fdf4ff",
+              100: "#fae8ff",
+              200: "#f5d0fe",
+              300: "#f0abfc",
+              400: "#e879f9",
+              500: "#d946ef",
+              600: "#c026d3",
+              700: "#a21caf",
+              800: "#86198f",
+              900: "#701a75",
+            },
           },
         },
       }}
     >
       <ThemeDemo />
-    </ThemeProvider>
+    </ThemeContextProvider>
   ),
-};
+}; */
