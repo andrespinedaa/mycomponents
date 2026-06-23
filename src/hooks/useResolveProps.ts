@@ -10,20 +10,28 @@ export type ResolvedFactoryProps<Config extends FactoryConfig> = Omit<
   ModProps &
   SlotProps;
 
+export interface UseResolvedPropsReturn<Config extends FactoryConfig> {
+  resolvedProps: ResolvedFactoryProps<Config>;
+  theme: Theme;
+}
+
 export function useResolvedProps<Config extends FactoryConfig>(
   componentName: Config["componentName"],
   props: PolymorphicPropsConfig<Config>,
   defaultProps?: RequiredDefaultProps<Config>,
-): ResolvedFactoryProps<Config> {
+): UseResolvedPropsReturn<Config> {
   const { theme } = useTheme();
-  const resolvedProps = useProps(componentName, theme, props, defaultProps);
-  const { mod, dataSlot, variant, ...restProps } = resolvedProps;
+  const merged = useProps(componentName, theme, props, defaultProps);
+  const { mod, dataSlot, variant, ...restProps } = merged;
   const modProps = getMod(mod, variant);
   const slotProps = getSlots(dataSlot);
 
   return {
-    ...modProps,
-    ...slotProps,
-    ...restProps,
-  } as ResolvedFactoryProps<Config>;
+    theme,
+    resolvedProps: {
+      ...modProps,
+      ...slotProps,
+      ...restProps,
+    } as ResolvedFactoryProps<Config>,
+  };
 }

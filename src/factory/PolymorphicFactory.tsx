@@ -7,7 +7,6 @@ import { typedRef } from "../utils/typedRef";
 import type { FactoryComponentReturn, FactoryConfig } from "./factories.types";
 import { factoryMeta } from "./factoryMeta";
 import type { PolymorphicFactoryOptions } from "./PolimorphicFactory.types";
-import { useTheme } from "../hooks";
 import { resolvedStyles } from "../system/resolve-styles";
 
 export function PolymorphicFactory<Config extends FactoryConfig>({
@@ -19,7 +18,7 @@ export function PolymorphicFactory<Config extends FactoryConfig>({
 }: PolymorphicFactoryOptions<Config>): FactoryComponentReturn<Config> {
   const PolyComponent = typedRef<HTMLElement, PolymorphicPropsConfig<Config>>(
     function PolymorphicComponent(props, ref) {
-      const { theme } = useTheme();
+      const { theme, resolvedProps: resolved } = useResolvedProps<Config>(componentName, props, defaultProps);
       const {
         as,
         vars,
@@ -28,7 +27,7 @@ export function PolymorphicFactory<Config extends FactoryConfig>({
         style,
         apply,
         ...rest
-      } = useResolvedProps<Config>(componentName, props, defaultProps);
+      } = resolved;
       const { styleProps, componentProps } = extractStyleProps(rest);
       const Component = (as ?? defaultTag) as ElementType;
 
