@@ -4,6 +4,7 @@ import type {
   FactoryConfig,
 } from ".";
 import { useResolvedProps } from "../hooks/useResolveProps";
+import { useTheme } from "../hooks/useTheme";
 import type { PolymorphicPropsConfig } from "../types/polimorphic.types";
 import { typedRef } from "../utils";
 import { factoryMeta } from "./factoryMeta";
@@ -16,12 +17,13 @@ export function ComponentFactory<Config extends FactoryConfig>({
 }: ComponentFactoryOptions<Config>): FactoryComponentReturn<Config> {
   const Component = typedRef<HTMLElement, PolymorphicPropsConfig<Config>>(
     (props, ref) => {
+      const { theme } = useTheme();
       const resolvedProps = useResolvedProps(
         componentName,
         props,
         defaultProps,
       );
-      return render(resolvedProps, ref);
+      return render(resolvedProps, ref, theme);
     },
   ) as unknown as FactoryComponentReturn<Config>;
 

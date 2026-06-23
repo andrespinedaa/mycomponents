@@ -6,13 +6,12 @@ import {
 } from "../../factory";
 import { Box } from "../Primitives/Box";
 import { Flex } from "../Primitives/Flex/Flex";
-import type { SpacingValue } from "../../theme/generators/system-css.data";
 
 export interface AvatarOwnProps {
   src?: string;
   alt?: string;
   name?: string;
-  size?: SpacingValue | "sm" | "md" | "lg" | "xl";
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
   shape?: "circle" | "square";
 }
 
@@ -30,39 +29,34 @@ function getInitials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-const SIZE_MAP: Record<string, string> = {
-  sm: "2rem",
-  md: "2.5rem",
-  lg: "3rem",
-  xl: "4rem",
-};
-
 export const Avatar = ComponentFactory<AvatarConfig>({
   componentName: "Avatar",
   defaultTag: "div",
   defaultProps: { shape: "circle", size: "md" },
-  render: ({ src, alt, name, size = "md", shape = "circle", ...rest }) => {
+  render: ({ src, alt, name, size: _size, shape = "circle", children, ...rest }, ref) => {
     const [imgError, setImgError] = useState(false);
-    const dimension = SIZE_MAP[size] ?? (size as string);
-    const radius = shape === "circle" ? "50%" : "var(--mycomponents-radius-md)";
 
-    const baseStyle: React.CSSProperties = {
-      width: dimension,
-      height: dimension,
-      borderRadius: radius,
+    // w, h, fontSize are resolved from theme sizes → come in via ...rest as style props
+    const shapeStyle: React.CSSProperties = {
+      borderRadius: shape === "circle" ? "50%" : undefined,
       overflow: "hidden",
       flexShrink: 0,
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontSize: `calc(${dimension} * 0.4)`,
-      fontWeight: 600,
       userSelect: "none",
     };
 
     if (src && !imgError) {
       return (
-        <Box as="div" style={baseStyle} {...rest}>
+        <Box
+          ref={ref}
+          display="inline-flex"
+          align="center"
+          justify="center"
+          role="img"
+          aria-label={alt ?? name}
+          style={shapeStyle}
+          rounded={shape === "square" ? "md" : undefined}
+          {...rest}
+        >
           <img
             src={src}
             alt={alt ?? name ?? "avatar"}
@@ -75,13 +69,16 @@ export const Avatar = ComponentFactory<AvatarConfig>({
 
     return (
       <Flex
+        ref={ref}
         apply="@flexCenter"
-        style={baseStyle}
-        aria-label={alt ?? name}
         role="img"
+        aria-label={alt ?? name}
+        fontWeight={600}
+        style={shapeStyle}
+        rounded={shape === "square" ? "md" : undefined}
         {...rest}
       >
-        {name ? getInitials(name) : "?"}
+        {children ?? (name ? getInitials(name) : "?")}
       </Flex>
     );
   },

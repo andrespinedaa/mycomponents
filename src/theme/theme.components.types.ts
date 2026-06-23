@@ -32,10 +32,14 @@ export type ComponentConfigs = {
   Input: InputConfig;
 };
 
+export type SizeTokens = Partial<Record<string, string>>;
+
 export type ThemeComponentConfig<DefaultProps = object> = {
   prefix?: string;
   defaultProps?: Partial<DefaultProps>;
   variants?: Partial<Record<ComponentVariants, VariantStateConfig>>;
+  /** Size tokens: each key is a size name, value is StyleProps tokens for that size */
+  sizes?: Record<string, SizeTokens>;
 };
 
 export type ThemeComponents = {

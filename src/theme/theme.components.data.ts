@@ -21,13 +21,14 @@ export const defaultThemeComponents: ThemeComponents = {
     prefix: "alert",
     defaultProps: { severity: "info", variant: "Subtle" },
   },
-  Avatar: {
-    prefix: "avatar",
-    defaultProps: { shape: "circle", size: "md" },
-  },
   Badge: {
     prefix: "badge",
     defaultProps: { variant: "Filled", size: "md" },
+    sizes: {
+      sm: { px: "xs",  py: "2xs", fontSize: "xs",  rounded: "full" },
+      md: { px: "sm",  py: "xs",  fontSize: "sm",  rounded: "full" },
+      lg: { px: "md",  py: "sm",  fontSize: "md",  rounded: "full" },
+    },
     variants: {
       Filled: {
         base: { bg: "primary.500", color: "neutral.50" },
@@ -48,6 +49,22 @@ export const defaultThemeComponents: ThemeComponents = {
   Input: {
     prefix: "input",
     defaultProps: { size: "md", variant: "Default" },
+    sizes: {
+      sm: { h: "xs",  fontSize: "sm",  px: "xs"  },
+      md: { h: "sm",  fontSize: "md",  px: "sm"  },
+      lg: { h: "lg",  fontSize: "lg",  px: "md"  },
+    },
+  },
+  Avatar: {
+    prefix: "avatar",
+    defaultProps: { shape: "circle", size: "md" },
+    sizes: {
+      xs:  { w: "xs",  h: "xs",  fontSize: "xs"  },
+      sm:  { w: "sm",  h: "sm",  fontSize: "sm"  },
+      md:  { w: "md",  h: "md",  fontSize: "md"  },
+      lg:  { w: "lg",  h: "lg",  fontSize: "lg"  },
+      xl:  { w: "xl",  h: "xl",  fontSize: "xl"  },
+    },
   },
   Button: {
     prefix: "btn",
