@@ -19,7 +19,7 @@ export type StylePropDef = {
 
 // ─── CSSContract ─────────────────────────────────────────────────────────────
 export type CSSContract<Format extends CaseFormat = "camel"> = {
-  [K in keyof CSSProperties as Convert<K & string, "camel", Format>]: CSSProperties[K];
+  [K in keyof CSSProperties as Convert<K & string, "camel", Format>]?: CSSProperties[K];
 };
 
 // ─── PropOverride ─────────────────────────────────────────────────────────────
@@ -41,7 +41,7 @@ export type SystemStyleProps<
   Format extends CaseFormat = "camel",
 > =
   {
-    [O in Overrides[number] as O["alias"]]: O["cssProp"] extends (infer P extends keyof CSSProperties)[]
+    [O in Overrides[number] as O["alias"]]?: O["cssProp"] extends (infer P extends keyof CSSProperties)[]
       ? O["responsive"] extends true
         ? Responsive<CSSProperties[P]>
         : CSSProperties[P]

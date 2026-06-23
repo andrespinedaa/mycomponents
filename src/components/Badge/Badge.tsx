@@ -36,7 +36,7 @@ export const Badge = ComponentFactory<BadgeConfig>({
       <Box
         as="span"
         display="inline-flex"
-        alignItems="center"
+        align="center"
         gap="xs"
         rounded="full"
         fontWeight={600}

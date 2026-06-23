@@ -8,6 +8,9 @@ import { Box } from "../Primitives/Box";
 import { Flex } from "../Primitives/Flex/Flex";
 import { Text } from "../Primitives/Text/Text";
 
+// Excluye "size" de HTML attrs porque colisiona con nuestro prop string
+type SafeInputHTMLAttributes = Omit<InputHTMLAttributes<HTMLInputElement>, "size">;
+
 export interface InputOwnProps {
   label?: string;
   hint?: string;
@@ -21,7 +24,7 @@ export interface InputOwnProps {
 export type InputConfig = ComponentConfig<{
   componentName: "Input";
   defaultTag: "div";
-  ownProps: InputOwnProps & InputHTMLAttributes<HTMLInputElement>;
+  ownProps: InputOwnProps & SafeInputHTMLAttributes;
   statics: EmptyStatics;
   defaultProps: { size: "md"; variant: "Default" };
 }>;
