@@ -1,13 +1,14 @@
 import { type CSSProperties, type ElementType } from "react";
 import { useResolvedProps } from "../hooks/useResolveProps";
-import { extractStyleProps } from "../system/extract-style-props";
-/* import { resolvedStyles } from "../system/resolve-styles"; */
+import { extractStyleProps, resolvedStyles } from "../system";
 import type { PolymorphicPropsConfig } from "../types/polimorphic.types";
 import { typedRef } from "../utils/typedRef";
 import type { FactoryComponentReturn, FactoryConfig } from "./factories.types";
 import { factoryMeta } from "./factoryMeta";
-import type { PolymorphicFactoryOptions } from "./PolimorphicFactory.types";
-import { resolvedStyles } from "../system/resolve-styles";
+import type {
+  PolymorphicFactoryOptions,
+  PolymorphicRenderProps,
+} from "./PolimorphicFactory.types";
 
 export function PolymorphicFactory<Config extends FactoryConfig>({
   componentName,
@@ -15,10 +16,17 @@ export function PolymorphicFactory<Config extends FactoryConfig>({
   render,
   statics,
   defaultProps,
+  useHooks,
 }: PolymorphicFactoryOptions<Config>): FactoryComponentReturn<Config> {
   const PolyComponent = typedRef<HTMLElement, PolymorphicPropsConfig<Config>>(
     function PolymorphicComponent(props, ref) {
-      const { theme, resolvedProps: resolved } = useResolvedProps<Config>(componentName, props, defaultProps);
+      const { theme, resolvedProps, hooks, size } = useResolvedProps<Config>(
+        componentName,
+        props,
+        defaultProps,
+        useHooks,
+      );
+
       const {
         as,
         vars,
@@ -27,7 +35,8 @@ export function PolymorphicFactory<Config extends FactoryConfig>({
         style,
         apply,
         ...rest
-      } = resolved;
+      } = resolvedProps;
+
       const { styleProps, componentProps } = extractStyleProps(rest);
       const Component = (as ?? defaultTag) as ElementType;
 
@@ -42,7 +51,10 @@ export function PolymorphicFactory<Config extends FactoryConfig>({
           theme,
         });
 
-      if (renderRoot) return renderRoot({ ref, ...componentProps });
+      if (renderRoot) {
+        const { styles } = getStyle();
+        return renderRoot({ ref, style: styles, ...componentProps });
+      }
 
       if (!render) {
         const { styles, hasResponsive } = getStyle();
@@ -57,12 +69,13 @@ export function PolymorphicFactory<Config extends FactoryConfig>({
       }
 
       return render({
+        ...resolvedProps,
         ref,
-        props,
+        theme,
+        hooks,
+        size,
         Component,
-        componentProps,
-        getStyle,
-      });
+      } as PolymorphicRenderProps<Config>);
     },
   ) as unknown as FactoryComponentReturn<Config>;
 

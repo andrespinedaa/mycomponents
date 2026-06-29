@@ -28,7 +28,7 @@ export function resolveValue(
     const match = v.match(/^([a-z]+)\.(\d+)$/);
     if (match) {
       const [, name, shade] = match;
-      if (theme.colors[name as keyof typeof theme.colors]?.[shade as any]) {
+      if ((theme.colors[name as keyof typeof theme.colors] as Record<string, unknown>)?.[shade]) {
         return `var(--${p}-color-${name}-${shade})`;
       }
     }

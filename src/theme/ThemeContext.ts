@@ -8,5 +8,5 @@ export interface ThemeContextValue {
   toggleColorScheme: () => void;
 }
 
-export const [ThemeContextProvider, useThemeContext] =
+export const [ThemeContextProvider, useThemeContext, ThemeContext] =
   useCreateProvider<ThemeContextValue>("ThemeContext");

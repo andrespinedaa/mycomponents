@@ -1,8 +1,39 @@
 import type { Preview } from "@storybook/react-vite";
-import { ThemeContextProvider } from "../src/theme/ThemeContext";
-import { defaultTheme } from "../src/theme";
+import { ThemeProvider } from "../src/theme";
+import { graphiteTheme } from "../src/themes/graphite";
+import { haloTheme } from "../src/themes/halo";
+import { terraTheme } from "../src/themes/terra";
+import { createTheme } from "../src/theme/createTheme";
+
+const THEMES = {
+  graphite: createTheme(graphiteTheme),
+  halo:     createTheme(haloTheme),
+  terra:    createTheme(terraTheme),
+} as const;
+
+type ThemeKey = keyof typeof THEMES;
 
 const preview: Preview = {
+  globalTypes: {
+    theme: {
+      description: "Global theme",
+      toolbar: {
+        title: "Theme",
+        icon: "paintbrush",
+        items: [
+          { value: "graphite", title: "Graphite" },
+          { value: "halo",     title: "Halo"     },
+          { value: "terra",    title: "Terra"     },
+        ],
+        dynamicTitle: true,
+      },
+    },
+  },
+
+  initialGlobals: {
+    theme: "graphite",
+  },
+
   parameters: {
     controls: {
       matchers: {
@@ -10,25 +41,19 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
-
-    a11y: {
-      // 'todo' - show a11y violations in the test UI only
-      // 'error' - fail CI on a11y violations
-      // 'off' - skip a11y checks entirely
-      test: "todo",
-    },
+    a11y: { test: "todo" },
   },
 
   decorators: [
-    (Story) => (
-      <ThemeContextProvider
-        value={{
-          theme: defaultTheme,
-        }}
-      >
-        <Story />
-      </ThemeContextProvider>
-    ),
+    (Story, context) => {
+      const key = (context.globals.theme ?? "graphite") as ThemeKey;
+      const theme = THEMES[key] ?? THEMES.graphite;
+      return (
+        <ThemeProvider theme={theme}>
+          <Story />
+        </ThemeProvider>
+      );
+    },
   ],
 };
 

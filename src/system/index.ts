@@ -1,6 +1,6 @@
+export * from './css-registry';
 export * from './extract-style-props';
 export * from './get-mod';
-export * from './get-slots';
 export * from './parse-macros';
 export * from './parse-style-props';
 export * from './resolve-styles';

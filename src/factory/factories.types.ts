@@ -1,4 +1,3 @@
-// factory.types.ts
 import type { CSSProperties, ElementType } from "react";
 import type { StyleProps } from "../theme/generators/system-css.data";
 import type {
@@ -7,59 +6,54 @@ import type {
   PolymorphicComponentProps,
   PolymorphicPropsConfig,
   PolymorphicPropsToOmit,
+  PolymorphicRef,
+  SizeProp,
 } from "../types/polimorphic.types";
 import type { ComponentVariants } from "../theme/theme.variants";
 import type { defaultThemeMacros } from "../theme/theme.macros.data";
 import type { BuiltInMacros } from "../theme/theme.macros.types";
+import type { ResolvedFactoryProps } from "../hooks/useResolveProps";
+import type { Theme } from "../theme/theme.types";
 
-// ─── Mod Prop ──────────────────────────────────────────────────────────
-export type Mod = Record<string, unknown> | string;
-
-// ─── Css Vars Prop ──────────────────────────────────────────────────────────
-export type CSSVars = Record<string, string>;
-
-// ─── Apply Prop ──────────────────────────────────────────────────────────
+export type ModProp = Record<string, unknown> | string;
+export type VarsProp = Record<string, string>;
 export type ThemeMacros = typeof defaultThemeMacros;
 export type ApplyProp = keyof ThemeMacros | BuiltInMacros;
+export type OrientationProp = "horizontal" | "vertical";
 
-// ─── BaseProps ──────────────────────────────────────────────────────────────
 export type BaseProps = {
-  vars?: CSSVars;
+  vars?: VarsProp;
   unstyled?: boolean;
   dataSlot?: string;
-  mod?: Mod | Mod[];
-  renderRoot?: (props: Record<string, unknown>) => React.ReactNode;
+  mod?: ModProp | ModProp[];
+  renderRoot?: FactoryRender<Record<string, unknown>>;
   className?: string;
   style?: CSSProperties;
   children?: React.ReactNode;
   apply?: ApplyProp | ApplyProp[];
   variant?: ComponentVariants;
+  /** @internal Inyectado por ComponentFactory — filtrado antes del DOM. */
+  theme?: unknown;
+  /** @internal Inyectado por ComponentFactory — filtrado antes del DOM. */
+  hooks?: unknown;
 };
 
-// ─── System Props and BaseProps ──────────────────────────────────────────────────────────────
 export type SystemProps = StyleProps & BaseProps;
 
-// ─── Override HtmlAttributes over OwnProps ──────────────────────────────────────────────────────────
-//  cuando hay colisión TypeScript intersecta ambas firmas y el resultado es never, OverrideNative — resuelve colisiones, tu OwnProps gana
 export type OverrideJsxComponentProps<
   E extends ElementType,
   OwnProps = object,
 > = Omit<JSXProps<E>, keyof OwnProps> & OwnProps;
 
-// ─── HtmlProps ──────────────────────────────────────────────────────────
-// Atributos HTML del componente Polimorfico, sin SystemProps, StyleProps, AsProp, ref, con OwnProps
 export type MyComponentProps<E extends ElementType, OwnProps = object> = Omit<
   OverrideJsxComponentProps<E, OwnProps>,
   keyof SystemProps | PolymorphicPropsToOmit<E>
 >;
 
-// ─── Component Stactics ─────────────────────────────────────────────────────────────
 export type FactoryStatics = Record<string, React.ComponentType<any>>;
 export type EmptyStatics = Record<string, never>;
 export type EmptyOwnProps = Record<string, never>;
 
-// ─── React Component Properties ─────────────────────────────────────────────────────────────
-// Extrae solo las keys que FunctionComponent realmente tiene
 export type ExistingFunctionComponentKeys = Extract<
   "displayName" | "defaultProps" | "propTypes",
   keyof React.FunctionComponent<never>
@@ -70,52 +64,73 @@ export type ComponentProperties = Pick<
   ExistingFunctionComponentKeys
 >;
 
-// ─── Factory configueration ─────────────────────────────────────────────────────────────
 export type FactoryConfig = {
   defaultTag: ElementType;
   ownProps: object;
+  sizes?: string;
   statics?: FactoryStatics;
   defaultProps?: object;
   componentName?: string;
+  hooks?: object;
 };
 
-// ─── ComponentConfig — sin transformación, solo valida ───────────────────────
+export type HooksOf<Config extends FactoryConfig> = Config extends {
+  hooks: infer H extends object;
+}
+  ? H
+  : Record<never, never>;
+
 export type ComponentConfig<Config extends FactoryConfig> = Config;
 
-export type FactoryDefaultPropsDefinition<Config extends FactoryConfig> =
-  Partial<Config["ownProps"] & PolymorphicPropsConfig<Config>>;
+export type DefaultableProps<Config extends FactoryConfig> = Partial<
+  Config["ownProps"] & PolymorphicPropsConfig<Config>
+>;
 
-// ─── Factory Default Props options ─────────────────────────────────────────────────────────────
 export type DefaultsPropKeys<Config extends FactoryConfig> = Extract<
-  keyof FactoryDefaultPropsDefinition<Config>,
+  keyof DefaultableProps<Config>,
   keyof NonNullable<Config["defaultProps"]>
 >;
 
-// ─── Required si declarado en defaultsProps, opcional el resto ────────────────
 export type RequiredDefaultProps<Config extends FactoryConfig> = Required<
-  Pick<FactoryDefaultPropsDefinition<Config>, DefaultsPropKeys<Config>>
+  Pick<DefaultableProps<Config>, DefaultsPropKeys<Config>>
 > &
-  Partial<
-    Omit<FactoryDefaultPropsDefinition<Config>, DefaultsPropKeys<Config>>
-  >;
+  Partial<Omit<DefaultableProps<Config>, DefaultsPropKeys<Config>>>;
 
-// ─── Render Fuction Render Option ─────────────────────────────────────────────────────────────
-export type FactoryRenderFn<Render> = (renderProps: Render) => React.ReactNode;
+export type DefaultProps<Props, Defaults> = Omit<Props, keyof Defaults> &
+  Required<Pick<Props, keyof Defaults & keyof Props>>;
 
-// ─── Factory Function Options ─────────────────────────────────────────────────────────────
-export type FactoryOptions<Config extends FactoryConfig, RenderProps> = {
-  ownProps?: Config["ownProps"];
+export type DefaultPropsConfig<Config extends FactoryConfig> = DefaultProps<
+  ResolvedFactoryProps<Config>,
+  NonNullable<Config["defaultProps"]>
+>;
+
+export type BaseRenderProps<Config extends FactoryConfig> =
+  DefaultPropsConfig<Config> & {
+    ref: PolymorphicRef<Config["defaultTag"]>;
+    theme: Theme;
+    hooks: HooksOf<Config>;
+    size?: Config["sizes"];
+  };
+
+export type FactoryRender<RenderProps extends object> = (
+  renderProps: RenderProps,
+) => React.ReactNode;
+
+export type FactoryOptions<
+  Config extends FactoryConfig,
+  RenderProps extends object,
+> = {
   componentName?: Config["componentName"];
   defaultTag: Config["defaultTag"];
-  render?: FactoryRenderFn<RenderProps>;
+  render?: FactoryRender<RenderProps>;
   statics?: Config["statics"];
   defaultProps?: RequiredDefaultProps<Config>;
+  useHooks?: () => HooksOf<Config>;
 };
 
-// ─── Factory Function Component Return ─────────────────────────────────────────────────────────────
 export type FactoryComponentReturn<Config extends FactoryConfig> = {
   <E extends ElementType = Config["defaultTag"]>(
-    props: PolymorphicComponentProps<E, Config["ownProps"]> &
+    props: PolymorphicComponentProps<E, Config["ownProps"] & SizeProp<Config>> &
       React.RefAttributes<ElementRefType<E>>,
   ): React.ReactElement | null;
 } & ComponentProperties &

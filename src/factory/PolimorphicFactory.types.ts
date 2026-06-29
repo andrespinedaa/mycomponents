@@ -1,24 +1,14 @@
-import type { CSSProperties } from "react";
-import type {
-  PolymorphicComponentProps,
-  PolymorphicRef,
-} from "../types/polimorphic.types";
+import type { ElementType } from "react";
 import type {
   FactoryConfig,
   FactoryOptions,
-  MyComponentProps,
+  BaseRenderProps,
 } from "./factories.types";
-import type { ResolvedStylesResult } from "../system/resolve-styles";
 
-// ─── Polymorphic Render Props ─────────────────────────────────────────────────────────────
-export interface PolymorphicRenderProps<Config extends FactoryConfig> {
-  ref: PolymorphicRef<Config["defaultTag"]>;
-  props: PolymorphicComponentProps<Config["defaultTag"], Config["ownProps"]>;
-  Component: Config["defaultTag"];
-  componentProps: MyComponentProps<Config["defaultTag"], Config["ownProps"]>;
-  getStyle: (extraStyle?: CSSProperties) => ResolvedStylesResult;
-}
+export type PolymorphicRenderProps<Config extends FactoryConfig> =
+  BaseRenderProps<Config> & {
+    Component: ElementType;
+  };
 
-// ─── Polymorphic Options ─────────────────────────────────────────────────────────────
 export type PolymorphicFactoryOptions<Config extends FactoryConfig> =
   FactoryOptions<Config, PolymorphicRenderProps<Config>>;

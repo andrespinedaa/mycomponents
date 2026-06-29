@@ -1,7 +1,7 @@
 import type { EmptyStatics, ComponentConfig } from "../../../factory";
 import { PolymorphicFactory } from "../../../factory/PolymorphicFactory";
 
-export interface BoxProps {}
+export interface BoxProps {};
 
 export type BoxConfig = ComponentConfig<{
   componentName: "Box";

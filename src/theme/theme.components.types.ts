@@ -1,18 +1,29 @@
-import type { AlertConfig } from "../components/Alert/Alert";
-import type { AvatarConfig } from "../components/Avatar/Avatar";
-import type { BadgeConfig } from "../components/Badge/Badge";
-import type { ButtonConfig } from "../components/Button/Button";
-import type { CardConfig } from "../components/Card/Card";
-import type { InputConfig } from "../components/Input/Input";
-import type { BoxConfig } from "../components/Primitives/Box/Box";
-import type { DividerConfig } from "../components/Primitives/Divider/Divider";
-import type { FlexConfig } from "../components/Primitives/Flex/Flex";
-import type { GridBoxConfig } from "../components/Primitives/Grid/Grid";
-import type { ImgConfig } from "../components/Primitives/Image/Image";
-import type { StackConfig } from "../components/Primitives/Stack/Stack";
-import type { TextConfig } from "../components/Primitives/Text/Text";
-import type { RequiredDefaultProps } from "../factory/factories.types";
-import type { ComponentVariants, VariantStateConfig } from "./theme.variants";
+import type {
+  AlertConfig,
+  AvatarConfig,
+  BadgeConfig,
+  ButtonConfig,
+  CardConfig,
+  InputConfig,
+} from "../components";
+import type {
+  BoxConfig,
+  DividerConfig,
+  FlexConfig,
+  GridBoxConfig,
+  ImgConfig,
+  StackConfig,
+  TextConfig,
+} from "../components/Primitives";
+import type {
+  FactoryConfig,
+  RequiredDefaultProps,
+} from "../factory/factories.types";
+import type {
+  ComponentVariants,
+  SizeTokens,
+  VariantStateConfig,
+} from "./theme.variants";
 
 export type ComponentConfigs = {
   /* Primitives */
@@ -32,18 +43,16 @@ export type ComponentConfigs = {
   Input: InputConfig;
 };
 
-export type SizeTokens = Partial<Record<string, string>>;
-
-export type ThemeComponentConfig<DefaultProps = object> = {
+export type ThemeComponentOptions<Config extends FactoryConfig> = {
   prefix?: string;
-  defaultProps?: Partial<DefaultProps>;
+  defaultProps?: RequiredDefaultProps<Config>;
   variants?: Partial<Record<ComponentVariants, VariantStateConfig>>;
-  /** Size tokens: each key is a size name, value is StyleProps tokens for that size */
-  sizes?: Record<string, SizeTokens>;
+  sizes?: Partial<Record<NonNullable<Config["sizes"]>, SizeTokens>>;
 };
 
 export type ThemeComponents = {
-  [K in keyof ComponentConfigs]-?: ThemeComponentConfig<
-    RequiredDefaultProps<ComponentConfigs[K]>
-  >;
-} & Record<string, ThemeComponentConfig>;
+  [K in keyof ComponentConfigs]: ThemeComponentOptions<ComponentConfigs[K]>;
+} & Record<string, ThemeComponentConfig<FactoryConfig>>;
+
+export type ThemeComponentConfig<Config extends FactoryConfig> =
+  ThemeComponentOptions<Config>;

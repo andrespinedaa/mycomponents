@@ -1,12 +1,17 @@
-import { useInsertionEffect, useEffect, useRef, useState, type ReactNode } from "react";
-import { ThemeContextProvider } from "./ThemeContext";
-import type { ColorScheme, Theme } from "./theme.types";
-import { generateTokens } from "./generators/generateTokens";
+import {
+  useEffect,
+  useInsertionEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
+import { resetRegistry } from "../system/css-registry";
+import { ThemeContext } from "./ThemeContext";
 import { generateResponsive } from "./generators/generateResponsive";
-import { generateVariants } from "./generators/generateVariants";
-import { generateBases } from "./generators/generateBases";
+import { generateTokens } from "./generators/generateTokens";
+import type { ColorScheme, Theme } from "./theme.types";
 
-interface ThemeProviderProps {
+export interface ThemeProviderProps {
   theme: Theme;
   defaultColorScheme?: ColorScheme;
   children: ReactNode;
@@ -28,14 +33,13 @@ export function ThemeProvider({
   defaultColorScheme = "light",
   children,
 }: ThemeProviderProps) {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>(defaultColorScheme);
+  const [colorScheme, setColorScheme] =
+    useState<ColorScheme>(defaultColorScheme);
   const toggleColorScheme = () =>
     setColorScheme((s) => (s === "light" ? "dark" : "light"));
 
   const prevTokensRef = useRef<string>("");
   const prevResponsiveRef = useRef<string>("");
-  const prevVariantsRef = useRef<string>("");
-  const prevBasesRef = useRef<string>("");
 
   useInsertionEffect(() => {
     const prefix = theme.cssVarPrefix;
@@ -52,21 +56,13 @@ export function ThemeProvider({
       injectStyle(`${prefix}-responsive`, responsiveCss);
     }
 
-    const variantCss = generateVariants(theme);
-    if (variantCss !== prevVariantsRef.current) {
-      prevVariantsRef.current = variantCss;
-      injectStyle(`${prefix}-variants`, variantCss);
-    }
-
-    const basesCss = generateBases(theme);
-    if (basesCss !== prevBasesRef.current) {
-      prevBasesRef.current = basesCss;
-      injectStyle(`${prefix}-base`, basesCss);
-    }
-
     return () => {
-      const ids = [`${prefix}-tokens`, `${prefix}-responsive`, `${prefix}-variants`, `${prefix}-base`];
-      ids.forEach((id) => document.getElementById(id)?.remove());
+      [`${prefix}-tokens`, `${prefix}-responsive`].forEach((id) =>
+        document.getElementById(id)?.remove(),
+      );
+      // Limpia el registry para que los componentes re-inyecten su CSS al montar.
+      // Cubre dos casos: Strict Mode (doble mount en dev) y cambio de tema en runtime.
+      resetRegistry();
     };
   }, [theme]);
 
@@ -79,10 +75,10 @@ export function ThemeProvider({
   }, [colorScheme]);
 
   return (
-    <ThemeContextProvider
+    <ThemeContext.Provider
       value={{ theme, colorScheme, setColorScheme, toggleColorScheme }}
     >
       {children}
-    </ThemeContextProvider>
+    </ThemeContext.Provider>
   );
 }

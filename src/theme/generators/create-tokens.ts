@@ -1,5 +1,5 @@
 import { STYLE_PROPS_DATA } from "./system-css.data";
-import { camelToKebab } from "./generateVariants";
+import { camelToKebab } from "../../utils/string";
 
 export type ComponentTokenMap = Record<string, `--${string}`>;
 

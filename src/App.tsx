@@ -1,12 +1,9 @@
 import { Card } from "./components/Card/Card";
 import { ThemeProvider } from "./theme";
 import { createTheme } from "./theme/createTheme";
+import { graphiteTheme } from "./themes";
 
-const theme = createTheme({
-  fontSizes: {
-    lg: "100px",
-  },
-});
+const theme = createTheme(graphiteTheme);
 
 function App() {
   return (

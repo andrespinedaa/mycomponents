@@ -7,11 +7,6 @@ import { isResponsiveObject, cssPropToVarKey } from "./responsive.data";
 
 export type ParsedStyleProps = {
   styles: CSSProperties;
-  /**
-   * true si al menos una prop generó CSS vars por breakpoint — el consumidor
-   * (PolymorphicFactory) agrega data-responsive para activar los @media de
-   * generateResponsive. Si es false, el elemento no paga ese costo.
-   */
   hasResponsive: boolean;
 };
 
@@ -32,10 +27,13 @@ export function parseStyleProps(
     // ── Camino responsive ──────────────────────────────────────────────────
     if (isResponsiveObject(value)) {
       if (!isResponsiveProp) {
-        // Prop no responsive — aplica solo el valor base si existe
         const baseValue = (value as Record<string, unknown>).base;
         if (baseValue !== undefined && baseValue !== null) {
-          const resolved = resolveValue(baseValue as string | number, category, theme);
+          const resolved = resolveValue(
+            baseValue as string | number,
+            category,
+            theme,
+          );
           for (const cssProp of properties) {
             result[cssProp] = resolved;
           }
@@ -45,7 +43,11 @@ export function parseStyleProps(
 
       for (const [breakpoint, bpValue] of Object.entries(value)) {
         if (bpValue === undefined || bpValue === null) continue;
-        const resolved = resolveValue(bpValue as string | number, category, theme);
+        const resolved = resolveValue(
+          bpValue as string | number,
+          category,
+          theme,
+        );
         for (const cssProp of properties) {
           result[`--${cssPropToVarKey(cssProp)}-${breakpoint}`] = resolved;
         }

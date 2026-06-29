@@ -1,5 +1,5 @@
 import type { Responsive } from "./generators/system-css.types";
-import type { StyleProps } from "./generators/system-css.data";
+import type { RawStyleProps, StyleProps } from "./generators/system-css.data";
 
 export type ComponentVariants =
   | "Filled"
@@ -14,26 +14,30 @@ export type ComponentVariants =
   | "Default"
   | "Unstyled";
 
+export type ComponentStates =
+  | "base"
+  | "hover"
+  | "focus"
+  | "active"
+  | "disabled"
+  | "loading"
+  | "selected"
+  | "checked"
+  | "invalid";
+
 // Desenvuelve Responsive<T> → T para que los tokens de variante sean valores planos
 type UnwrapResponsive<T> = T extends Responsive<infer V> ? V : T;
 
-// ─── Tokens de variante — StyleProps sin Responsive + escape hatch para CSS puro
-export type VariantTokens = {
+// ─── VariantTokens — RawStyleProps + token autocomplete + escape hatch ────────
+export type VariantTokens = Omit<RawStyleProps, keyof StyleProps> & {
   [K in keyof StyleProps]?: UnwrapResponsive<StyleProps[K]>;
 } & Record<string, string>;
 
-// ─── Estados ─────────────────────────────────────────────────────────────────
-export type VariantStateConfig = {
-  base?: VariantTokens;
-  hover?: VariantTokens;
-  focus?: VariantTokens;
-  active?: VariantTokens;
-  disabled?: VariantTokens;
-  loading?: VariantTokens;
-  selected?: VariantTokens;
-  checked?: VariantTokens;
-  invalid?: VariantTokens;
-};
+// ─── SizeTokens — RawStyleProps puro, solo valores CSS reales ────────────────
+export type SizeTokens = RawStyleProps;
 
-// ─── Helper: Variant<Allowed> — restringe las variantes aceptadas ─────────────
-export type Variant<Allowed extends ComponentVariants> = Allowed;
+// ─── Estados ─────────────────────────────────────────────────────────────────
+export type VariantStateConfig = Partial<Record<ComponentStates, VariantTokens>>;
+
+// ─── Helper: SystemVariants<Allowed> — restringe las variantes aceptadas ─────
+export type SystemVariants<Allowed extends ComponentVariants> = Allowed;

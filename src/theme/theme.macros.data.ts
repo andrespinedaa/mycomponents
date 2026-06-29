@@ -37,27 +37,37 @@ export const defaultThemeMacros = {
   "@lineClamp": {
     display: "-webkit-box",
     WebkitBoxOrient: "vertical",
-    WebkitLineClamp: 3,
+    WebkitLineClamp: "var(--line-clamp, 3)" as unknown as number,
     overflow: "hidden",
   },
-
   "@inherit": {
     font: "inherit",
     color: "inherit",
     lineHeight: "inherit",
     textAlign: "inherit",
   },
-
   "@inheritAll": {
     all: "inherit",
   },
-
   "@truncate": {
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
   },
 
+  // Divider lines
+  "@dividerLineH": {
+    width: "100%",
+    borderTopStyle: "solid",
+    borderTopWidth: "var(--divider-thickness, 1px)",
+  },
+  "@dividerLineV": {
+    display: "inline-block",
+    width: "0",
+    alignSelf: "stretch",
+    borderLeftStyle: "solid",
+    borderLeftWidth: "var(--divider-thickness, 1px)",
+  },
   "@srOnly": {
     position: "absolute",
     width: "1px",

@@ -61,7 +61,7 @@ describe("Box", () => {
     });
   });
 
-  // ─── Mod ──────────────────────────────────────────────────────
+  // ─── ModProp ──────────────────────────────────────────────────────
   describe("mod", () => {
     it("genera data attributes desde objeto", () => {
       const { container } = render(
@@ -96,9 +96,9 @@ describe("Box", () => {
       expect(container.firstChild).toHaveAttribute("data-slot", "header");
     });
 
-    it("no genera data-slot si no se pasa", () => {
+    it("genera data-slot con componentName por defecto", () => {
       const { container } = render(<Box>contenido</Box>, { wrapper });
-      expect(container.firstChild).not.toHaveAttribute("data-slot");
+      expect(container.firstChild).toHaveAttribute("data-slot", "Box");
     });
   });
 

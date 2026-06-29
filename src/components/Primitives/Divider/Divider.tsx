@@ -1,17 +1,27 @@
-import type { CSSProperties } from "react";
 import {
   ComponentFactory,
   type ComponentConfig,
   type EmptyStatics,
 } from "../../../factory";
+import { useLayoutContext } from "../../../context/LayoutContext";
 import type { ColorValue } from "../../../theme/generators/system-css.data";
+import type { CSSLength } from "../../../theme/theme.types";
+import { Box } from "../Box/Box";
+import { Flex } from "../Flex/Flex";
+import { Text } from "../Text/Text";
 
 export interface DividerOwnProps {
   orientation?: "horizontal" | "vertical";
-  thickness?: CSSProperties["borderWidth"];
+  /** Posición del label sobre la línea. Por defecto "center". */
+  position?: "start" | "center" | "end";
+  thickness?: CSSLength;
   color?: ColorValue;
   label?: string;
 }
+
+type DividerHooks = {
+  layout: ReturnType<typeof useLayoutContext>;
+};
 
 export type DividerConfig = ComponentConfig<{
   componentName: "Divider";
@@ -19,50 +29,63 @@ export type DividerConfig = ComponentConfig<{
   ownProps: DividerOwnProps;
   statics: EmptyStatics;
   defaultProps: { orientation: "horizontal" };
+  hooks: DividerHooks;
 }>;
 
 export const Divider = ComponentFactory<DividerConfig>({
   componentName: "Divider",
   defaultTag: "div",
   defaultProps: { orientation: "horizontal" },
-  render: ({ orientation, thickness = "1px", color, label, style, ...rest }) => {
-    const isVertical = orientation === "vertical";
-
-    const lineStyle: CSSProperties = isVertical
-      ? {
-          display: "inline-block",
-          width: 0,
-          alignSelf: "stretch",
-          borderLeft: `${thickness} solid`,
-          borderColor: color as string | undefined,
-        }
-      : {
-          width: "100%",
-          borderTop: `${thickness} solid`,
-          borderColor: color as string | undefined,
-        };
+  useHooks: () => ({ layout: useLayoutContext() }),
+  render: ({
+    orientation,
+    position = "center",
+    thickness = "1px",
+    color,
+    label,
+    ref,
+    hooks,
+    ...rest
+  }) => {
+    const { layout } = hooks;
+    const resolvedOrientation = orientation ?? layout.orientation ?? "horizontal";
+    const isVertical = resolvedOrientation === "vertical";
+    const lineMacro = isVertical ? "@dividerLineV" : "@dividerLineH";
+    const thicknessVar = { "--divider-thickness": thickness };
 
     if (label) {
       return (
-        <div
+        <Flex
+          ref={ref}
           role="separator"
-          aria-orientation={orientation}
-          style={{ display: "flex", alignItems: "center", gap: "0.75rem", ...style }}
-          {...(rest as any)}
+          aria-orientation="horizontal"
+          align="center"
+          gap="sm"
+          vars={thicknessVar}
+          {...rest}
         >
-          <div style={{ flex: 1, ...lineStyle }} />
-          <span style={{ whiteSpace: "nowrap" }}>{label}</span>
-          <div style={{ flex: 1, ...lineStyle }} />
-        </div>
+          {position !== "start" && (
+            <Box flex={1} apply={lineMacro} borderColor={color} />
+          )}
+          <Text as="span" whiteSpace="nowrap">
+            {label}
+          </Text>
+          {position !== "end" && (
+            <Box flex={1} apply={lineMacro} borderColor={color} />
+          )}
+        </Flex>
       );
     }
 
     return (
-      <div
+      <Box
+        ref={ref}
         role="separator"
-        aria-orientation={orientation}
-        style={{ ...lineStyle, ...style }}
-        {...(rest as any)}
+        aria-orientation={resolvedOrientation as "horizontal" | "vertical"}
+        apply={lineMacro}
+        borderColor={color}
+        vars={thicknessVar}
+        {...rest}
       />
     );
   },

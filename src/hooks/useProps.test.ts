@@ -2,10 +2,11 @@
 import { describe, it, expect } from "vitest";
 import { useProps } from "./useProps";
 import { defaultTheme } from "../theme/default-theme";
+import type { SystemVariants } from "../theme";
 
 // Tipos de prueba
 type ButtonProps = {
-  variant?: "solid" | "outline" | "ghost";
+  variant?: SystemVariants<"Outlined" | "Ghost">;
   size?: "sm" | "md" | "lg";
   dataSlot?: string;
 };
@@ -14,7 +15,7 @@ describe("useProps", () => {
   // ─── Sin componentName ────────────────────────────────────────
   describe("sin componentName", () => {
     it("retorna las props sin modificar si no hay componentName", () => {
-      const props: ButtonProps = { variant: "solid", size: "md" };
+      const props: ButtonProps = { variant: "Outlined", size: "md" };
       const result = useProps(undefined, defaultTheme, props, {});
       expect(result).toEqual(props);
     });
@@ -22,21 +23,21 @@ describe("useProps", () => {
     it("aplica configDefaults si no hay componentName", () => {
       const props: ButtonProps = { size: "md" };
       const result = useProps(undefined, defaultTheme, props, {
-        variant: "solid",
+        variant: "Ghost",
       } as Partial<ButtonProps>);
-      expect(result).toEqual({ variant: "solid", size: "md" });
+      expect(result).toEqual({ variant: "Ghost", size: "md" });
     });
   });
 
   // ─── configDefaults ───────────────────────────────────────────
   describe("configDefaults", () => {
     it("aplica configDefaults como menor prioridad", () => {
-      const props: ButtonProps = { variant: "outline" };
+      const props: ButtonProps = { variant: "Outlined" };
       const result = useProps(undefined, defaultTheme, props, {
-        variant: "solid",
+        variant: "Outlined",
         size: "md",
       } as Partial<ButtonProps>);
-      expect(result.variant).toBe("outline");
+      expect(result.variant).toBe("Outlined");
       expect(result.size).toBe("md");
     });
 
@@ -74,15 +75,15 @@ describe("useProps", () => {
     });
 
     it("consumer gana sobre themeDefaults", () => {
-      const props: ButtonProps = { variant: "outline" };
+      const props: ButtonProps = { variant: "Outlined" };
       const result = useProps("Button", defaultTheme, props, {});
-      expect(result.variant).toBe("outline");
+      expect(result.variant).toBe("Outlined");
     });
 
     it("componente desconocido no aplica themeDefaults", () => {
-      const props: ButtonProps = { variant: "outline" };
+      const props: ButtonProps = { variant: "Outlined" };
       const result = useProps("Unknown", defaultTheme, props, {});
-      expect(result).toEqual({ variant: "outline" });
+      expect(result).toEqual({ variant: "Outlined" });
     });
   });
 
@@ -95,7 +96,7 @@ describe("useProps", () => {
           ...defaultTheme.components,
           Button: {
             defaultProps: {
-              variant: "outline" as const, // ← as const para el tipo literal
+              variant: "Outlined" as const, // ← as const para el tipo literal
               size: "lg" as const,
             },
           },
@@ -104,11 +105,11 @@ describe("useProps", () => {
 
       const props: ButtonProps = { size: "sm" };
       const result = useProps("Button", themeWithOverride, props, {
-        variant: "ghost",
+        variant: "Ghost",
         size: "md",
       } as Partial<ButtonProps>);
 
-      expect(result.variant).toBe("outline");
+      expect(result.variant).toBe("Outlined");
       expect(result.size).toBe("sm");
     });
   });
@@ -121,13 +122,13 @@ describe("useProps", () => {
     });
 
     it("preserva todas las props del consumer", () => {
-      const props: ButtonProps = { variant: "solid", size: "lg" };
+      const props: ButtonProps = { variant: "Outlined", size: "lg" };
       const result = useProps(undefined, defaultTheme, props, {});
       expect(result).toEqual(props);
     });
 
     it("no muta el objeto props original", () => {
-      const props: ButtonProps = { variant: "solid" };
+      const props: ButtonProps = { variant: "Outlined" };
       const original = { ...props };
       useProps(undefined, defaultTheme, props, {
         size: "md",

@@ -1,6 +1,6 @@
 import type { Theme } from "../theme.types";
 import { RESPONSIVE_CSS_PROPS } from "./system-css.data";
-import { camelToKebab } from "./generateVariants";
+import { camelToKebab } from "../../utils/string";
 
 const BP_ORDER = ["sm", "md", "lg", "xl"] as const;
 

@@ -1,6 +1,6 @@
-import { defaultTheme, type Theme, type ThemeOverride } from ".";
+import type { Theme, ThemeOverride } from ".";
 import { mergeTheme } from "./merge-theme";
 
-export function createTheme(override: ThemeOverride = {}): Theme {
-  return mergeTheme(defaultTheme, override);
+export function createTheme(base: Theme, override: ThemeOverride = {}): Theme {
+  return mergeTheme(base, override);
 }

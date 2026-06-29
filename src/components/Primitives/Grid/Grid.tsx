@@ -26,9 +26,7 @@ export type GridItemConfig = ComponentConfig<{
 const GridItem = ComponentFactory<GridItemConfig>({
   componentName: "GridItem",
   defaultTag: "div",
-  render: (resolvedProps) => {
-    const { colSpan, rowSpan, colStart, colEnd, rowStart, rowEnd, ...rest } =
-      resolvedProps;
+  render: ({ colSpan, rowSpan, colStart, colEnd, rowStart, rowEnd, ref, theme: _t, hooks: _h, ...rest }) => {
 
     const resolveSpan = (span?: number | "full") =>
       span === "full" ? "1 / -1" : span ? `span ${span}` : undefined;
@@ -75,9 +73,7 @@ export type GridBoxConfig = ComponentConfig<{
 export const GridBox = ComponentFactory<GridBoxConfig>({
   componentName: "GridBox",
   defaultTag: "div",
-  render: (resolvedProps, ref) => {
-    const { columns, rows, autoColumns, autoRows, inline, ...rest } =
-      resolvedProps;
+  render: ({ columns, rows, autoColumns, autoRows, inline, ref, theme: _t, hooks: _h, ...rest }) => {
 
     const resolveTemplate = (value?: number | string) =>
       value === undefined

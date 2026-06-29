@@ -17,5 +17,5 @@ export function useCreateProvider<T>(name: string, defaultValue?: T) {
 
   Context.displayName = name;
 
-  return [Context.Provider, useProvider] as const;
+  return [Context.Provider, useProvider, Context] as const;
 }

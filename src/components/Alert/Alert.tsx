@@ -3,7 +3,7 @@ import {
   type ComponentConfig,
   type EmptyStatics,
 } from "../../factory";
-import type { Variant } from "../../theme/theme.variants";
+import type { SystemVariants } from "../../theme/theme.variants";
 import { Box } from "../Primitives/Box";
 import { Flex } from "../Primitives/Flex/Flex";
 import { Text } from "../Primitives/Text/Text";
@@ -13,7 +13,7 @@ export type AlertSeverity = "info" | "success" | "warning" | "danger";
 export interface AlertOwnProps {
   severity?: AlertSeverity;
   title?: string;
-  variant?: Variant<"Subtle" | "Filled" | "Outlined">;
+  variant?: SystemVariants<"Subtle" | "Filled" | "Outlined">;
   closable?: boolean;
   onClose?: () => void;
   icon?: React.ReactNode;
@@ -22,9 +22,10 @@ export interface AlertOwnProps {
 export type AlertConfig = ComponentConfig<{
   componentName: "Alert";
   defaultTag: "div";
-  ownProps: AlertOwnProps;
+  ownProps: AlertOwnProps & { size?: "sm" | "md" | "lg" };
   statics: EmptyStatics;
-  defaultProps: { severity: "info"; variant: "Subtle" };
+  defaultProps: { severity: "info"; variant: "Subtle"; size: "md" };
+  sizes: "sm" | "md" | "lg";
 }>;
 
 const SEVERITY_TOKENS: Record<AlertSeverity, { color: string; bg: string; border: string }> = {
@@ -45,10 +46,11 @@ export const Alert = ComponentFactory<AlertConfig>({
   componentName: "Alert",
   defaultTag: "div",
   defaultProps: { severity: "info", variant: "Subtle" },
-  render: ({ severity = "info", title, variant: _variant, closable, onClose, icon, children, ...rest }) => {
+  render: ({ severity = "info", title, variant: _variant, closable, onClose, icon, children, ref, theme: _t, hooks: _h, ...rest }) => {
     const tokens = SEVERITY_TOKENS[severity];
     return (
       <Flex
+        ref={ref}
         role="alert"
         gap="sm"
         p="md"

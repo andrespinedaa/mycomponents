@@ -1,22 +1,17 @@
+import { resolveValue } from "../../system/resolve-value";
+import { camelToKebab } from "../../utils/string";
 import type { Theme } from "../theme.types";
-import type { VariantStateConfig, VariantTokens } from "../theme.variants";
+import type { ComponentStates, VariantStateConfig, VariantTokens } from "../theme.variants";
+import { resolveVarName } from "./css-gen-utils";
 import { STYLE_PROPS_DATA } from "./system-css.data";
 
-export function camelToKebab(str: string): string {
-  return str.replace(/([A-Z])/g, "-$1").toLowerCase();
-}
-
-function resolveVarName(key: string, prefix: string): string {
+export function resolveTokenValue(key: string, value: string, theme: Theme): string {
   const def = STYLE_PROPS_DATA[key];
-  if (def) {
-    // es un alias de StyleProps — usa la primera CSS prop real
-    return `--${prefix}-${camelToKebab(def.properties[0])}`;
-  }
-  // es una CSS prop directa (cursor, outline, etc.)
-  return `--${prefix}-${camelToKebab(key)}`;
+  if (!def || def.category === "raw") return value;
+  return resolveValue(value, def.category, theme);
 }
 
-const STATE_SELECTORS: Record<keyof VariantStateConfig, string> = {
+const STATE_SELECTORS: Record<ComponentStates, string> = {
   base: "",
   hover: ":hover",
   focus: ":focus-visible",
@@ -28,34 +23,42 @@ const STATE_SELECTORS: Record<keyof VariantStateConfig, string> = {
   invalid: "[data-invalid]",
 };
 
-export function generateVariants(theme: Theme): string {
-  if (!theme.components) return "";
+export function generateComponentVariants(
+  componentName: string,
+  config: NonNullable<Theme["components"]>[string],
+  theme: Theme,
+): string {
+  if (!config?.variants) return "";
+  const prefix = config.prefix ?? camelToKebab(componentName);
   let css = "";
 
-  for (const [componentName, config] of Object.entries(theme.components)) {
-    if (!config?.variants) continue;
-    const prefix = config.prefix ?? camelToKebab(componentName);
+  for (const [variant, stateConfig] of Object.entries(config.variants)) {
+    if (!stateConfig) continue;
 
-    for (const [variant, stateConfig] of Object.entries(config.variants)) {
-      if (!stateConfig) continue;
+    for (const [state, tokens] of Object.entries(stateConfig) as [
+      keyof VariantStateConfig,
+      VariantTokens | undefined,
+    ][]) {
+      if (!tokens || Object.keys(tokens).length === 0) continue;
 
-      for (const [state, tokens] of Object.entries(stateConfig) as [
-        keyof VariantStateConfig,
-        VariantTokens | undefined,
-      ][]) {
-        if (!tokens || Object.keys(tokens).length === 0) continue;
+      const stateSelector = STATE_SELECTORS[state] ?? "";
+      const selector = `[data-slot="${componentName}"][data-variant="${variant}"]${stateSelector}`;
 
-        const stateSelector = STATE_SELECTORS[state] ?? "";
-        const selector = `[data-slot="${componentName}"][data-variant="${variant}"]${stateSelector}`;
-
-        css += `${selector}{`;
-        for (const [key, value] of Object.entries(tokens)) {
-          css += `${resolveVarName(key, prefix)}:${value};`;
-        }
-        css += "}";
+      css += `${selector}{`;
+      for (const [key, value] of Object.entries(tokens)) {
+        if (value == null) continue;
+        css += `${resolveVarName(key, prefix)}:${resolveTokenValue(key, String(value), theme)};`;
       }
+      css += "}";
     }
   }
 
   return css;
+}
+
+export function generateVariants(theme: Theme): string {
+  if (!theme.components) return "";
+  return Object.entries(theme.components)
+    .map(([name, config]) => generateComponentVariants(name, config, theme))
+    .join("");
 }

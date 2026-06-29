@@ -77,7 +77,7 @@ export function createBasePropsArgTypes(): ArgTypes {
       description: "Modificadores — generan data-* attributes en el DOM",
       table: {
         category: "Base",
-        type: { summary: "Mod | Mod[]" },
+        type: { summary: "ModProp | ModProp[]" },
       },
     },
     vars: {

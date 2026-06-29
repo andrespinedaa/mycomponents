@@ -3,11 +3,11 @@ import {
   type ComponentConfig,
   type EmptyStatics,
 } from "../../factory";
-import type { Variant } from "../../theme/theme.variants";
+import type { SystemVariants } from "../../theme/theme.variants";
 import { Box } from "../Primitives/Box";
 
 export interface BadgeOwnProps {
-  variant?: Variant<"Filled" | "Subtle" | "Outlined">;
+  variant?: SystemVariants<"Filled" | "Subtle" | "Outlined">;
   size?: "sm" | "md" | "lg";
   dot?: boolean;
 }
@@ -24,9 +24,10 @@ export const Badge = ComponentFactory<BadgeConfig>({
   componentName: "Badge",
   defaultTag: "span",
   defaultProps: { variant: "Filled", size: "md" },
-  render: ({ variant: _variant, size: _size, dot, children, ...rest }) => (
+  render: ({ variant: _variant, size: _size, dot, children, ref, theme: _t, hooks: _h, ...rest }) => (
     <Box
       as="span"
+      ref={ref}
       display="inline-flex"
       align="center"
       fontWeight={600}

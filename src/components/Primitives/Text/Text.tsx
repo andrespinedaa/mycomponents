@@ -9,7 +9,9 @@ import { Box } from "../Box";
 export interface TextOwnProps {
   size?: FontSizeValue;
   weight?: React.CSSProperties["fontWeight"];
+  /** Corta el texto con ellipsis en una sola línea. Activa @truncate. */
   truncate?: boolean;
+  /** Limita el texto a N líneas con ellipsis. Activa @lineClamp. */
   lineClamp?: number;
 }
 
@@ -24,28 +26,20 @@ export type TextConfig = ComponentConfig<{
 export const Text = ComponentFactory<TextConfig>({
   componentName: "Text",
   defaultTag: "p",
-  render: ({ size, weight, truncate, lineClamp, apply, children, ...rest }, ref) => {
-    const applyMacros: string[] = Array.isArray(apply)
-      ? [...apply]
-      : apply
-      ? [apply]
-      : [];
-
-    if (truncate) applyMacros.push("@truncate");
-
-    const extraStyle: React.CSSProperties = {};
-    if (lineClamp) {
-      applyMacros.push("@lineClamp");
-      extraStyle.WebkitLineClamp = lineClamp;
-    }
+  render: ({ size, weight, truncate, lineClamp, apply, children, ref, theme: _t, hooks: _h, ...rest }) => {
+    const macros = [
+      ...(Array.isArray(apply) ? apply : apply ? [apply] : []),
+      ...(truncate              ? ["@truncate"]  : []),
+      ...(lineClamp             ? ["@lineClamp"] : []),
+    ];
 
     return (
       <Box
         ref={ref}
         fontSize={size}
         fontWeight={weight}
-        apply={applyMacros as any}
-        style={Object.keys(extraStyle).length ? extraStyle : undefined}
+        apply={macros as any}
+        vars={lineClamp ? { "--line-clamp": String(lineClamp) } : undefined}
         {...rest}
       >
         {children}

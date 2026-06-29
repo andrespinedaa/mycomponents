@@ -34,33 +34,32 @@ export const Input = ComponentFactory<InputConfig>({
   componentName: "Input",
   defaultTag: "div",
   defaultProps: { size: "md", variant: "Default" },
-  render: (
-    {
-      label,
-      hint,
-      error,
-      leftSection,
-      rightSection,
-      size = "md",
-      variant: _variant,
-      id,
-      children: _children,
-      type,
-      value,
-      defaultValue,
-      placeholder,
-      disabled,
-      required,
-      readOnly,
-      name,
-      onChange,
-      onFocus,
-      onBlur,
-      ...rest
-    },
+  render: ({
+    label,
+    hint,
+    error,
+    leftSection,
+    rightSection,
+    size = "md",
+    variant: _variant,
+    id,
+    children: _children,
+    type,
+    value,
+    defaultValue,
+    placeholder,
+    disabled,
+    required,
+    readOnly,
+    name,
+    onChange,
+    onFocus,
+    onBlur,
     ref,
     theme,
-  ) => {
+    hooks: _h,
+    ...rest
+  }) => {
     // Resolve px token from theme sizes → CSS var string
     const sizeConfig = theme.components?.Input?.sizes?.[size] ?? {};
     const pxToken = (sizeConfig.px as string) ?? "sm";

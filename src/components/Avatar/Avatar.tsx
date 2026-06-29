@@ -33,7 +33,7 @@ export const Avatar = ComponentFactory<AvatarConfig>({
   componentName: "Avatar",
   defaultTag: "div",
   defaultProps: { shape: "circle", size: "md" },
-  render: ({ src, alt, name, size: _size, shape = "circle", children, ...rest }, ref) => {
+  render: ({ src, alt, name, size: _size, shape = "circle", children, ref, theme: _t, hooks: _h, ...rest }) => {
     const [imgError, setImgError] = useState(false);
 
     // w, h, fontSize are resolved from theme sizes → come in via ...rest as style props

@@ -9,7 +9,7 @@ export type FlexConfig = ComponentConfig<{
   defaultTag: "div";
   ownProps: {};
   statics: EmptyStatics;
-  defaultsProps: {};
+  defaultProps: {};
 }>;
 
 export const Flex = PolymorphicFactory<FlexConfig>({
