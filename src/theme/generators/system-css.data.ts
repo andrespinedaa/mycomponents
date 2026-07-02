@@ -159,8 +159,8 @@ type CategoryToToken = {
 export type SystemCSS = {
   [K in keyof CSSProperties]?: K extends keyof CSSPropToCategory
     ? CategoryToToken[CSSPropToCategory[K] & keyof CategoryToToken] extends "raw"
-      ? CSSProperties[K] // categoría raw: preservar tipos CSS literales ("row" | "column"...)
-      : CategoryToToken[CSSPropToCategory[K] & keyof CategoryToToken] // token: SpacingValue, ColorValue... ya incluyen (string & {})
+      ? CSSProperties[K]
+      : CategoryToToken[CSSPropToCategory[K] & keyof CategoryToToken] | CSSProperties[K]
     : CSSProperties[K];
 };
 

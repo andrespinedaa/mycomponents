@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { CaseFormat, Convert } from "../../types/cases.types";
-import type { BaseColors, BaseRadii, BaseFontSizes, BaseSpacing, CSSLength } from "../theme.types";
+import type { BaseColors, BaseRadii, BaseFontSizes, BaseSpacing } from "../theme.types";
 
 // ─── Responsive ───────────────────────────────────────────────────────────────
 export const BREAKPOINT_KEYS = ["base", "sm", "md", "lg", "xl"] as const;
@@ -61,14 +61,13 @@ export type SystemStyleProps<
 
 // ─── Token value types ────────────────────────────────────────────────────────
 // Cada tipo corresponde a una PropCategory y define qué tokens acepta.
-// CSSLength como escape hatch: permite "8px", "1.5rem"... sin abrir a string arbitrario.
-// Esto evita que el IDE mezcle tokens de distintas categorías en el autocomplete.
+// En SystemCSS se unen con CSSProperties[K] para aceptar también valores CSS nativos.
 
 type ColorScale = BaseColors[keyof BaseColors];
-export type ColorValue = `${keyof BaseColors}.${keyof ColorScale}` | CSSLength;
-export type SpacingValue = keyof BaseSpacing | "auto" | "full" | "screen" | "fit" | CSSLength;
-export type RadiusValue = keyof BaseRadii | CSSLength;
-export type FontSizeValue = keyof BaseFontSizes | CSSLength;
+export type ColorValue = `${keyof BaseColors}.${keyof ColorScale}`;
+export type SpacingValue = keyof BaseSpacing | "auto" | "full" | "screen" | "fit";
+export type RadiusValue = keyof BaseRadii;
+export type FontSizeValue = keyof BaseFontSizes;
 
 // ─── ExcludedProps ────────────────────────────────────────────────────────────
 // Props de CSSProperties que no participan en el sistema de styleProps.
@@ -77,38 +76,39 @@ export type ExcludedProps = "animation" | "animationName" | "counterReset" | "co
 // ─── RichStyleProps ───────────────────────────────────────────────────────────
 // Override manual de aliases para agregar autocomplete de tokens del tema.
 // Reemplaza los tipos genéricos de BaseStyleProps (derivado automático) con tipos ricos.
+// Token | CSSProperties[K]: tokens del tema + cualquier valor CSS nativo válido.
 export type RichStyleProps = {
-  bg?: Responsive<ColorValue>;
-  color?: Responsive<ColorValue>;
-  borderColor?: Responsive<ColorValue>;
-  rounded?: Responsive<RadiusValue>;
-  w?: Responsive<SpacingValue>;
-  h?: Responsive<SpacingValue>;
-  minW?: Responsive<SpacingValue>;
-  maxW?: Responsive<SpacingValue>;
-  minH?: Responsive<SpacingValue>;
-  maxH?: Responsive<SpacingValue>;
-  m?: Responsive<SpacingValue>;
-  mx?: Responsive<SpacingValue>;
-  my?: Responsive<SpacingValue>;
-  mt?: Responsive<SpacingValue>;
-  mr?: Responsive<SpacingValue>;
-  mb?: Responsive<SpacingValue>;
-  ml?: Responsive<SpacingValue>;
-  p?: Responsive<SpacingValue>;
-  px?: Responsive<SpacingValue>;
-  py?: Responsive<SpacingValue>;
-  pt?: Responsive<SpacingValue>;
-  pr?: Responsive<SpacingValue>;
-  pb?: Responsive<SpacingValue>;
-  pl?: Responsive<SpacingValue>;
-  gap?: Responsive<SpacingValue>;
-  rowGap?: Responsive<SpacingValue>;
-  columnGap?: Responsive<SpacingValue>;
-  top?: Responsive<SpacingValue>;
-  right?: Responsive<SpacingValue>;
-  bottom?: Responsive<SpacingValue>;
-  left?: Responsive<SpacingValue>;
-  inset?: Responsive<SpacingValue>;
-  fontSize?: Responsive<FontSizeValue>;
+  bg?: Responsive<ColorValue | CSSProperties["background"]>;
+  color?: Responsive<ColorValue | CSSProperties["color"]>;
+  borderColor?: Responsive<ColorValue | CSSProperties["borderColor"]>;
+  rounded?: Responsive<RadiusValue | CSSProperties["borderRadius"]>;
+  w?: Responsive<SpacingValue | CSSProperties["width"]>;
+  h?: Responsive<SpacingValue | CSSProperties["height"]>;
+  minW?: Responsive<SpacingValue | CSSProperties["minWidth"]>;
+  maxW?: Responsive<SpacingValue | CSSProperties["maxWidth"]>;
+  minH?: Responsive<SpacingValue | CSSProperties["minHeight"]>;
+  maxH?: Responsive<SpacingValue | CSSProperties["maxHeight"]>;
+  m?: Responsive<SpacingValue | CSSProperties["margin"]>;
+  mx?: Responsive<SpacingValue | CSSProperties["marginLeft"]>;
+  my?: Responsive<SpacingValue | CSSProperties["marginTop"]>;
+  mt?: Responsive<SpacingValue | CSSProperties["marginTop"]>;
+  mr?: Responsive<SpacingValue | CSSProperties["marginRight"]>;
+  mb?: Responsive<SpacingValue | CSSProperties["marginBottom"]>;
+  ml?: Responsive<SpacingValue | CSSProperties["marginLeft"]>;
+  p?: Responsive<SpacingValue | CSSProperties["padding"]>;
+  px?: Responsive<SpacingValue | CSSProperties["paddingLeft"]>;
+  py?: Responsive<SpacingValue | CSSProperties["paddingTop"]>;
+  pt?: Responsive<SpacingValue | CSSProperties["paddingTop"]>;
+  pr?: Responsive<SpacingValue | CSSProperties["paddingRight"]>;
+  pb?: Responsive<SpacingValue | CSSProperties["paddingBottom"]>;
+  pl?: Responsive<SpacingValue | CSSProperties["paddingLeft"]>;
+  gap?: Responsive<SpacingValue | CSSProperties["gap"]>;
+  rowGap?: Responsive<SpacingValue | CSSProperties["rowGap"]>;
+  columnGap?: Responsive<SpacingValue | CSSProperties["columnGap"]>;
+  top?: Responsive<SpacingValue | CSSProperties["top"]>;
+  right?: Responsive<SpacingValue | CSSProperties["right"]>;
+  bottom?: Responsive<SpacingValue | CSSProperties["bottom"]>;
+  left?: Responsive<SpacingValue | CSSProperties["left"]>;
+  inset?: Responsive<SpacingValue | CSSProperties["inset"]>;
+  fontSize?: Responsive<FontSizeValue | CSSProperties["fontSize"]>;
 };

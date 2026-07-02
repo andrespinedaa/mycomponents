@@ -13,13 +13,13 @@ type Story = StoryObj<typeof Card>;
 // ─── Contenido de ejemplo reutilizable ───────────────────────────────────────
 const SampleContent = () => (
   <>
-    <Card.Section section="header" p="md" style={{ borderBottom: "1px solid #e5e7eb" }}>
+    <Card.Section section="header" p="md" borderBottom="1px solid #e5e7eb">
       <strong>Card Header</strong>
     </Card.Section>
     <Card.Section section="body" p="md">
       Este es el cuerpo de la card con contenido de ejemplo.
     </Card.Section>
-    <Card.Section section="footer" p="md" style={{ borderTop: "1px solid #e5e7eb" }}>
+    <Card.Section section="footer" p="md" borderTop="1px solid #e5e7eb">
       Footer
     </Card.Section>
   </>
@@ -33,7 +33,7 @@ export const Default: Story = {
     orientation: "vertical",
   },
   render: (args) => (
-    <Card {...args} style={{ width: 360 }}>
+    <Card {...args} w="360px">
       <SampleContent />
     </Card>
   ),
@@ -89,15 +89,15 @@ export const Orientation: Story = {
     <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
       <div>
         <p style={{ marginBottom: "0.5rem", fontWeight: 600, fontSize: "0.875rem" }}>Vertical (default)</p>
-        <Card variant="Default" size="md" orientation="vertical" style={{ width: 320 }}>
-          <Card.Section section="media" style={{ height: 120, background: "#e5e7eb" }} />
+        <Card variant="Default" size="md" orientation="vertical" w="320px">
+          <Card.Section section="media" h="120px" bg="#e5e7eb" />
           <Card.Section section="body" p="md">Contenido vertical</Card.Section>
         </Card>
       </div>
       <div>
         <p style={{ marginBottom: "0.5rem", fontWeight: 600, fontSize: "0.875rem" }}>Horizontal</p>
-        <Card variant="Default" size="md" orientation="horizontal" style={{ width: 400 }}>
-          <Card.Section section="media" style={{ width: 120, background: "#e5e7eb" }} />
+        <Card variant="Default" size="md" orientation="horizontal" w="400px">
+          <Card.Section section="media" w="120px" bg="#e5e7eb" />
           <Card.Section section="body" p="md">Contenido horizontal</Card.Section>
         </Card>
       </div>
@@ -108,17 +108,17 @@ export const Orientation: Story = {
 // ─── Sections ─────────────────────────────────────────────────────────────────
 export const Sections: Story = {
   render: () => (
-    <Card variant="Default" size="md" style={{ width: 360 }}>
-      <Card.Section section="header" p="md" style={{ background: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
+    <Card variant="Default" size="md" w="360px">
+      <Card.Section section="header" p="md" bg="#f9fafb" borderBottom="1px solid #e5e7eb">
         <strong>section="header"</strong>
       </Card.Section>
-      <Card.Section section="media" style={{ height: 120, background: "#e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af" }}>
+      <Card.Section section="media" h="120px" bg="#e5e7eb" display="flex" alignItems="center" justifyContent="center" color="#9ca3af">
         section="media"
       </Card.Section>
       <Card.Section section="body" p="md">
         <p>section="body" — el contenido principal va aquí.</p>
       </Card.Section>
-      <Card.Section section="footer" p="md" style={{ background: "#f9fafb", borderTop: "1px solid #e5e7eb" }}>
+      <Card.Section section="footer" p="md" bg="#f9fafb" borderTop="1px solid #e5e7eb">
         section="footer"
       </Card.Section>
     </Card>
