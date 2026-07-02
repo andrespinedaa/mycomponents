@@ -1,9 +1,9 @@
 import type { Theme } from "../theme/";
 
 export function useProps<Props extends object>(
-  componentName: string | undefined,
   theme: Theme,
   props: Props,
+  componentName?: string,
   defaultProps?: unknown,
 ): Props {
   const componentConfig = componentName

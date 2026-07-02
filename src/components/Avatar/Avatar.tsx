@@ -1,17 +1,14 @@
 import { useState } from "react";
-import {
-  ComponentFactory,
-  type ComponentConfig,
-  type EmptyStatics,
-} from "../../factory";
+import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../factory";
 import { Box } from "../Primitives/Box";
 import { Flex } from "../Primitives/Flex/Flex";
+import { useResolvedSize } from "../../hooks";
+import type { ScaleRange } from "../../theme";
 
 export interface AvatarOwnProps {
   src?: string;
   alt?: string;
   name?: string;
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
   shape?: "circle" | "square";
 }
 
@@ -20,7 +17,15 @@ export type AvatarConfig = ComponentConfig<{
   defaultTag: "div";
   ownProps: AvatarOwnProps;
   statics: EmptyStatics;
-  defaultProps: { shape: "circle"; size: "md" };
+  defaultProps: {
+    shape: "circle";
+    size: "md";
+    display: "inline-flex";
+    overflow: "hidden";
+    flexShrink: 0;
+    userSelect: "none";
+  };
+  sizes: ScaleRange<"xs" | "sm" | "md" | "lg" | "xl">;
 }>;
 
 function getInitials(name: string): string {
@@ -32,29 +37,28 @@ function getInitials(name: string): string {
 export const Avatar = ComponentFactory<AvatarConfig>({
   componentName: "Avatar",
   defaultTag: "div",
-  defaultProps: { shape: "circle", size: "md" },
-  render: ({ src, alt, name, size: _size, shape = "circle", children, ref, theme: _t, hooks: _h, ...rest }) => {
+  defaultProps: {
+    shape: "circle",
+    size: "md",
+    display: "inline-flex",
+    overflow: "hidden",
+    flexShrink: 0,
+    userSelect: "none",
+  },
+  render: function AvatarRender({ src, alt, name, size, shape, children, ref, ...rest }) {
+    const resolvedSize = useResolvedSize(size);
     const [imgError, setImgError] = useState(false);
-
-    // w, h, fontSize are resolved from theme sizes → come in via ...rest as style props
-    const shapeStyle: React.CSSProperties = {
-      borderRadius: shape === "circle" ? "50%" : undefined,
-      overflow: "hidden",
-      flexShrink: 0,
-      userSelect: "none",
-    };
 
     if (src && !imgError) {
       return (
         <Box
           ref={ref}
-          display="inline-flex"
           align="center"
           justify="center"
           role="img"
           aria-label={alt ?? name}
-          style={shapeStyle}
-          rounded={shape === "square" ? "md" : undefined}
+          mod={{ size: resolvedSize }}
+          rounded={shape === "circle" ? "full" : "md"}
           {...rest}
         >
           <img
@@ -74,8 +78,8 @@ export const Avatar = ComponentFactory<AvatarConfig>({
         role="img"
         aria-label={alt ?? name}
         fontWeight={600}
-        style={shapeStyle}
-        rounded={shape === "square" ? "md" : undefined}
+        mod={{ size: resolvedSize }}
+        rounded={shape === "circle" ? "full" : "md"}
         {...rest}
       >
         {children ?? (name ? getInitials(name) : "?")}

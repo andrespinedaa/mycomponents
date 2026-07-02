@@ -1,15 +1,6 @@
-/**
- * Registry lazy de CSS — inject once per session, never remove.
- * Misma estrategia de Emotion / MUI: insertar una vez, no borrar.
- *
- * Usa insertRule() en lugar de textContent += para evitar re-parsear
- * el stylesheet completo en cada inserción (O(1) por regla vs O(n) total).
- *
- * resetRegistry() se llama desde ThemeProvider en su cleanup para:
- *   - Strict Mode (React 18 dev monta → limpia → monta dos veces)
- *   - Cambio de tema en runtime
- */
-const injected = new Set<string>();
+type ComponentCSS = { bases: string; variants: string; sizes: string };
+
+const registry = new Map<string, ComponentCSS>();
 
 let basesEl: HTMLStyleElement | null = null;
 let variantsEl: HTMLStyleElement | null = null;
@@ -28,18 +19,11 @@ function getEl(sheet: "bases" | "variants" | "sizes"): HTMLStyleElement {
   return el;
 }
 
-function insertRules(el: HTMLStyleElement, css: string): void {
-  const sheet = el.sheet;
-  if (!sheet) return;
-  const rules =
-    css.match(/@[^{]+\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}|[^{}]+\{[^{}]*\}/g) ?? [];
-  for (const rule of rules) {
-    try {
-      sheet.insertRule(rule.trim(), sheet.cssRules.length);
-    } catch {
-      // Regla inválida — ignorar silenciosamente
-    }
-  }
+function rebuildStyles(): void {
+  const values = [...registry.values()];
+  getEl("bases").textContent    = values.map((v) => v.bases).join("");
+  getEl("variants").textContent = values.map((v) => v.variants).join("");
+  getEl("sizes").textContent    = values.map((v) => v.sizes).join("");
 }
 
 export function registerComponentCSS(
@@ -48,19 +32,33 @@ export function registerComponentCSS(
   variantsCSS: string,
   sizesCSS = "",
 ): void {
-  if (injected.has(componentName)) return;
-  injected.add(componentName);
-  if (basesCSS) insertRules(getEl("bases"), basesCSS);
-  if (variantsCSS) insertRules(getEl("variants"), variantsCSS);
-  if (sizesCSS) insertRules(getEl("sizes"), sizesCSS);
+  const prev = registry.get(componentName);
+  const cssChanged =
+    !prev ||
+    prev.bases !== basesCSS ||
+    prev.variants !== variantsCSS ||
+    prev.sizes !== sizesCSS;
+
+  // Rebuild si algún elemento fue removido del DOM (ej: DevTools, hot-reload, otro script)
+  const elementsGone =
+    basesEl === null ||
+    variantsEl === null ||
+    sizesEl === null ||
+    !document.head.contains(basesEl) ||
+    !document.head.contains(variantsEl) ||
+    !document.head.contains(sizesEl);
+
+  if (!cssChanged && !elementsGone) return;
+
+  if (cssChanged) {
+    registry.set(componentName, { bases: basesCSS, variants: variantsCSS, sizes: sizesCSS });
+  }
+  rebuildStyles();
 }
 
+// Solo remueve los elementos del DOM — conserva el Map para detectar cambios de CSS
 export function resetRegistry(): void {
-  injected.clear();
-  basesEl?.remove();
-  basesEl = null;
-  variantsEl?.remove();
-  variantsEl = null;
-  sizesEl?.remove();
-  sizesEl = null;
+  basesEl?.remove();    basesEl = null;
+  variantsEl?.remove(); variantsEl = null;
+  sizesEl?.remove();    sizesEl = null;
 }

@@ -7,9 +7,10 @@ export const BadgeThemeComponent: BadgeThemeConfig = {
   prefix: "badge",
   defaultProps: { variant: "Filled", size: "md" },
   sizes: {
-    sm: { px: "xs",  py: "xs",  fontSize: "xs", rounded: "full" },
-    md: { px: "sm",  py: "xs",  fontSize: "sm", rounded: "full" },
-    lg: { px: "md",  py: "sm",  fontSize: "md", rounded: "full" },
+    xs: { px: "4px",  py: "2px",  fontSize: "10px" },
+    sm: { px: "6px",  py: "2px",  fontSize: "11px" },
+    md: { px: "8px",  py: "3px",  fontSize: "12px" },
+    lg: { px: "10px", py: "4px",  fontSize: "13px" },
   },
   variants: {
     Filled: {

@@ -5,12 +5,17 @@ export type CardTheme = ThemeComponentConfig<CardConfig>;
 
 export const CardThemeComponent: CardTheme = {
   prefix: "card",
-  defaultProps: { orientation: "vertical", variant: "Default", size: "md" },
+  defaultProps: {
+    orientation: "vertical",
+    variant: "Default",
+    size: "md",
+    cursor: "pointer",
+  },
   sizes: {
-    sm: { p: "12px", rounded: "sm" },
-    md: { p: "16px", rounded: "md" },
-    lg: { p: "24px", rounded: "lg" },
-    xl: { p: "32px", rounded: "lg" },
+    sm: { p: "12px", w: "240px", gap: "8px" },
+    md: { p: "16px", w: "240px", gap: "12px" },
+    lg: { p: "24px", w: "280px", gap: "16px" },
+    xl: { p: "32px", w: "320px", gap: "20px" },
   },
   variants: {
     Default: {

@@ -1,14 +1,14 @@
 import type { ElementType } from "react";
-import type { MyComponentProps } from "../factory/factories.types";
+import type { MyComponentProps } from "../factory/core";
 import { STYLE_PROPS_KEYS } from "../theme/generators/system-css.data";
 import type { StyleProps } from "../theme/generators/system-css.data";
 
-export type ExtractedStyleProps<E extends ElementType, OwnProps = object> = {
+export type ExtractedStyleProps<E extends ElementType, OwnProps extends object> = {
   styleProps: StyleProps;
   componentProps: MyComponentProps<E, OwnProps>;
 };
 
-export function extractStyleProps<E extends ElementType, OwnProps = object>(
+export function extractStyleProps<E extends ElementType, OwnProps extends object>(
   props: Record<string, unknown>,
 ): ExtractedStyleProps<E, OwnProps> {
   const styleProps = {} as StyleProps;
@@ -22,5 +22,5 @@ export function extractStyleProps<E extends ElementType, OwnProps = object>(
     }
   }
 
-  return { styleProps, componentProps };
+  return { styleProps, componentProps } as ExtractedStyleProps<E, OwnProps>;
 }

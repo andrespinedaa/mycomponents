@@ -182,6 +182,76 @@ describe("resolveMacros", () => {
     });
   });
 
+  // ─── ambigüedad de prefijos ──────────────────────────────────────────────────
+  describe("ambigüedad de prefijos (longest-match)", () => {
+    it("SelfStart no confunde con Start — @flexSelfStartStart", () => {
+      expect(resolveMacros("@flexSelfStartStart")).toEqual({
+        display: "flex",
+        alignItems: "self-start",
+        justifyContent: "start",
+      });
+    });
+
+    it("SelfEnd no confunde con End — @flexSelfEndEnd", () => {
+      expect(resolveMacros("@flexSelfEndEnd")).toEqual({
+        display: "flex",
+        alignItems: "self-end",
+        justifyContent: "end",
+      });
+    });
+
+    it("FirstBaseline no confunde con Baseline — @flexFirstBaselineCenter", () => {
+      expect(resolveMacros("@flexFirstBaselineCenter")).toEqual({
+        display: "flex",
+        alignItems: "first-baseline",
+        justifyContent: "center",
+      });
+    });
+
+    it("LastBaseline no confunde con Baseline — @flexLastBaselineCenter", () => {
+      expect(resolveMacros("@flexLastBaselineCenter")).toEqual({
+        display: "flex",
+        alignItems: "last-baseline",
+        justifyContent: "center",
+      });
+    });
+
+    it("FlexStart no confunde con Start — @flexFlexStartFlexStart", () => {
+      expect(resolveMacros("@flexFlexStartFlexStart")).toEqual({
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
+      });
+    });
+
+    it("SafeCenter no confunde con Center — @flexSafeCenterCenter", () => {
+      expect(resolveMacros("@flexSafeCenterCenter")).toEqual({
+        display: "flex",
+        alignItems: "safe-center",
+        justifyContent: "center",
+      });
+    });
+
+    it("UnsafeCenter no confunde con Center — @flexUnsafeCenterCenter", () => {
+      expect(resolveMacros("@flexUnsafeCenterCenter")).toEqual({
+        display: "flex",
+        alignItems: "unsafe-center",
+        justifyContent: "center",
+      });
+    });
+  });
+
+  // ─── orden forzado ───────────────────────────────────────────────────────────
+  describe("orden forzado (display→align→justify)", () => {
+    it("orden incorrecto (justify antes de align) produce warn — orden es obligatorio", () => {
+      const spy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      // SpaceBetween es justifyContent, no alignItems — falla en el slot de align
+      resolveMacros("@flexSpaceBetweenCenter" as any);
+      expect(spy).toHaveBeenCalled();
+      spy.mockRestore();
+    });
+  });
+
   // ─── macros inválidos ─────────────────────────────────────────────────────────
   describe("macros inválidos", () => {
     it("warn para macro no encontrado", () => {

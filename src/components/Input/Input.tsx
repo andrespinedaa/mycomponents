@@ -1,16 +1,18 @@
-import type { InputHTMLAttributes } from "react";
 import {
   ComponentFactory,
   type ComponentConfig,
   type EmptyStatics,
 } from "../../factory";
 import { resolveValue } from "../../system/resolve-value";
-import { Box } from "../Primitives/Box";
-import { Flex } from "../Primitives/Flex/Flex";
-import { Text } from "../Primitives/Text/Text";
+import { Box, Flex, Text } from "../Primitives";
+import { useLayoutContext } from "../../context/LayoutContext";
+import type { InputHTMLAttributes } from "react";
+import type { SystemVariants } from "../../theme";
 
-// Excluye "size" de HTML attrs porque colisiona con nuestro prop string
-type SafeInputHTMLAttributes = Omit<InputHTMLAttributes<HTMLInputElement>, "size">;
+type SafeInputHTMLAttributes = Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "size"
+>;
 
 export interface InputOwnProps {
   label?: string;
@@ -18,8 +20,7 @@ export interface InputOwnProps {
   error?: string;
   leftSection?: React.ReactNode;
   rightSection?: React.ReactNode;
-  size?: "sm" | "md" | "lg";
-  variant?: "Default" | "Filled" | "Unstyled";
+  variant?: SystemVariants<"Default" | "Filled" | "Unstyled">;
 }
 
 export type InputConfig = ComponentConfig<{
@@ -27,23 +28,23 @@ export type InputConfig = ComponentConfig<{
   defaultTag: "div";
   ownProps: InputOwnProps & SafeInputHTMLAttributes;
   statics: EmptyStatics;
-  defaultProps: { size: "md"; variant: "Default" };
+  defaultProps: {};
+  sizes: "sm" | "md" | "lg";
 }>;
 
 export const Input = ComponentFactory<InputConfig>({
   componentName: "Input",
   defaultTag: "div",
-  defaultProps: { size: "md", variant: "Default" },
-  render: ({
+  render: function InputRender({
     label,
     hint,
     error,
     leftSection,
     rightSection,
-    size = "md",
-    variant: _variant,
+    size,
+    variant,
     id,
-    children: _children,
+    children,
     type,
     value,
     defaultValue,
@@ -57,16 +58,18 @@ export const Input = ComponentFactory<InputConfig>({
     onBlur,
     ref,
     theme,
-    hooks: _h,
     ...rest
-  }) => {
-    // Resolve px token from theme sizes → CSS var string
-    const sizeConfig = theme.components?.Input?.sizes?.[size] ?? {};
+  }) {
+    const layout = useLayoutContext();
+    const resolvedSize = size ?? (layout.size as InputConfig["sizes"] | undefined) ?? "md";
+    const resolvedVariant = variant ?? layout.variant ?? "Default";
+    const sizeConfig = theme.components?.Input?.sizes?.[resolvedSize] ?? {};
     const pxToken = (sizeConfig.px as string) ?? "sm";
     const pxValue = resolveValue(pxToken, "spacing", theme);
 
     const inputId =
-      id ?? (label ? `input-${label.toLowerCase().replace(/\s+/g, "-")}` : undefined);
+      id ??
+      (label ? `input-${label.toLowerCase().replace(/\s+/g, "-")}` : undefined);
     const hasError = Boolean(error);
 
     const wrapperStyle: React.CSSProperties = {
@@ -74,7 +77,11 @@ export const Input = ComponentFactory<InputConfig>({
       display: "flex",
       alignItems: "center",
       borderRadius: `var(--${theme.cssVarPrefix}-radius-md)`,
-      border: `1px solid ${hasError ? `var(--${theme.cssVarPrefix}-color-danger-500)` : `var(--${theme.cssVarPrefix}-color-neutral-300)`}`,
+      border: `1px solid ${
+        hasError
+          ? `var(--${theme.cssVarPrefix}-color-danger-500)`
+          : `var(--${theme.cssVarPrefix}-color-neutral-300)`
+      }`,
       background: disabled
         ? `var(--${theme.cssVarPrefix}-color-neutral-100)`
         : `var(--${theme.cssVarPrefix}-color-neutral-50)`,
@@ -83,8 +90,7 @@ export const Input = ComponentFactory<InputConfig>({
     };
 
     return (
-      // h, fontSize, and px (as paddingX) come from theme sizes via useProps
-      <Box ref={ref} {...rest}>
+      <Box ref={ref} mod={{ size: resolvedSize, variant: resolvedVariant }} {...rest}>
         {label && (
           <Text
             as="label"
@@ -95,7 +101,12 @@ export const Input = ComponentFactory<InputConfig>({
           >
             {label}
             {required && (
-              <span style={{ color: `var(--${theme.cssVarPrefix}-color-danger-500)`, marginLeft: "2px" }}>
+              <span
+                style={{
+                  color: `var(--${theme.cssVarPrefix}-color-danger-500)`,
+                  marginLeft: "2px",
+                }}
+              >
                 *
               </span>
             )}
@@ -121,7 +132,11 @@ export const Input = ComponentFactory<InputConfig>({
           {leftSection && (
             <Flex
               apply="@flexCenter"
-              style={{ paddingLeft: pxValue, paddingRight: "0.25rem", flexShrink: 0 }}
+              style={{
+                paddingLeft: pxValue,
+                paddingRight: "0.25rem",
+                flexShrink: 0,
+              }}
             >
               {leftSection}
             </Flex>
@@ -159,7 +174,11 @@ export const Input = ComponentFactory<InputConfig>({
           {rightSection && (
             <Flex
               apply="@flexCenter"
-              style={{ paddingRight: pxValue, paddingLeft: "0.25rem", flexShrink: 0 }}
+              style={{
+                paddingRight: pxValue,
+                paddingLeft: "0.25rem",
+                flexShrink: 0,
+              }}
             >
               {rightSection}
             </Flex>
@@ -169,7 +188,10 @@ export const Input = ComponentFactory<InputConfig>({
           <Text
             id={`${inputId}-error`}
             size="xs"
-            style={{ marginTop: "0.25rem", color: `var(--${theme.cssVarPrefix}-color-danger-600)` }}
+            style={{
+              marginTop: "0.25rem",
+              color: `var(--${theme.cssVarPrefix}-color-danger-600)`,
+            }}
           >
             {error}
           </Text>
@@ -178,7 +200,10 @@ export const Input = ComponentFactory<InputConfig>({
           <Text
             id={`${inputId}-hint`}
             size="xs"
-            style={{ marginTop: "0.25rem", color: `var(--${theme.cssVarPrefix}-color-neutral-500)` }}
+            style={{
+              marginTop: "0.25rem",
+              color: `var(--${theme.cssVarPrefix}-color-neutral-500)`,
+            }}
           >
             {hint}
           </Text>

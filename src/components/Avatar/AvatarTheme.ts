@@ -1,11 +1,18 @@
 import type { ThemeComponentConfig } from "../../theme/theme.components.types";
 import type { AvatarConfig } from "./Avatar";
 
-type AvatarThemeConfig = ThemeComponentConfig<AvatarConfig>;
+export type AvatarThemeConfig = ThemeComponentConfig<AvatarConfig>;
 
-export const AvartarThemeComponent: AvatarThemeConfig = {
+export const AvatarThemeComponent: AvatarThemeConfig = {
   prefix: "avatar",
-  defaultProps: { shape: "circle", size: "md" },
+  defaultProps: {
+    shape: "circle",
+    size: "md",
+    display: "inline-flex",
+    overflow: "hidden",
+    flexShrink: 0,
+    userSelect: "none",
+  },
   sizes: {
     xs: { w: "xs", h: "xs", fontSize: "xs" },
     sm: { w: "sm", h: "sm", fontSize: "sm" },

@@ -1,18 +1,22 @@
-import type {
-  ComponentConfig,
-  EmptyStatics,
-} from "../../../factory/factories.types";
-import { PolymorphicFactory } from "../../../factory/PolymorphicFactory";
+import {
+  ComponentFactory,
+  type ComponentConfig,
+  type EmptyStatics,
+} from "../../../factory";
+import type { Scales } from "../../../theme/theme.types";
+
+export interface StackOwnProps {}
 
 export type StackConfig = ComponentConfig<{
   componentName: "Stack";
   defaultTag: "div";
-  ownProps: {};
+  ownProps: StackOwnProps;
   statics: EmptyStatics;
-  defaultsProps: { gap: "md" };
+  defaultProps: { gap: "md" };
+  sizes: Scales;
 }>;
 
-export const Stack = PolymorphicFactory<StackConfig>({
+export const Stack = ComponentFactory<StackConfig>({
   componentName: "Stack",
   defaultTag: "div",
   defaultProps: { gap: "md" },

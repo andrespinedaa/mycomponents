@@ -4,9 +4,10 @@ import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { Box } from "../components/Primitives/Box/Box";
 import { ThemeProvider, type SystemVariants } from "../theme";
+import { useTheme } from "../hooks";
 import { defaultTheme } from "../theme/default-theme";
 import { ComponentFactory } from "./ComponentFactory";
-import type { ComponentConfig, EmptyStatics } from "./factories.types";
+import type { ComponentConfig, EmptyStatics } from "./core/factories.types";
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>
@@ -33,15 +34,7 @@ type NoRenderConfig = ComponentConfig<{
   ownProps: {};
   statics: EmptyStatics;
   defaultProps: {};
-}>;
-
-type HookConfig = ComponentConfig<{
-  componentName: "HookTest";
-  defaultTag: "div";
-  ownProps: { label?: string };
-  statics: EmptyStatics;
-  defaultProps: {};
-  hooks: { count: number };
+  sizes: never;
 }>;
 
 // ─── Componentes de prueba ────────────────────────────────────
@@ -111,8 +104,42 @@ describe("ComponentFactory", () => {
     });
   });
 
+  // ─── styleProps en render path ────────────────────────────────
+  describe("styleProps en render path — fluyen a Box", () => {
+    it("styleProps se resuelven en el elemento final", () => {
+      render(<TestComponent p="16px">btn</TestComponent>, { wrapper });
+      expect(screen.getByText("btn")).toHaveStyle({ padding: "16px" });
+    });
+
+    it("style crudo fluye y se aplica", () => {
+      render(
+        <TestComponent style={{ cursor: "pointer" }}>btn</TestComponent>,
+        { wrapper },
+      );
+      expect(screen.getByText("btn")).toHaveStyle({ cursor: "pointer" });
+    });
+
+    it("vars fluyen como CSS custom properties", () => {
+      render(
+        <TestComponent vars={{ "--custom-color": "red" }}>btn</TestComponent>,
+        { wrapper },
+      );
+      const el = screen.getByText("btn");
+      expect(el.style.getPropertyValue("--custom-color")).toBe("red");
+    });
+
+    it("style y styleProps coexisten sin pisarse", () => {
+      render(
+        <TestComponent p="8px" style={{ cursor: "pointer" }}>btn</TestComponent>,
+        { wrapper },
+      );
+      const el = screen.getByText("btn");
+      expect(el).toHaveStyle({ padding: "8px", cursor: "pointer" });
+    });
+  });
+
   // ─── fallback sin render ──────────────────────────────────────
-  describe("sin render — fallback a Box", () => {
+  describe("sin render — fallback a Element", () => {
     it("renderiza el defaultTag cuando no hay render", () => {
       const { container } = render(<NoRenderComponent>contenido</NoRenderComponent>, { wrapper });
       expect(container.firstChild?.nodeName).toBe("SECTION");
@@ -141,6 +168,46 @@ describe("ComponentFactory", () => {
       );
       expect(container.firstChild).toHaveAttribute("data-state", "active");
     });
+
+    it("styleProps se resuelven como inline style", () => {
+      const { container } = render(
+        <NoRenderComponent p="20px">contenido</NoRenderComponent>,
+        { wrapper },
+      );
+      expect(container.firstChild).toHaveStyle({ padding: "20px" });
+    });
+
+    it("style crudo se aplica en el fallback", () => {
+      const { container } = render(
+        <NoRenderComponent style={{ opacity: "0.5" }}>contenido</NoRenderComponent>,
+        { wrapper },
+      );
+      expect(container.firstChild).toHaveStyle({ opacity: "0.5" });
+    });
+
+    it("style y styleProps se mergean en el fallback", () => {
+      const { container } = render(
+        <NoRenderComponent p="12px" style={{ cursor: "pointer" }}>contenido</NoRenderComponent>,
+        { wrapper },
+      );
+      expect(container.firstChild).toHaveStyle({ padding: "12px", cursor: "pointer" });
+    });
+
+    it("responsive styleProp genera data-responsive en el fallback", () => {
+      const { container } = render(
+        <NoRenderComponent p={{ base: "8px", md: "16px" }}>contenido</NoRenderComponent>,
+        { wrapper },
+      );
+      expect(container.firstChild).toHaveAttribute("data-responsive", "true");
+    });
+
+    it("styleProp estático no genera data-responsive", () => {
+      const { container } = render(
+        <NoRenderComponent p="8px">contenido</NoRenderComponent>,
+        { wrapper },
+      );
+      expect(container.firstChild).not.toHaveAttribute("data-responsive", "true");
+    });
   });
 
   // ─── size ─────────────────────────────────────────────────────
@@ -168,37 +235,42 @@ describe("ComponentFactory", () => {
 
   // ─── componentName → data-slot ───────────────────────────────
   describe("data-slot", () => {
-    it("componentName genera data-slot automático", () => {
-      render(<TestComponent>btn</TestComponent>, { wrapper });
-      expect(screen.getByText("btn")).toHaveAttribute("data-slot", "Test");
+    it("genera data-slot en fallback sin render", () => {
+      const { container } = render(<NoRenderComponent>contenido</NoRenderComponent>, { wrapper });
+      expect(container.firstChild).toHaveAttribute("data-slot", "NoRender");
     });
-  });
 
-  // ─── useHooks ─────────────────────────────────────────────────
-  describe("useHooks", () => {
-    it("hooks están disponibles en render", () => {
-      let capturedCount: number | undefined;
-      const HookComponent = ComponentFactory<HookConfig>({
-        defaultTag: "div",
-        componentName: "HookTest",
-        useHooks: () => ({ count: 42 }),
-        render: ({ hooks, ref, children, ...rest }) => {
-          capturedCount = hooks.count;
-          return <Box ref={ref} {...rest}>{children}</Box>;
-        },
-      });
-      render(<HookComponent>x</HookComponent>, { wrapper });
-      expect(capturedCount).toBe(42);
+    it("dataSlot sobreescribe componentName", () => {
+      const { container } = render(
+        <NoRenderComponent dataSlot="custom">contenido</NoRenderComponent>,
+        { wrapper },
+      );
+      expect(container.firstChild).toHaveAttribute("data-slot", "custom");
+    });
+
+    it("sin componentName ni dataSlot no genera data-slot", () => {
+      type AnonConfig = ComponentConfig<{
+        componentName: "";
+        defaultTag: "div";
+        ownProps: {};
+        statics: EmptyStatics;
+        defaultProps: {};
+        sizes: never;
+      }>;
+      const Anon = ComponentFactory<AnonConfig>({ defaultTag: "div" });
+      const { container } = render(<Anon>contenido</Anon>, { wrapper });
+      expect(container.firstChild).not.toHaveAttribute("data-slot");
     });
   });
 
   // ─── theme en render ──────────────────────────────────────────
   describe("theme en render", () => {
-    it("theme tiene el cssVarPrefix del tema activo", () => {
+    it("theme accesible via useTheme en renders que lo necesitan", () => {
       let prefix: string | undefined;
       const ThemeComponent = ComponentFactory<NoRenderConfig>({
         defaultTag: "div",
-        render: ({ theme, ref, children, ...rest }) => {
+        render: function ThemeRender({ ref, children, ...rest }) {
+          const { theme } = useTheme();
           prefix = theme.cssVarPrefix;
           return <Box ref={ref} {...rest}>{children}</Box>;
         },
@@ -231,6 +303,7 @@ describe("ComponentFactory", () => {
       ownProps: {};
       statics: { Sub: typeof SubComponent };
       defaultProps: {};
+      sizes: never;
     }>;
 
     const WithStatics = ComponentFactory<WithStaticsConfig>({

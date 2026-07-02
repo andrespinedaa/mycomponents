@@ -1,16 +1,33 @@
 import type { CSSProperties } from "react";
-import type { ApplyProp, VarsProp } from "../factory/factories.types";
+import type { ApplyProp, VarsProp } from "../factory/core/factories.types";
 import type { Theme } from "../theme/theme.types";
 import { parseStyleProps } from "./parse-style-props";
-import type { StyleProps } from "../theme/generators/system-css.data";
+import type { StyleProp, StyleProps } from "../theme/generators/system-css.data";
+import { CSS_PROP_TO_CATEGORY } from "../theme/generators/system-css.data";
 import { resolveMacros } from "./parse-macros";
+import { resolveValue } from "./resolve-value";
+
+// Resuelve un StyleProp (objeto o función) a CSSProperties con valores reales del tema.
+// Si es función, la llama con el tema primero; luego resuelve token strings por propiedad.
+export function resolveStyle(style: StyleProp | undefined, theme: Theme): CSSProperties | undefined {
+  if (!style) return undefined;
+  const css = typeof style === "function" ? style(theme) : style;
+  const result: CSSProperties = {};
+  for (const [key, value] of Object.entries(css)) {
+    if (value == null) continue;
+    const category = CSS_PROP_TO_CATEGORY[key];
+    (result as Record<string, unknown>)[key] = category
+      ? resolveValue(value as string | number, category, theme)
+      : value;
+  }
+  return Object.keys(result).length > 0 ? result : undefined;
+}
 
 interface ResolveStylesOptions {
   styleProps: StyleProps;
   theme: Theme;
   vars?: VarsProp;
   style?: CSSProperties;
-  extraStyle?: CSSProperties;
   unstyled?: boolean;
   apply?: ApplyProp | ApplyProp[];
 }
@@ -24,7 +41,6 @@ export function resolvedStyles({
   styleProps,
   vars,
   style,
-  extraStyle,
   unstyled = false,
   apply,
   theme,
@@ -39,7 +55,6 @@ export function resolvedStyles({
     ...systemStyles,
     ...vars,
     ...style,
-    ...extraStyle,
   };
 
   return {

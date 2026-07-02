@@ -1,6 +1,8 @@
+import type { ModProp } from "../factory";
+
 export type ModProps = Record<`data-${string}`, string | boolean>;
-export type ModEntry = string | boolean | null | undefined | Record<string, unknown>;
-export type ModInput = ModEntry | ModEntry[];
+export type ModEntry = boolean | null | undefined | ModProp;
+export type ModInput = ModEntry | (ModEntry | ModEntry[])[];
 
 function processEntry(entry: ModEntry, result: ModProps): void {
   if (!entry || typeof entry === "boolean") return;

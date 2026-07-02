@@ -15,10 +15,8 @@ import type {
   StackConfig,
   TextConfig,
 } from "../components/Primitives";
-import type {
-  FactoryConfig,
-  RequiredDefaultProps,
-} from "../factory/factories.types";
+import type { FactoryConfig } from "../factory/core/factories.types";
+import type { RequiredDefaultProps } from "../factory/core/factory.defaults";
 import type {
   ComponentVariants,
   SizeTokens,

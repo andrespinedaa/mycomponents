@@ -1,12 +1,13 @@
 import {
+  useCallback,
   useEffect,
   useInsertionEffect,
-  useRef,
+  useMemo,
   useState,
   type ReactNode,
 } from "react";
-import { resetRegistry } from "../system/css-registry";
 import { ThemeContext } from "./ThemeContext";
+import { generateComponents } from "./generators/generateComponents";
 import { generateResponsive } from "./generators/generateResponsive";
 import { generateTokens } from "./generators/generateTokens";
 import type { ColorScheme, Theme } from "./theme.types";
@@ -17,7 +18,7 @@ export interface ThemeProviderProps {
   children: ReactNode;
 }
 
-export function injectStyle(id: string, css: string): void {
+function injectStyle(id: string, css: string): void {
   if (!css || typeof document === "undefined") return;
   let el = document.getElementById(id) as HTMLStyleElement | null;
   if (!el) {
@@ -28,56 +29,47 @@ export function injectStyle(id: string, css: string): void {
   el.textContent = css;
 }
 
+function removeStyle(id: string): void {
+  if (typeof document === "undefined") return;
+  document.getElementById(id)?.remove();
+}
+
 export function ThemeProvider({
   theme,
   defaultColorScheme = "light",
   children,
 }: ThemeProviderProps) {
-  const [colorScheme, setColorScheme] =
-    useState<ColorScheme>(defaultColorScheme);
-  const toggleColorScheme = () =>
-    setColorScheme((s) => (s === "light" ? "dark" : "light"));
+  const [colorScheme, setColorScheme] = useState<ColorScheme>(defaultColorScheme);
+  const toggleColorScheme = useCallback(
+    () => setColorScheme((s) => (s === "light" ? "dark" : "light")),
+    [],
+  );
 
-  const prevTokensRef = useRef<string>("");
-  const prevResponsiveRef = useRef<string>("");
+  const p = theme.cssVarPrefix;
 
   useInsertionEffect(() => {
-    const prefix = theme.cssVarPrefix;
-
-    const tokensCss = generateTokens(theme);
-    if (tokensCss !== prevTokensRef.current) {
-      prevTokensRef.current = tokensCss;
-      injectStyle(`${prefix}-tokens`, tokensCss);
-    }
-
-    const responsiveCss = generateResponsive(theme);
-    if (responsiveCss !== prevResponsiveRef.current) {
-      prevResponsiveRef.current = responsiveCss;
-      injectStyle(`${prefix}-responsive`, responsiveCss);
-    }
+    injectStyle(`${p}-tokens`,     generateTokens(theme));
+    injectStyle(`${p}-components`, generateComponents(theme));
+    injectStyle(`${p}-responsive`, generateResponsive(theme));
 
     return () => {
-      [`${prefix}-tokens`, `${prefix}-responsive`].forEach((id) =>
-        document.getElementById(id)?.remove(),
-      );
-      // Limpia el registry para que los componentes re-inyecten su CSS al montar.
-      // Cubre dos casos: Strict Mode (doble mount en dev) y cambio de tema en runtime.
-      resetRegistry();
+      [`${p}-tokens`, `${p}-components`, `${p}-responsive`].forEach(removeStyle);
     };
   }, [theme]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
     document.documentElement.dataset.colorScheme = colorScheme;
-    return () => {
-      delete document.documentElement.dataset.colorScheme;
-    };
+    return () => { delete document.documentElement.dataset.colorScheme; };
   }, [colorScheme]);
 
+  const ctxValue = useMemo(
+    () => ({ theme, colorScheme, setColorScheme, toggleColorScheme }),
+    [theme, colorScheme, toggleColorScheme],
+  );
+
   return (
-    <ThemeContext.Provider
-      value={{ theme, colorScheme, setColorScheme, toggleColorScheme }}
-    >
+    <ThemeContext.Provider value={ctxValue}>
       {children}
     </ThemeContext.Provider>
   );

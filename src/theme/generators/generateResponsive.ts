@@ -18,7 +18,7 @@ export function generateResponsive(theme: Theme): string {
 
   let css = "";
 
-  css += "[data-responsive]{";
+  css += '[data-responsive="true"]{';
   for (const cssProp of RESPONSIVE_CSS_PROPS) {
     const varKey = camelToKebab(cssProp);
     css += `${varKey}:var(--${varKey}-base,unset);`;
@@ -27,7 +27,7 @@ export function generateResponsive(theme: Theme): string {
 
   activeBps.forEach((bp, idx) => {
     const bpsUpToHere = activeBps.slice(0, idx + 1);
-    css += `@media(min-width:${breakpoints[bp]}){[data-responsive]{`;
+    css += `@media(min-width:${breakpoints[bp]}){[data-responsive="true"]{`;
     for (const cssProp of RESPONSIVE_CSS_PROPS) {
       const varKey = camelToKebab(cssProp);
       css += `${varKey}:${buildFallbackChain(varKey, bpsUpToHere)};`;

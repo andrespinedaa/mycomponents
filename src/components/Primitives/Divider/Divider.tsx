@@ -3,52 +3,51 @@ import {
   type ComponentConfig,
   type EmptyStatics,
 } from "../../../factory";
+import type { CSSLength, ColorValue, Scales } from "../../../theme";
 import { useLayoutContext } from "../../../context/LayoutContext";
-import type { ColorValue } from "../../../theme/generators/system-css.data";
-import type { CSSLength } from "../../../theme/theme.types";
-import { Box } from "../Box/Box";
-import { Flex } from "../Flex/Flex";
-import { Text } from "../Text/Text";
+import { Box, Flex, Text } from "..";
 
 export interface DividerOwnProps {
   orientation?: "horizontal" | "vertical";
-  /** Posición del label sobre la línea. Por defecto "center". */
   position?: "start" | "center" | "end";
   thickness?: CSSLength;
   color?: ColorValue;
   label?: string;
 }
 
-type DividerHooks = {
-  layout: ReturnType<typeof useLayoutContext>;
-};
-
 export type DividerConfig = ComponentConfig<{
   componentName: "Divider";
   defaultTag: "div";
   ownProps: DividerOwnProps;
   statics: EmptyStatics;
-  defaultProps: { orientation: "horizontal" };
-  hooks: DividerHooks;
+  defaultProps: {
+    orientation: "horizontal";
+    position: "center";
+    thickness: "1px";
+  };
+  sizes: Scales;
 }>;
 
 export const Divider = ComponentFactory<DividerConfig>({
   componentName: "Divider",
   defaultTag: "div",
-  defaultProps: { orientation: "horizontal" },
-  useHooks: () => ({ layout: useLayoutContext() }),
-  render: ({
+  defaultProps: {
+    orientation: "horizontal",
+    position: "center",
+    thickness: "1px",
+  },
+  render: function DividerRender({
     orientation,
-    position = "center",
-    thickness = "1px",
+    position,
+    thickness,
     color,
     label,
     ref,
-    hooks,
     ...rest
-  }) => {
-    const { layout } = hooks;
-    const resolvedOrientation = orientation ?? layout.orientation ?? "horizontal";
+  }) {
+    const layout = useLayoutContext();
+    const resolvedOrientation =
+      orientation ?? layout.orientation ?? "horizontal";
     const isVertical = resolvedOrientation === "vertical";
     const lineMacro = isVertical ? "@dividerLineV" : "@dividerLineH";
     const thicknessVar = { "--divider-thickness": thickness };
@@ -58,7 +57,7 @@ export const Divider = ComponentFactory<DividerConfig>({
         <Flex
           ref={ref}
           role="separator"
-          aria-orientation="horizontal"
+          aria-orientation={resolvedOrientation}
           align="center"
           gap="sm"
           vars={thicknessVar}
@@ -81,7 +80,7 @@ export const Divider = ComponentFactory<DividerConfig>({
       <Box
         ref={ref}
         role="separator"
-        aria-orientation={resolvedOrientation as "horizontal" | "vertical"}
+        aria-orientation={resolvedOrientation}
         apply={lineMacro}
         borderColor={color}
         vars={thicknessVar}

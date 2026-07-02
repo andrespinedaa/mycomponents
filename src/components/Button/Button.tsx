@@ -1,14 +1,10 @@
-import type { SystemVariants } from "../../theme/theme.variants";
-import {
-  ComponentFactory,
-  type ComponentConfig,
-  type EmptyStatics,
-} from "../../factory";
+import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../factory";
+import type { ScaleRange, SystemVariants } from "../../theme";
+import { useResolvedSize } from "../../hooks";
 import { Box } from "../Primitives/Box";
 
 export interface ButtonOwnProps {
   variant?: SystemVariants<"Elevated" | "Filled" | "Outlined" | "Ghost">;
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
 }
 export type ButtonConfig = ComponentConfig<{
   componentName: "Button";
@@ -16,13 +12,15 @@ export type ButtonConfig = ComponentConfig<{
   ownProps: ButtonOwnProps;
   statics: EmptyStatics;
   defaultProps: { size: "md" };
-  sizes: "xs" | "sm" | "md" | "lg" | "xl";
+  sizes: ScaleRange<"xs" | "sm" | "md" | "lg" | "xl">;
 }>;
 
 export const Button = ComponentFactory<ButtonConfig>({
   componentName: "Button",
   defaultTag: "button",
-  render: ({ ref, theme: _t, hooks: _h, ...rest }) => <Box ref={ref} {...rest} />,
+  defaultProps: { size: "md" },
+  render: function ButtonRender({ size, ref, ...rest }) {
+    const resolvedSize = useResolvedSize(size);
+    return <Box ref={ref} mod={{ size: resolvedSize }} {...rest} />;
+  },
 });
-
-Button.displayName = "Button";

@@ -1,6 +1,6 @@
 import type { ThemeComponents } from ".";
 import { AlertThemeComponent } from "../components/Alert/AlertTheme";
-import { AvartarThemeComponent } from "../components/Avatar/AvatarTheme";
+import { AvatarThemeComponent } from "../components/Avatar/AvatarTheme";
 import { BadgeThemeComponent } from "../components/Badge/BadgeTheme";
 import { ButtonThemeComponent } from "../components/Button/ButtonTheme";
 import { CardThemeComponent } from "../components/Card/CardTheme";
@@ -29,7 +29,7 @@ export const defaultThemeComponents: ThemeComponents = {
   Alert: AlertThemeComponent,
   Badge: BadgeThemeComponent,
   Input: InputThemeComponent,
-  Avatar: AvartarThemeComponent,
+  Avatar: AvatarThemeComponent,
   Button: ButtonThemeComponent,
   Card: CardThemeComponent,
 };

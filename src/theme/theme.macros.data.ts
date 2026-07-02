@@ -68,6 +68,25 @@ export const defaultThemeMacros = {
     borderLeftStyle: "solid",
     borderLeftWidth: "var(--divider-thickness, 1px)",
   },
+  // Resets
+  "@noMargin": { margin: 0 },
+  "@resetButton": {
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    padding: 0,
+    color: "inherit",
+    lineHeight: 1,
+    font: "inherit",
+  },
+
+  // Imágenes
+  "@imgCover": {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+
   "@srOnly": {
     position: "absolute",
     width: "1px",

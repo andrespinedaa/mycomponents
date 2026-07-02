@@ -33,8 +33,22 @@ export type VariantTokens = Omit<RawStyleProps, keyof StyleProps> & {
   [K in keyof StyleProps]?: UnwrapResponsive<StyleProps[K]>;
 } & Record<string, string>;
 
-// ─── SizeTokens — RawStyleProps puro, solo valores CSS reales ────────────────
-export type SizeTokens = RawStyleProps;
+// ─── Claves dimensionales — las únicas permitidas en SizeTokens ──────────────
+// Regla: sizes nunca toca visual (color, bg, border-style, shadow).
+// rounded vive solo en variants — la forma es identidad visual, no dimensión.
+const DIMENSION_KEYS = [
+  "h", "w", "minH", "maxH", "minW", "maxW",
+  "p", "px", "py", "pt", "pb", "pl", "pr",
+  "m", "mx", "my", "mt", "mb", "ml", "mr",
+  "fontSize", "lineHeight", "letterSpacing", "fontWeight",
+  "gap", "rowGap", "columnGap",
+  "borderWidth",
+] as const;
+
+type DimensionKey = (typeof DIMENSION_KEYS)[number];
+
+// ─── SizeTokens — solo props dimensionales/estructurales ─────────────────────
+export type SizeTokens = Pick<RawStyleProps, DimensionKey & keyof RawStyleProps>;
 
 // ─── Estados ─────────────────────────────────────────────────────────────────
 export type VariantStateConfig = Partial<Record<ComponentStates, VariantTokens>>;

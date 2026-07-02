@@ -1,15 +1,43 @@
+import { useMemo } from "react";
 import {
   ComponentFactory,
   type ComponentConfig,
   type EmptyStatics,
+  type FactoryRender,
 } from "../../factory";
-import type { SystemVariants } from "../../theme/theme.variants";
+import type { ScaleRange, SystemVariants } from "../../theme";
+import { LayoutProvider, useLayoutContext } from "../../context/LayoutContext";
+import { useResolvedSize } from "../../hooks";
 import { Box } from "../Primitives/Box";
+
+export interface DotBadgeOwnProps {
+  dotColor?: string;
+}
+
+export type DotBadgeConfig = ComponentConfig<{
+  componentName: "DotBadge";
+  defaultTag: "span";
+  ownProps: DotBadgeOwnProps;
+  statics: EmptyStatics;
+  defaultProps: {};
+  sizes: ScaleRange<"xs" | "sm" | "md" | "lg">;
+}>;
+
+export const DotBadge = ComponentFactory<DotBadgeConfig>({
+  componentName: "DotBadge",
+  defaultTag: "span",
+  defaultProps: {},
+  render: function DotBadgeRender({ dotColor, ref, ...rest }) {
+    return <Box as="span" ref={ref} vars={dotColor ? { "--dot-color": dotColor } : undefined} {...rest} />;
+  },
+});
 
 export interface BadgeOwnProps {
   variant?: SystemVariants<"Filled" | "Subtle" | "Outlined">;
-  size?: "sm" | "md" | "lg";
-  dot?: boolean;
+  dotIcon?: FactoryRender<{
+    size: BadgeConfig["sizes"];
+    variant: BadgeOwnProps["variant"];
+  }>;
 }
 
 export type BadgeConfig = ComponentConfig<{
@@ -17,35 +45,37 @@ export type BadgeConfig = ComponentConfig<{
   defaultTag: "span";
   ownProps: BadgeOwnProps;
   statics: EmptyStatics;
-  defaultProps: { variant: "Filled"; size: "md" };
+  defaultProps: { size: "md"; display: "inline-flex"; align: "center"; rounded: "full" };
+  sizes: "xs" | "sm" | "md" | "lg";
 }>;
 
 export const Badge = ComponentFactory<BadgeConfig>({
   componentName: "Badge",
   defaultTag: "span",
-  defaultProps: { variant: "Filled", size: "md" },
-  render: ({ variant: _variant, size: _size, dot, children, ref, theme: _t, hooks: _h, ...rest }) => (
-    <Box
-      as="span"
-      ref={ref}
-      display="inline-flex"
-      align="center"
-      fontWeight={600}
-      {...rest}
-    >
-      {dot && (
-        <span
-          style={{
-            display: "inline-block",
-            width: "6px",
-            height: "6px",
-            borderRadius: "50%",
-            background: "currentColor",
-            flexShrink: 0,
-          }}
-        />
-      )}
-      {children}
-    </Box>
-  ),
+  defaultProps: { size: "md", display: "inline-flex", align: "center", rounded: "full" },
+  render: function BadgeRender({ variant, size, dotIcon, children, ref, ...rest }) {
+    const resolvedSize = useResolvedSize(size);
+    const layout = useLayoutContext();
+    const resolvedVariant = variant ?? (layout.variant as BadgeOwnProps["variant"]) ?? "Filled";
+
+    const ctx = useMemo(
+      () => ({ size: resolvedSize, variant: resolvedVariant }),
+      [resolvedSize, resolvedVariant],
+    );
+    return (
+      <LayoutProvider value={ctx}>
+        <Box
+          as="span"
+          ref={ref}
+          mod={{ size: resolvedSize }}
+          fontWeight={600}
+          gap="xs"
+          {...rest}
+        >
+          {dotIcon && dotIcon({ size: resolvedSize, variant: resolvedVariant })}
+          {children}
+        </Box>
+      </LayoutProvider>
+    );
+  },
 });

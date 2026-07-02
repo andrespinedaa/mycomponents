@@ -1,44 +1,49 @@
 import { useMemo } from "react";
-import {
-  ComponentFactory,
-  type ComponentConfig,
-  type EmptyStatics,
-  type OrientationProp,
-} from "../../factory";
+import { ComponentFactory, type ComponentConfig, type EmptyStatics, type OrientationProp } from "../../factory";
+import type { SystemVariants } from "../../theme";
 import { LayoutProvider } from "../../context/LayoutContext";
-import type { ScaleRange, SystemVariants } from "../../theme";
-import { Box, Flex } from "../Primitives";
+import { Flex } from "../Primitives";
+
+export interface CardSectionOwnProps {
+  section?: "header" | "body" | "footer" | "media";
+}
 
 export const CardSection = ComponentFactory<
   ComponentConfig<{
     componentName: "CardSection";
     defaultTag: "div";
-    ownProps: {};
+    ownProps: CardSectionOwnProps;
     statics: EmptyStatics;
-    defaultProps: { dataSlot: "Section" };
+    defaultProps: { dataSlot: "Section"; section: "body" };
+    sizes: "sm" | "md" | "lg" | "xl";
   }>
 >({
   componentName: "CardSection",
   defaultTag: "div",
-  defaultProps: { dataSlot: "Section" },
-  render: ({ ref, ...rest }) => <Box ref={ref} {...rest} />,
+  defaultProps: { dataSlot: "Section", section: "body" },
+  render: function CardSectionRender({ section, ref, ...rest }) {
+    return <Flex ref={ref} mod={{ section }} {...rest} />;
+  },
 });
+
+export interface CardOwnProps {
+  orientation?: OrientationProp;
+  variant?: SystemVariants<"Filled" | "Elevated" | "Default" | "Outlined">;
+}
 
 export type CardConfig = ComponentConfig<{
   componentName: "Card";
   defaultTag: "div";
-  ownProps: {
-    orientation?: OrientationProp;
-    variant?: SystemVariants<"Filled" | "Elevated" | "Default" | "Outlined">;
-  };
+  ownProps: CardOwnProps;
   statics: {
     Section: typeof CardSection;
   };
   defaultProps: {
     orientation: "vertical";
     variant: "Default";
+    size: "md";
   };
-  sizes: ScaleRange<"sm" | "md" | "lg" | "xl">;
+  sizes: "sm" | "md" | "lg" | "xl";
 }>;
 
 export const Card = ComponentFactory<CardConfig>({
@@ -47,11 +52,12 @@ export const Card = ComponentFactory<CardConfig>({
   defaultProps: {
     orientation: "vertical",
     variant: "Default",
+    size: "md",
   },
   statics: { Section: CardSection },
-  render: ({ orientation, children, ref, hooks, size = "md", ...rest }) => {
+  render: function CardRender({ orientation, variant, children, ref, size, ...rest }) {
     const flexDir = orientation === "horizontal" ? "row" : "column";
-    const ctx = useMemo(() => ({ orientation }), [orientation]);
+    const ctx = useMemo(() => ({ orientation, size, variant }), [orientation, size, variant]);
     return (
       <LayoutProvider value={ctx}>
         <Flex ref={ref} mod={[{ orientation }]} flexDir={flexDir} {...rest}>

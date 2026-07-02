@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import type { ApplyProp, ThemeMacros } from "../factory/factories.types";
+import type { ApplyProp, ThemeMacros } from "../factory/core/factories.types";
 import {
   ALIGNS,
   FLEX_DISPLAYS,

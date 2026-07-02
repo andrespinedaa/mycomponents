@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import type {
   ALIGNS,
+  defaultThemeMacros,
   FLEX_DISPLAYS,
   GRID_DISPLAYS,
   JUSTIFY_CONTENTS,
@@ -22,5 +23,7 @@ export type FlexMacros = `@${Flex}${Align}${JustifyContent}`;
 export type GridMacros = `@${GridDisplay}${Align}${JustifyItem}`;
 
 export type BuiltInMacros = FlexMacros | GridMacros;
+
+export type ThemeMacros = typeof defaultThemeMacros;
 
 export type Macros = Record<`@${string}`, CSSProperties>;

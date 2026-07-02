@@ -1,8 +1,5 @@
-import { ComponentFactory } from "../../../factory";
-import type {
-  ComponentConfig,
-  EmptyStatics,
-} from "../../../factory/factories.types";
+import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../../factory";
+import type { Scales } from "../../../theme";
 import { Box } from "../Box";
 
 // ─── GridBox.Item ─────────────────────────────────────────────────────────────
@@ -20,19 +17,19 @@ export type GridItemConfig = ComponentConfig<{
   defaultTag: "div";
   ownProps: GridItemOwnProps;
   statics: EmptyStatics;
-  defaultsProps: {};
+  defaultProps: {};
+  sizes: Scales;
 }>;
 
 const GridItem = ComponentFactory<GridItemConfig>({
   componentName: "GridItem",
   defaultTag: "div",
-  render: ({ colSpan, rowSpan, colStart, colEnd, rowStart, rowEnd, ref, theme: _t, hooks: _h, ...rest }) => {
-
-    const resolveSpan = (span?: number | "full") =>
-      span === "full" ? "1 / -1" : span ? `span ${span}` : undefined;
+  render: function GridItemRender({ colSpan, rowSpan, colStart, colEnd, rowStart, rowEnd, ref, ...rest }) {
+    const resolveSpan = (span?: number | "full") => (span === "full" ? "1 / -1" : span ? `span ${span}` : undefined);
 
     return (
       <Box
+        ref={ref}
         gridRow={`${
           rowSpan
             ? resolveSpan(rowSpan)
@@ -67,20 +64,17 @@ export type GridBoxConfig = ComponentConfig<{
   defaultTag: "div";
   ownProps: GridBoxOwnProps;
   statics: { Item: typeof GridItem };
-  defaultsProps: {};
+  defaultProps: {};
+  sizes: Scales;
 }>;
 
 export const GridBox = ComponentFactory<GridBoxConfig>({
   componentName: "GridBox",
   defaultTag: "div",
-  render: ({ columns, rows, autoColumns, autoRows, inline, ref, theme: _t, hooks: _h, ...rest }) => {
-
+  statics: { Item: GridItem },
+  render: function GridBoxRender({ columns, rows, autoColumns, autoRows, inline, ref, ...rest }) {
     const resolveTemplate = (value?: number | string) =>
-      value === undefined
-        ? "0"
-        : typeof value === "number"
-        ? `repeat(${value}, 1fr)`
-        : value;
+      value === undefined ? undefined : typeof value === "number" ? `repeat(${value}, 1fr)` : value;
 
     return (
       <Box
@@ -88,11 +82,10 @@ export const GridBox = ComponentFactory<GridBoxConfig>({
         display={inline ? "inline-grid" : "grid"}
         gridTemplateColumns={resolveTemplate(columns)}
         gridTemplateRows={resolveTemplate(rows)}
-        gridAutoColumns={`${autoColumns}`}
-        gridAutoRows={`${autoRows}`}
+        gridAutoColumns={autoColumns}
+        gridAutoRows={autoRows}
         {...rest}
       />
     );
   },
-  statics: { Item: GridItem },
 });

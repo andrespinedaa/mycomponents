@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>MyComponents — Render Props Map</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #0f0f10;
+  color: #e8e8ea;
+  padding: 20px;
+  font-size: 12px;
+}
+h1 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+.subtitle { color: #555; font-size: 11px; margin-bottom: 20px; }
+
+.layout { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.full { grid-column: 1 / -1; }
+
+.sector { border-radius: 10px; border: 1px solid #222; overflow: hidden; }
+.sector-header {
+  padding: 8px 12px; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
+}
+.sector-body { padding: 10px 12px; }
+
+.own   .sector-header { background: #1a1030; color: #a78bfa; border-bottom: 1px solid #2d1b69; }
+.style .sector-header { background: #0e1f2e; color: #38bdf8; border-bottom: 1px solid #0c4a6e; }
+.html  .sector-header { background: #0f1f10; color: #86efac; border-bottom: 1px solid #14532d; }
+.base  .sector-header { background: #1c1410; color: #fbbf24; border-bottom: 1px solid #78350f; }
+.sys   .sector-header { background: #1a0f0f; color: #f87171; border-bottom: 1px solid #7f1d1d; }
+.hooks .sector-header { background: #0f1a1a; color: #34d399; border-bottom: 1px solid #065f46; }
+
+.prop {
+  display: flex; align-items: baseline; gap: 6px;
+  padding: 3px 0; border-bottom: 1px solid #161618;
+  font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 11px;
+}
+.prop:last-child { border-bottom: none; }
+.prop-name { color: #c8c8d0; }
+.prop-type { color: #666; font-size: 10px; flex: 1; }
+
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-own   { background: #a78bfa; }
+.dot-style { background: #38bdf8; }
+.dot-html  { background: #86efac; }
+.dot-base  { background: #fbbf24; }
+.dot-sys   { background: #f87171; }
+.dot-hooks { background: #34d399; }
+
+.count { font-size: 10px; color: #555; margin-left: auto; }
+.note {
+  font-size: 10.5px; color: #555; margin-top: 6px;
+  padding: 6px 8px; background: #13131a;
+  border-radius: 6px; border: 1px solid #1e1e22;
+}
+.note strong { color: #888; }
+.group-label {
+  font-size: 9px; color: #444; text-transform: uppercase;
+  letter-spacing: 0.06em; margin: 8px 0 4px;
+  font-family: sans-serif; font-weight: 700;
+}
+.render-sig {
+  background: #0d0d10; border: 1px solid #2563eb44;
+  border-radius: 10px; padding: 14px 16px;
+  font-family: 'Cascadia Code', 'Fira Code', monospace;
+  font-size: 11.5px; line-height: 1.8; margin-bottom: 10px;
+}
+.kw { color: #c792ea; }
+.cm { color: #546e7a; }
+.hl { background: #1e3a5f33; border-left: 2px solid #2563eb; display: block; padding-left: 8px; margin-left: -8px; }
+</style>
+</head>
+<body>
+
+<!-- LAST UPDATED: 2026-06-24 -->
+<!-- Update this file every time a new prop is added to: SystemStyleProps, BaseProps, ResolvedFactoryProps, or render ctx -->
+
+<h1>Props del render — <code style="color:#a78bfa">Divider</code> (ejemplo representativo)</h1>
+<p class="subtitle">Todos los sectores que llegan al render. Actualizar cuando cambie cualquier sector. — design/render-props-map.html</p>
+
+<div class="render-sig">
+<span class="cm">// Firma — ComponentFactory render (Option A: un único objeto)</span>
+<span class="kw">render</span>: ({
+  <span class="cm">/* OwnProps   */</span>  orientation, position, thickness, color, label,
+  <span class="cm">/* Sistema    */</span>  ref, theme,
+  <span class="cm">/* Hooks      */</span>  <span class="hl">hooks: { card },            <span class="cm">// nombre reservado</span></span>
+  <span class="cm">/* resto      */</span>  ...rest                    <span class="cm">// StyleProps + BaseProps + HTMLAttributes</span>
+}) => ...
+<br>
+<span class="cm">// REGLA: siempre destructurar ref, theme, hooks aunque no se usen</span>
+<span class="cm">// render: ({ ref, theme: _t, hooks: _h, ...rest }) => &lt;Box ref={ref} {...rest} /&gt;</span>
+</div>
+
+<div class="layout">
+
+  <div class="sector own">
+    <div class="sector-header"><div class="dot dot-own"></div>OwnProps<span class="count">5 props</span></div>
+    <div class="sector-body">
+      <div class="group-label">DividerOwnProps — lógica de componente</div>
+      <div class="prop"><span class="prop-name">orientation</span><span class="prop-type">"horizontal" | "vertical"</span></div>
+      <div class="prop"><span class="prop-name">position</span><span class="prop-type">"start" | "center" | "end"</span></div>
+      <div class="prop"><span class="prop-name">thickness</span><span class="prop-type">CSSLength</span></div>
+      <div class="prop"><span class="prop-name">color</span><span class="prop-type">ColorValue</span></div>
+      <div class="prop"><span class="prop-name">label</span><span class="prop-type">string</span></div>
+      <div class="note"><strong>Regla:</strong> requieren lógica — no mapean 1:1 a CSS</div>
+    </div>
+  </div>
+
+  <div class="sector base">
+    <div class="sector-header"><div class="dot dot-base"></div>BaseProps<span class="count">8 props</span></div>
+    <div class="sector-body">
+      <div class="group-label">Compartidas por todos los componentes</div>
+      <div class="prop"><span class="prop-name">apply</span><span class="prop-type">ApplyProp | ApplyProp[]</span></div>
+      <div class="prop"><span class="prop-name">vars</span><span class="prop-type">Record&lt;string, string&gt;</span></div>
+      <div class="prop"><span class="prop-name">variant</span><span class="prop-type">ComponentVariants</span></div>
+      <div class="prop"><span class="prop-name">style</span><span class="prop-type">CSSProperties</span></div>
+      <div class="prop"><span class="prop-name">className</span><span class="prop-type">string</span></div>
+      <div class="prop"><span class="prop-name">children</span><span class="prop-type">ReactNode</span></div>
+      <div class="prop"><span class="prop-name">unstyled</span><span class="prop-type">boolean</span></div>
+      <div class="prop"><span class="prop-name">renderRoot</span><span class="prop-type">(props) =&gt; ReactNode</span></div>
+      <div class="note"><code>mod</code> y <code>dataSlot</code> son consumidos por useResolvedProps — no llegan al render</div>
+    </div>
+  </div>
+
+  <div class="sector hooks">
+    <div class="sector-header"><div class="dot dot-hooks"></div>hooks<span class="count">nombre reservado</span></div>
+    <div class="sector-body">
+      <div class="group-label">Resultado de useHooks() — llamado en el cuerpo del componente</div>
+      <div class="prop"><span class="prop-name">card.orientation</span><span class="prop-type">"row" | "column" | undefined</span></div>
+      <div class="note">
+        <strong>Fuente:</strong> useCardContext() → CardContext<br>
+        <strong>Fallback:</strong> {} si Divider no está dentro de un Card<br>
+        <strong>Nombre reservado:</strong> hooks — nunca usar como OwnProp
+      </div>
+    </div>
+  </div>
+
+  <div class="sector style full">
+    <div class="sector-header"><div class="dot dot-style"></div>StyleProps (SystemStyleProps)<span class="count">~60 alias + todas las CSSProperties camelCase</span></div>
+    <div class="sector-body" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0 12px">
+      <div>
+        <div class="group-label">Spacing (responsive)</div>
+        <div class="prop"><span class="prop-name">m, mx, my</span><span class="prop-type">Responsive&lt;spacing&gt;</span></div>
+        <div class="prop"><span class="prop-name">mt, mr, mb, ml</span><span class="prop-type">Responsive&lt;spacing&gt;</span></div>
+        <div class="prop"><span class="prop-name">p, px, py</span><span class="prop-type">Responsive&lt;spacing&gt;</span></div>
+        <div class="prop"><span class="prop-name">pt, pr, pb, pl</span><span class="prop-type">Responsive&lt;spacing&gt;</span></div>
+        <div class="group-label" style="margin-top:10px">Layout (responsive)</div>
+        <div class="prop"><span class="prop-name">w, h</span><span class="prop-type">Responsive&lt;size&gt;</span></div>
+        <div class="prop"><span class="prop-name">minW, maxW</span><span class="prop-type">Responsive&lt;size&gt;</span></div>
+        <div class="prop"><span class="prop-name">minH, maxH</span><span class="prop-type">Responsive&lt;size&gt;</span></div>
+      </div>
+      <div>
+        <div class="group-label">Flex / Grid (responsive)</div>
+        <div class="prop"><span class="prop-name">flex</span><span class="prop-type">Responsive&lt;string&gt;</span></div>
+        <div class="prop"><span class="prop-name">flexDir</span><span class="prop-type">Responsive&lt;direction&gt;</span></div>
+        <div class="prop"><span class="prop-name">align</span><span class="prop-type">Responsive&lt;align&gt;</span></div>
+        <div class="prop"><span class="prop-name">justify</span><span class="prop-type">Responsive&lt;justify&gt;</span></div>
+        <div class="prop"><span class="prop-name">gap</span><span class="prop-type">Responsive&lt;spacing&gt;</span></div>
+        <div class="prop"><span class="prop-name">wrap</span><span class="prop-type">Responsive&lt;wrap&gt;</span></div>
+        <div class="group-label" style="margin-top:10px">Color (token)</div>
+        <div class="prop"><span class="prop-name">color</span><span class="prop-type">ColorValue</span></div>
+        <div class="prop"><span class="prop-name">bg</span><span class="prop-type">ColorValue</span></div>
+        <div class="prop"><span class="prop-name">borderColor</span><span class="prop-type">ColorValue</span></div>
+      </div>
+      <div>
+        <div class="group-label">Tipografía</div>
+        <div class="prop"><span class="prop-name">fontSize</span><span class="prop-type">FontSizeScale</span></div>
+        <div class="prop"><span class="prop-name">fontWeight</span><span class="prop-type">CSSProperties[fw]</span></div>
+        <div class="prop"><span class="prop-name">lineHeight</span><span class="prop-type">CSSProperties[lh]</span></div>
+        <div class="prop"><span class="prop-name">textAlign</span><span class="prop-type">CSSProperties[ta]</span></div>
+        <div class="prop"><span class="prop-name">whiteSpace</span><span class="prop-type">CSSProperties[ws]</span></div>
+        <div class="group-label" style="margin-top:10px">Border / Radius</div>
+        <div class="prop"><span class="prop-name">rounded</span><span class="prop-type">RadiiScale</span></div>
+        <div class="prop"><span class="prop-name">border</span><span class="prop-type">CSSProperties[b]</span></div>
+        <div class="prop"><span class="prop-name">borderWidth</span><span class="prop-type">CSSProperties[bw]</span></div>
+      </div>
+      <div>
+        <div class="group-label">+ todas las CSSProperties</div>
+        <div class="prop"><span class="prop-name">display</span><span class="prop-type">CSSProperties</span></div>
+        <div class="prop"><span class="prop-name">position</span><span class="prop-type">CSSProperties</span></div>
+        <div class="prop"><span class="prop-name">overflow</span><span class="prop-type">CSSProperties</span></div>
+        <div class="prop"><span class="prop-name">opacity</span><span class="prop-type">CSSProperties</span></div>
+        <div class="prop"><span class="prop-name">zIndex</span><span class="prop-type">CSSProperties</span></div>
+        <div class="prop"><span class="prop-name">cursor</span><span class="prop-type">CSSProperties</span></div>
+        <div class="prop"><span class="prop-name">...</span><span class="prop-type">~170 props más</span></div>
+        <div class="note"><strong>Regla:</strong> mapean 1:1 a CSS — nunca redeclararlas en OwnProps</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sector html full">
+    <div class="sector-header"><div class="dot dot-html"></div>HTML Attributes — React.ComponentProps&lt;"div"&gt; menos todo lo anterior<span class="count">~50 attrs</span></div>
+    <div class="sector-body" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0 12px">
+      <div>
+        <div class="group-label">Identidad</div>
+        <div class="prop"><span class="prop-name">id</span><span class="prop-type">string</span></div>
+        <div class="prop"><span class="prop-name">title</span><span class="prop-type">string</span></div>
+        <div class="prop"><span class="prop-name">lang</span><span class="prop-type">string</span></div>
+        <div class="prop"><span class="prop-name">tabIndex</span><span class="prop-type">number</span></div>
+      </div>
+      <div>
+        <div class="group-label">Accesibilidad</div>
+        <div class="prop"><span class="prop-name">role</span><span class="prop-type">AriaRole</span></div>
+        <div class="prop"><span class="prop-name">aria-label</span><span class="prop-type">string</span></div>
+        <div class="prop"><span class="prop-name">aria-orientation</span><span class="prop-type">string</span></div>
+        <div class="prop"><span class="prop-name">aria-hidden</span><span class="prop-type">boolean</span></div>
+        <div class="prop"><span class="prop-name">aria-*</span><span class="prop-type">...</span></div>
+      </div>
+      <div>
+        <div class="group-label">Eventos</div>
+        <div class="prop"><span class="prop-name">onClick</span><span class="prop-type">MouseEventHandler</span></div>
+        <div class="prop"><span class="prop-name">onMouseEnter</span><span class="prop-type">MouseEventHandler</span></div>
+        <div class="prop"><span class="prop-name">onKeyDown</span><span class="prop-type">KeyboardEventHandler</span></div>
+        <div class="prop"><span class="prop-name">onFocus / onBlur</span><span class="prop-type">FocusEventHandler</span></div>
+        <div class="prop"><span class="prop-name">on*</span><span class="prop-type">...</span></div>
+      </div>
+      <div>
+        <div class="group-label">Data / Procesadas por sistema</div>
+        <div class="prop"><span class="prop-name">data-*</span><span class="prop-type">string</span></div>
+        <div class="prop" style="opacity:0.4"><span class="prop-name" style="text-decoration:line-through">ref</span><span class="prop-type">→ viene en ctx.ref</span></div>
+        <div class="prop" style="opacity:0.4"><span class="prop-name" style="text-decoration:line-through">mod</span><span class="prop-type">consumido → data-*</span></div>
+        <div class="prop" style="opacity:0.4"><span class="prop-name" style="text-decoration:line-through">dataSlot</span><span class="prop-type">consumido → data-slot</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sector sys full">
+    <div class="sector-header"><div class="dot dot-sys"></div>Inyectados por sistema — no vienen del consumidor<span class="count">system-injected</span></div>
+    <div class="sector-body" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 12px">
+      <div>
+        <div class="group-label">Slot (de dataSlot o componentName)</div>
+        <div class="prop"><span class="prop-name">data-slot</span><span class="prop-type">"Divider" ← automático</span></div>
+      </div>
+      <div>
+        <div class="group-label">ModProp (de mod + variant)</div>
+        <div class="prop"><span class="prop-name">data-orientation</span><span class="prop-type">"horizontal" | "vertical"</span></div>
+      </div>
+      <div>
+        <div class="group-label">Nombres reservados en el ctx</div>
+        <div class="prop"><span class="prop-name">ref</span><span class="prop-type">RefObject&lt;HTMLDivElement&gt;</span></div>
+        <div class="prop"><span class="prop-name">theme</span><span class="prop-type">Theme</span></div>
+        <div class="prop"><span class="prop-name">hooks</span><span class="prop-type">{ card: CardContextValue }</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="background:#13131a;border:1px solid #2a2a2e;border-radius:10px;padding:14px 16px;font-size:11.5px;color:#888;line-height:1.8">
+  <strong style="color:#e8e8ea">¿Por qué ...rest absorbe tanto?</strong><br>
+  En el render, <code>...rest</code> contiene StyleProps + BaseProps (menos los que el componente extrae) + HTML Attributes.
+  Todo fluye hacia el primitivo Box/Flex/Text que sabe procesarlo. El componente solo extrae sus OwnProps — el resto fluye hacia abajo sin tocarlo.<br><br>
+  <strong style="color:#f87171">REGLA:</strong> siempre destructurar <code>ref</code>, <code>theme</code> y <code>hooks</code> aunque no se usen (<code>theme: _t, hooks: _h</code>),
+  para que no lleguen a un elemento DOM via <code>{...rest}</code>.
+</div>
+
+</body>
+</html>

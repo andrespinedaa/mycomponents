@@ -16,13 +16,13 @@ describe("useProps", () => {
   describe("sin componentName", () => {
     it("retorna las props sin modificar si no hay componentName", () => {
       const props: ButtonProps = { variant: "Outlined", size: "md" };
-      const result = useProps(undefined, defaultTheme, props, {});
+      const result = useProps(defaultTheme, props);
       expect(result).toEqual(props);
     });
 
     it("aplica configDefaults si no hay componentName", () => {
       const props: ButtonProps = { size: "md" };
-      const result = useProps(undefined, defaultTheme, props, {
+      const result = useProps(defaultTheme, props, undefined, {
         variant: "Ghost",
       } as Partial<ButtonProps>);
       expect(result).toEqual({ variant: "Ghost", size: "md" });
@@ -33,7 +33,7 @@ describe("useProps", () => {
   describe("configDefaults", () => {
     it("aplica configDefaults como menor prioridad", () => {
       const props: ButtonProps = { variant: "Outlined" };
-      const result = useProps(undefined, defaultTheme, props, {
+      const result = useProps(defaultTheme, props, undefined, {
         variant: "Outlined",
         size: "md",
       } as Partial<ButtonProps>);
@@ -43,7 +43,7 @@ describe("useProps", () => {
 
     it("configDefaults no pisa props del consumer", () => {
       const props: ButtonProps = { dataSlot: "custom" };
-      const result = useProps(undefined, defaultTheme, props, {
+      const result = useProps(defaultTheme, props, undefined, {
         dataSlot: "Header",
       } as Partial<ButtonProps>);
       expect(result.dataSlot).toBe("custom");
@@ -51,7 +51,7 @@ describe("useProps", () => {
 
     it("configDefaults aplica dataSlot si consumer no lo pasa", () => {
       const props: ButtonProps = {};
-      const result = useProps(undefined, defaultTheme, props, {
+      const result = useProps(defaultTheme, props, undefined, {
         dataSlot: "Header",
       } as Partial<ButtonProps>);
       expect(result.dataSlot).toBe("Header");
@@ -62,13 +62,13 @@ describe("useProps", () => {
   describe("themeDefaults desde theme.components", () => {
     it("aplica themeDefaults del componente", () => {
       const props: ButtonProps = {};
-      const result = useProps("Button", defaultTheme, props, {});
+      const result = useProps(defaultTheme, props, "Button");
       expect(result.variant).toBe("Filled");
     });
 
     it("themeDefaults ganan sobre configDefaults", () => {
       const props: ButtonProps = {};
-      const result = useProps("Button", defaultTheme, props, {
+      const result = useProps(defaultTheme, props, "Button", {
         variant: "Ghost",
       } as Partial<ButtonProps>);
       expect(result.variant).toBe("Filled");
@@ -76,13 +76,13 @@ describe("useProps", () => {
 
     it("consumer gana sobre themeDefaults", () => {
       const props: ButtonProps = { variant: "Outlined" };
-      const result = useProps("Button", defaultTheme, props, {});
+      const result = useProps(defaultTheme, props, "Button");
       expect(result.variant).toBe("Outlined");
     });
 
     it("componente desconocido no aplica themeDefaults", () => {
       const props: ButtonProps = { variant: "Outlined" };
-      const result = useProps("Unknown", defaultTheme, props, {});
+      const result = useProps(defaultTheme, props, "Unknown");
       expect(result).toEqual({ variant: "Outlined" });
     });
   });
@@ -96,7 +96,7 @@ describe("useProps", () => {
           ...defaultTheme.components,
           Button: {
             defaultProps: {
-              variant: "Outlined" as const, // ← as const para el tipo literal
+              variant: "Outlined" as const,
               size: "lg" as const,
             },
           },
@@ -104,7 +104,7 @@ describe("useProps", () => {
       };
 
       const props: ButtonProps = { size: "sm" };
-      const result = useProps("Button", themeWithOverride, props, {
+      const result = useProps(themeWithOverride, props, "Button", {
         variant: "Ghost",
         size: "md",
       } as Partial<ButtonProps>);
@@ -117,20 +117,20 @@ describe("useProps", () => {
   // ─── edge cases ───────────────────────────────────────────────
   describe("edge cases", () => {
     it("props vacías con configDefaults vacíos retorna objeto vacío", () => {
-      const result = useProps(undefined, defaultTheme, {} as ButtonProps, {});
+      const result = useProps(defaultTheme, {} as ButtonProps);
       expect(result).toEqual({});
     });
 
     it("preserva todas las props del consumer", () => {
       const props: ButtonProps = { variant: "Outlined", size: "lg" };
-      const result = useProps(undefined, defaultTheme, props, {});
+      const result = useProps(defaultTheme, props);
       expect(result).toEqual(props);
     });
 
     it("no muta el objeto props original", () => {
       const props: ButtonProps = { variant: "Outlined" };
       const original = { ...props };
-      useProps(undefined, defaultTheme, props, {
+      useProps(defaultTheme, props, undefined, {
         size: "md",
       } as Partial<ButtonProps>);
       expect(props).toEqual(original);

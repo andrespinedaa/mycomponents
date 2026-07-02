@@ -7,11 +7,11 @@ export const ButtonThemeComponent: ButtonThemeConfig = {
   prefix: "btn",
   defaultProps: { variant: "Filled", size: "md" },
   sizes: {
-    xs: { h: "24px", fontSize: "11px", px: "8px",  rounded: "sm" },
-    sm: { h: "28px", fontSize: "12px", px: "10px", rounded: "sm" },
-    md: { h: "32px", fontSize: "13px", px: "12px", rounded: "md" },
-    lg: { h: "36px", fontSize: "14px", px: "16px", rounded: "md" },
-    xl: { h: "40px", fontSize: "15px", px: "20px", rounded: "lg" },
+    xs: { h: "24px", fontSize: "11px", px: "8px"  },
+    sm: { h: "28px", fontSize: "12px", px: "10px" },
+    md: { h: "32px", fontSize: "13px", px: "12px" },
+    lg: { h: "36px", fontSize: "14px", px: "16px" },
+    xl: { h: "40px", fontSize: "15px", px: "20px" },
   },
   variants: {
     Filled: {

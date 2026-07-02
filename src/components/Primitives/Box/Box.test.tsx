@@ -1,4 +1,3 @@
-// src/components/Box/Box.test.tsx
 import { render } from "@testing-library/react";
 import { createRef } from "react";
 import userEvent from "@testing-library/user-event"; // ← agregás esto
@@ -8,7 +7,7 @@ import { ThemeContextProvider } from "../../../theme/ThemeContext";
 import { defaultTheme } from "../../../theme";
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <ThemeContextProvider value={{ theme: defaultTheme }}>
+  <ThemeContextProvider value={{ theme: defaultTheme, colorScheme: "light", setColorScheme: () => {}, toggleColorScheme: () => {} }}>
     {children}
   </ThemeContextProvider>
 );

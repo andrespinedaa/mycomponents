@@ -1,7 +1,11 @@
-import type { EmptyStatics, ComponentConfig } from "../../../factory";
-import { PolymorphicFactory } from "../../../factory/PolymorphicFactory";
+import {
+  ComponentFactory,
+  type ComponentConfig,
+  type EmptyStatics,
+} from "../../../factory";
+import type { Scales } from "../../../theme";
 
-export interface BoxProps {};
+export interface BoxProps {}
 
 export type BoxConfig = ComponentConfig<{
   componentName: "Box";
@@ -9,9 +13,10 @@ export type BoxConfig = ComponentConfig<{
   ownProps: BoxProps;
   statics: EmptyStatics;
   defaultProps: {};
+  sizes: Scales;
 }>;
 
-export const Box = PolymorphicFactory<BoxConfig>({
+export const Box = ComponentFactory<BoxConfig>({
   componentName: "Box",
   defaultTag: "div",
 });
