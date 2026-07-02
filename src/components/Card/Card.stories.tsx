@@ -13,13 +13,13 @@ type Story = StoryObj<typeof Card>;
 // ─── Contenido de ejemplo reutilizable ───────────────────────────────────────
 const SampleContent = () => (
   <>
-    <Card.Section section="header" p="md" borderBottom="1px solid" borderColor="neutral.200">
+    <Card.Section section="header" p="md" style={{ borderBottom: "1px solid #e5e7eb" }}>
       <strong>Card Header</strong>
     </Card.Section>
     <Card.Section section="body" p="md">
       Este es el cuerpo de la card con contenido de ejemplo.
     </Card.Section>
-    <Card.Section section="footer" p="md" borderTop="1px solid" borderColor="neutral.200">
+    <Card.Section section="footer" p="md" style={{ borderTop: "1px solid #e5e7eb" }}>
       Footer
     </Card.Section>
   </>
@@ -71,7 +71,7 @@ export const AllVariants: Story = {
 export const DefaultStates: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", width: 360 }}>
-      {(["Default", "Filled", "Elevated", "Outlined"] as const).map((variant) => (
+      {variants.map((variant) => (
         <div key={variant}>
           <p style={{ marginBottom: "0.5rem", fontSize: "0.75rem", color: "#888" }}>{variant}</p>
           <Card variant={variant} size="md">
@@ -105,7 +105,7 @@ export const Orientation: Story = {
   ),
 };
 
-// ─── CardSection ─────────────────────────────────────────────────────────────
+// ─── Sections ─────────────────────────────────────────────────────────────────
 export const Sections: Story = {
   render: () => (
     <Card variant="Default" size="md" style={{ width: 360 }}>
