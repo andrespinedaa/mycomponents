@@ -47,8 +47,13 @@ const DIMENSION_KEYS = [
 
 type DimensionKey = (typeof DIMENSION_KEYS)[number];
 
-// ─── SizeTokens — solo props dimensionales/estructurales ─────────────────────
-export type SizeTokens = Pick<RawStyleProps, DimensionKey & keyof RawStyleProps>;
+// ─── SizeTokens — solo props dimensionales/estructurales, con soporte de tokens ─
+// Acepta tokens del tema (SpacingValue, FontSizeValue) igual que StyleProps del consumidor.
+// El generador ya resuelve tokens vía resolveTokenValue — solo faltaba el tipo.
+type StylePropsTokenOnly = {
+  [K in keyof StyleProps]?: UnwrapResponsive<StyleProps[K]>;
+};
+export type SizeTokens = Pick<StylePropsTokenOnly, DimensionKey & keyof StylePropsTokenOnly>;
 
 // ─── SlotTokens — estilos estáticos por slot (sin estados interactivos) ──────
 // Misma forma que VariantTokens pero sin hover/focus/active/disabled.

@@ -7,10 +7,10 @@ export const CardSectionThemeComponent: CardSectionTheme = {
   prefix: "card-section",
   slotProp: "section",
   sizes: {
-    sm: { p: "8px" },
-    md: { p: "12px" },
-    lg: { p: "16px" },
-    xl: { p: "20px" },
+    sm: { p: "sm" },
+    md: { p: "md" },
+    lg: { p: "lg" },
+    xl: { p: "xl" },
   },
   slots: {
     header: { fontWeight: "600", borderBottom: "1px solid" },
