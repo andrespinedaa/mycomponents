@@ -112,7 +112,7 @@ export const Sections: Story = {
       <Card.Section section="header" p="md" bg="#f9fafb" borderBottom="1px solid #e5e7eb">
         <strong>section="header"</strong>
       </Card.Section>
-      <Card.Section section="media" h="120px" bg="#e5e7eb" display="flex" alignItems="center" justifyContent="center" color="#9ca3af">
+      <Card.Section section="media" h="120px" bg="#e5e7eb" display="flex" align="center" justify="center" color="#9ca3af">
         section="media"
       </Card.Section>
       <Card.Section section="body" p="md">
