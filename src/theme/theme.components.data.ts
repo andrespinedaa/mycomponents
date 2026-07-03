@@ -4,6 +4,7 @@ import { AvatarThemeComponent } from "../components/Avatar/AvatarTheme";
 import { BadgeThemeComponent } from "../components/Badge/BadgeTheme";
 import { ButtonThemeComponent } from "../components/Button/ButtonTheme";
 import { CardThemeComponent } from "../components/Card/CardTheme";
+import { CardSectionThemeComponent } from "../components/Card/CardSectionTheme";
 import { InputThemeComponent } from "../components/Input/InputTheme";
 
 export const defaultThemeComponents: ThemeComponents = {
@@ -32,4 +33,5 @@ export const defaultThemeComponents: ThemeComponents = {
   Avatar: AvatarThemeComponent,
   Button: ButtonThemeComponent,
   Card: CardThemeComponent,
+  CardSection: CardSectionThemeComponent,
 };

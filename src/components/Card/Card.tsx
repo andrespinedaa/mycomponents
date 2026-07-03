@@ -8,16 +8,16 @@ export interface CardSectionOwnProps {
   section?: "header" | "body" | "footer" | "media";
 }
 
-export const CardSection = ComponentFactory<
-  ComponentConfig<{
-    componentName: "CardSection";
-    defaultTag: "div";
-    ownProps: CardSectionOwnProps;
-    statics: EmptyStatics;
-    defaultProps: { dataSlot: "Section"; section: "body" };
-    sizes: "sm" | "md" | "lg" | "xl";
-  }>
->({
+export type CardSectionConfig = ComponentConfig<{
+  componentName: "CardSection";
+  defaultTag: "div";
+  ownProps: CardSectionOwnProps;
+  statics: EmptyStatics;
+  defaultProps: { dataSlot: "Section"; section: "body" };
+  sizes: "sm" | "md" | "lg" | "xl";
+}>;
+
+export const CardSection = ComponentFactory<CardSectionConfig>({
   componentName: "CardSection",
   defaultTag: "div",
   defaultProps: { dataSlot: "Section", section: "body" },

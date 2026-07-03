@@ -6,7 +6,7 @@ export function generateComponentBases(
   componentName: string,
   config: NonNullable<Theme["components"]>[string],
 ): string {
-  if (!config?.variants && !config?.sizes) return "";
+  if (!config?.variants && !config?.sizes && !config?.slots) return "";
   const prefix = config.prefix ?? camelToKebab(componentName);
 
   const usedKeys = new Set<string>();
@@ -18,6 +18,10 @@ export function generateComponentBases(
     }
   }
   for (const tokens of Object.values(config.sizes ?? {})) {
+    if (!tokens) continue;
+    for (const key of Object.keys(tokens)) usedKeys.add(key);
+  }
+  for (const tokens of Object.values(config.slots ?? {})) {
     if (!tokens) continue;
     for (const key of Object.keys(tokens)) usedKeys.add(key);
   }

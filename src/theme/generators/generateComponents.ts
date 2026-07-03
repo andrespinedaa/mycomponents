@@ -2,6 +2,7 @@ import type { Theme } from "../theme.types";
 import { generateComponentBases } from "./generateBases";
 import { generateComponentVariants } from "./generateVariants";
 import { generateComponentSizes } from "./generateSizes";
+import { generateComponentSlots } from "./generateSlots";
 
 function generateComponent(
   name: string,
@@ -11,7 +12,8 @@ function generateComponent(
   return (
     generateComponentBases(name, config) +
     generateComponentVariants(name, config, theme) +
-    generateComponentSizes(name, config, theme)
+    generateComponentSizes(name, config, theme) +
+    generateComponentSlots(name, config, theme)
   );
 }
 

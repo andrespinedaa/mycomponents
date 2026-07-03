@@ -8,6 +8,7 @@ export * from "./Button/Button";
 export * from "./Button/ButtonTheme";
 export * from "./Card/Card";
 export * from "./Card/CardTheme";
+export * from "./Card/CardSectionTheme";
 export * from "./Input/Input";
 export * from "./Input/InputTheme";
 export * from "./Primitives";

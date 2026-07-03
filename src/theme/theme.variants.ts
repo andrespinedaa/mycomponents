@@ -50,6 +50,11 @@ type DimensionKey = (typeof DIMENSION_KEYS)[number];
 // ─── SizeTokens — solo props dimensionales/estructurales ─────────────────────
 export type SizeTokens = Pick<RawStyleProps, DimensionKey & keyof RawStyleProps>;
 
+// ─── SlotTokens — estilos estáticos por slot (sin estados interactivos) ──────
+// Misma forma que VariantTokens pero sin hover/focus/active/disabled.
+// Se usa en ThemeComponentOptions.slots para componentes compound.
+export type SlotTokens = VariantTokens;
+
 // ─── Estados ─────────────────────────────────────────────────────────────────
 export type VariantStateConfig = Partial<Record<ComponentStates, VariantTokens>>;
 
