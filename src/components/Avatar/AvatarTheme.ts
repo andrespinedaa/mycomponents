@@ -5,14 +5,6 @@ export type AvatarThemeConfig = ThemeComponentConfig<AvatarConfig>;
 
 export const AvatarThemeComponent: AvatarThemeConfig = {
   prefix: "avatar",
-  defaultProps: {
-    shape: "circle",
-    size: "md",
-    display: "inline-flex",
-    overflow: "hidden",
-    flexShrink: 0,
-    userSelect: "none",
-  },
   sizes: {
     xs: { w: "xs", h: "xs", fontSize: "xs" },
     sm: { w: "sm", h: "sm", fontSize: "sm" },

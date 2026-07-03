@@ -5,7 +5,7 @@ export type BadgeThemeConfig = ThemeComponentConfig<BadgeConfig>;
 
 export const BadgeThemeComponent: BadgeThemeConfig = {
   prefix: "badge",
-  defaultProps: { variant: "Filled", size: "md" },
+  defaultProps: { variant: "Filled" },
   sizes: {
     xs: { px: "4px",  py: "2px",  fontSize: "10px" },
     sm: { px: "6px",  py: "2px",  fontSize: "11px" },

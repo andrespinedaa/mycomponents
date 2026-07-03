@@ -53,6 +53,7 @@ export const Card = ComponentFactory<CardConfig>({
     orientation: "vertical",
     variant: "Default",
     size: "md",
+    cursor: "pointer",
   },
   statics: { Section: CardSection },
   render: function CardRender({ orientation, variant, children, ref, size, ...rest }) {

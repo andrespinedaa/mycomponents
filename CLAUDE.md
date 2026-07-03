@@ -143,6 +143,25 @@ La lógica interna puede derivar un valor diferente al default basado en context
 const resolvedOrientation = layout.orientation ?? orientation; // layout gana si existe
 ```
 
+### defaultProps: ComponentFactory vs ThemeComponent
+
+Son dos capas con propósitos distintos — **no deben duplicarse**.
+
+- **`ComponentFactory.defaultProps`** — fuente de verdad del componente. Los setea el autor del design system. Aquí van todos los valores iniciales: `size`, `orientation`, `variant`, props estructurales.
+- **`ThemeComponentOptions.defaultProps`** — override del consumidor final. Permiten al usuario del design system cambiar los defaults del sistema sin modificar código del componente. Solo deben existir si el valor difiere del Factory o si el Factory no lo setea.
+
+```ts
+// ✗ incorrecto — ThemeComponent repite lo que ya está en Factory
+// ComponentFactory: defaultProps: { size: "md", variant: "Filled" }
+// ThemeComponent:   defaultProps: { size: "md", variant: "Filled" }  ← copia muerta
+
+// ✓ correcto — ThemeComponent solo agrega lo que Factory no define
+// ComponentFactory: defaultProps: { size: "md" }
+// ThemeComponent:   defaultProps: { variant: "Filled" }  ← agrega variant que Factory no setea
+```
+
+Consecuencia: si el autor quiere cambiar un default, lo cambia en `ComponentFactory`. El ThemeComponent queda para que el consumidor final sobrescriba eso a nivel de tema (ej: cambiar `size: "md"` a `size: "lg"` en toda la app).
+
 ---
 
 ### Firma del render
