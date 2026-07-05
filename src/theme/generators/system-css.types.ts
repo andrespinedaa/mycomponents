@@ -1,10 +1,20 @@
 import type { CSSProperties } from "react";
-import type { CaseFormat, Convert } from "../../types/cases.types";
+import type { CaseFormat, ConvertFormat } from "../../types/cases.types";
 import type { BaseColors, BaseRadii, BaseFontSizes, BaseSpacing } from "../theme.types";
 
 // ─── Responsive ───────────────────────────────────────────────────────────────
 export const BREAKPOINT_KEYS = ["base", "sm", "md", "lg", "xl"] as const;
+// prettier-ignore
+export const DIMENSION_KEYS = [
+  "h", "w", "minH", "maxH", "minW", "maxW",
+  "p", "px", "py", "pt", "pb", "pl", "pr",
+  "m", "mx", "my", "mt", "mb", "ml", "mr",
+  "fontSize", "lineHeight", "letterSpacing", 
+  "fontWeight", "gap", "rowGap", "columnGap",
+  "borderWidth",
+] as const;
 export type BreakpointKey = (typeof BREAKPOINT_KEYS)[number];
+export type DimensionKey = (typeof DIMENSION_KEYS)[number];
 export type ThemeBreakpointKey = Exclude<BreakpointKey, "base">;
 export type PartialBreakPointKey<T> = Partial<Record<BreakpointKey, T>>;
 export type Responsive<T> = T | PartialBreakPointKey<T>;
@@ -22,9 +32,9 @@ export type StylePropDef = {
   responsive: boolean;
 };
 
-// ─── CSSContract ─────────────────────────────────────────────────────────────
-export type CSSContract<Format extends CaseFormat = "camel"> = {
-  [K in keyof CSSProperties as Convert<K & string, "camel", Format>]?: CSSProperties[K];
+// ─── CSSMultiFormat ─────────────────────────────────────────────────────────────
+export type CSSMultiFormat<Format extends CaseFormat = "camel"> = {
+  [K in keyof CSSProperties as ConvertFormat<K & string, "camel", Format>]?: CSSProperties[K];
 };
 
 // ─── PropOverride ─────────────────────────────────────────────────────────────
@@ -55,8 +65,8 @@ export type SystemStyleProps<
       : CSSProperties[O["cssProp"]]
     : never;
 } & Omit<
-  CSSContract<Format>,
-  Extract<keyof CSSContract<Format>, Overrides[number]["cssProp"]> | Convert<Excluded & string, "camel", Format>
+  CSSMultiFormat<Format>,
+  Extract<keyof CSSMultiFormat<Format>, Overrides[number]["cssProp"]> | ConvertFormat<Excluded & string, "camel", Format>
 >;
 
 // ─── Token value types ────────────────────────────────────────────────────────

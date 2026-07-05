@@ -1,5 +1,5 @@
 import type {
-  CSSContract,
+  CSSMultiFormat,
   CSSPropertyName,
   ColorValue,
   ExcludedProps,
@@ -115,9 +115,9 @@ type AliasedRawProps = {
     : CSSOnly<CSSProperties[O["cssProp"] & keyof CSSProperties]>;
 };
 
-type RawCSSContract = { [K in keyof CSSContract]?: CSSOnly<CSSContract[K]> };
+type RawCSSMultiFormat = { [K in keyof CSSMultiFormat]?: CSSOnly<CSSMultiFormat[K]> };
 
-export type RawStyleProps = Omit<RawCSSContract, keyof AliasedRawProps> &
+export type RawStyleProps = Omit<RawCSSMultiFormat, keyof AliasedRawProps> &
   AliasedRawProps &
   Record<`--${string}`, string>;
 

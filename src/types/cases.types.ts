@@ -147,32 +147,32 @@ type _Serialize<
 
 // ─── PUBLIC: CONVERTER ───────────────────────────────────────────────────────
 
-export type Convert<
+export type ConvertFormat<
   S extends string,
   From extends CaseFormat,
   To extends CaseFormat,
 > = _Serialize<_Tokenize<S, From>, To>;
 
-// ─── PUBLIC: STRING TRANSFORMERS (aliases de Convert desde camel) ─────────────
+// ─── PUBLIC: STRING TRANSFORMERS (aliases de ConvertFormat desde camel) ─────────────
 
-export type CamelCase<S extends string> = Convert<S, "camel", "camel">;
-export type PascalCase<S extends string> = Convert<S, "camel", "pascal">;
-export type KebabCase<S extends string> = Convert<S, "camel", "kebab">;
-export type SnakeCase<S extends string> = Convert<S, "camel", "snake">;
-export type ScreamingSnakeCase<S extends string> = Convert<
+export type CamelCase<S extends string> = ConvertFormat<S, "camel", "camel">;
+export type PascalCase<S extends string> = ConvertFormat<S, "camel", "pascal">;
+export type KebabCase<S extends string> = ConvertFormat<S, "camel", "kebab">;
+export type SnakeCase<S extends string> = ConvertFormat<S, "camel", "snake">;
+export type ScreamingSnakeCase<S extends string> = ConvertFormat<
   S,
   "camel",
   "screaming-snake"
 >;
-export type TrainCase<S extends string> = Convert<S, "camel", "train">;
-export type DotCase<S extends string> = Convert<S, "camel", "dot">;
-export type PathCase<S extends string> = Convert<S, "camel", "path">;
-export type FlatCase<S extends string> = Convert<S, "camel", "flat">;
-export type UpperFlatCase<S extends string> = Convert<S, "camel", "upper-flat">;
-export type TitleCase<S extends string> = Convert<S, "camel", "title">;
-export type SentenceCase<S extends string> = Convert<S, "camel", "sentence">;
-export type LowerCase<S extends string> = Convert<S, "camel", "lower">;
-export type UpperCase<S extends string> = Convert<S, "camel", "upper">;
+export type TrainCase<S extends string> = ConvertFormat<S, "camel", "train">;
+export type DotCase<S extends string> = ConvertFormat<S, "camel", "dot">;
+export type PathCase<S extends string> = ConvertFormat<S, "camel", "path">;
+export type FlatCase<S extends string> = ConvertFormat<S, "camel", "flat">;
+export type UpperFlatCase<S extends string> = ConvertFormat<S, "camel", "upper-flat">;
+export type TitleCase<S extends string> = ConvertFormat<S, "camel", "title">;
+export type SentenceCase<S extends string> = ConvertFormat<S, "camel", "sentence">;
+export type LowerCase<S extends string> = ConvertFormat<S, "camel", "lower">;
+export type UpperCase<S extends string> = ConvertFormat<S, "camel", "upper">;
 
 // ─── PUBLIC: OBJECT KEY TRANSFORMERS ─────────────────────────────────────────
 
@@ -225,7 +225,7 @@ export type ConvertKeys<
   TObj extends object,
   From extends CaseFormat,
   To extends CaseFormat,
-> = { [K in keyof TObj as Convert<K & string, From, To>]: TObj[K] };
+> = { [K in keyof TObj as ConvertFormat<K & string, From, To>]: TObj[K] };
 
 // Formatos                          | Ejemplos            |
 // --------------------------------- | ------------------ |

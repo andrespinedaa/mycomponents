@@ -18,12 +18,7 @@ import type {
 } from "../components/Primitives";
 import type { FactoryConfig } from "../factory/core/factories.types";
 import type { RequiredDefaultProps } from "../factory/core/factory.defaults";
-import type {
-  ComponentVariants,
-  SizeTokens,
-  SlotTokens,
-  VariantStateConfig,
-} from "./theme.variants";
+import type { ComponentVariants, SizeTokens, SlotTokens, VariantStateConfig } from "./theme.variants";
 
 export type ComponentConfigs = {
   /* Primitives */
@@ -46,17 +41,15 @@ export type ComponentConfigs = {
 
 export type ThemeComponentOptions<Config extends FactoryConfig> = {
   prefix?: string;
-  defaultProps?: RequiredDefaultProps<Config>;
-  variants?: Partial<Record<ComponentVariants, VariantStateConfig>>;
-  sizes?: Partial<Record<NonNullable<Config["sizes"]>, SizeTokens>>;
-  // slots — estilos estáticos por slot. slotProp: atributo data-* que discrimina el slot (default "section")
-  slots?: Record<string, SlotTokens>;
   slotProp?: string;
+  defaultProps?: RequiredDefaultProps<Config>;
+  slots?: Record<keyof Config["statics"], SlotTokens>;
+  sizes?: Partial<Record<NonNullable<Config["sizes"]>, SizeTokens>>;
+  variants?: Partial<Record<ComponentVariants, VariantStateConfig>>;
 };
 
 export type ThemeComponents = {
   [K in keyof ComponentConfigs]: ThemeComponentOptions<ComponentConfigs[K]>;
 } & Record<string, ThemeComponentConfig<FactoryConfig>>;
 
-export type ThemeComponentConfig<Config extends FactoryConfig> =
-  ThemeComponentOptions<Config>;
+export type ThemeComponentConfig<Config extends FactoryConfig> = ThemeComponentOptions<Config>;

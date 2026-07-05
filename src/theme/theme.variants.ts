@@ -1,5 +1,5 @@
-import type { Responsive } from "./generators/system-css.types";
 import type { RawStyleProps, StyleProps } from "./generators/system-css.data";
+import type { DimensionKey, Responsive } from "./generators/system-css.types";
 
 export type ComponentVariants =
   | "Filled"
@@ -33,23 +33,7 @@ export type VariantTokens = Omit<RawStyleProps, keyof StyleProps> & {
   [K in keyof StyleProps]?: UnwrapResponsive<StyleProps[K]>;
 } & Record<string, string>;
 
-// ─── Claves dimensionales — las únicas permitidas en SizeTokens ──────────────
-// Regla: sizes nunca toca visual (color, bg, border-style, shadow).
-// rounded vive solo en variants — la forma es identidad visual, no dimensión.
-const DIMENSION_KEYS = [
-  "h", "w", "minH", "maxH", "minW", "maxW",
-  "p", "px", "py", "pt", "pb", "pl", "pr",
-  "m", "mx", "my", "mt", "mb", "ml", "mr",
-  "fontSize", "lineHeight", "letterSpacing", "fontWeight",
-  "gap", "rowGap", "columnGap",
-  "borderWidth",
-] as const;
-
-type DimensionKey = (typeof DIMENSION_KEYS)[number];
-
 // ─── SizeTokens — solo props dimensionales/estructurales, con soporte de tokens ─
-// Acepta tokens del tema (SpacingValue, FontSizeValue) igual que StyleProps del consumidor.
-// El generador ya resuelve tokens vía resolveTokenValue — solo faltaba el tipo.
 type StylePropsTokenOnly = {
   [K in keyof StyleProps]?: UnwrapResponsive<StyleProps[K]>;
 };

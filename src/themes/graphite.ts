@@ -37,8 +37,6 @@ export const graphiteTheme: Theme = {
       900: "#164e63",
       950: "#083344",
     },
-
-    // Slate — blue-tinted neutral
     neutral: {
       50: "#f8fafc",
       100: "#f1f5f9",
@@ -52,7 +50,6 @@ export const graphiteTheme: Theme = {
       900: "#0f172a",
       950: "#020617",
     },
-
     danger: {
       50: "#fef2f2",
       100: "#fee2e2",
