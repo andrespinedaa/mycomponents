@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useInsertionEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { useCallback, useEffect, useInsertionEffect, useMemo, useState, type ReactNode } from "react";
 import { ThemeContext } from "./ThemeContext";
 import { generateComponents } from "./generators/generateComponents";
 import { generateResponsive } from "./generators/generateResponsive";
@@ -34,21 +27,14 @@ function removeStyle(id: string): void {
   document.getElementById(id)?.remove();
 }
 
-export function ThemeProvider({
-  theme,
-  defaultColorScheme = "light",
-  children,
-}: ThemeProviderProps) {
+export function ThemeProvider({ theme, defaultColorScheme = "light", children }: ThemeProviderProps) {
   const [colorScheme, setColorScheme] = useState<ColorScheme>(defaultColorScheme);
-  const toggleColorScheme = useCallback(
-    () => setColorScheme((s) => (s === "light" ? "dark" : "light")),
-    [],
-  );
+  const toggleColorScheme = useCallback(() => setColorScheme((s) => (s === "light" ? "dark" : "light")), []);
 
   const p = theme.cssVarPrefix;
 
   useInsertionEffect(() => {
-    injectStyle(`${p}-tokens`,     generateTokens(theme));
+    injectStyle(`${p}-tokens`, generateTokens(theme));
     injectStyle(`${p}-components`, generateComponents(theme));
     injectStyle(`${p}-responsive`, generateResponsive(theme));
 
@@ -60,7 +46,9 @@ export function ThemeProvider({
   useEffect(() => {
     if (typeof document === "undefined") return;
     document.documentElement.dataset.colorScheme = colorScheme;
-    return () => { delete document.documentElement.dataset.colorScheme; };
+    return () => {
+      delete document.documentElement.dataset.colorScheme;
+    };
   }, [colorScheme]);
 
   const ctxValue = useMemo(
@@ -68,9 +56,5 @@ export function ThemeProvider({
     [theme, colorScheme, toggleColorScheme],
   );
 
-  return (
-    <ThemeContext.Provider value={ctxValue}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={ctxValue}>{children}</ThemeContext.Provider>;
 }

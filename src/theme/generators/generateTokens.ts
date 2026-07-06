@@ -100,10 +100,7 @@ export function generateTokens(theme: Theme): string {
       for (const [key, value] of Object.entries(dark.semantic)) {
         if (!value) continue;
         const kebab = camelToKebab(key);
-        css += `--${prefix}-color-${kebab}:${resolveSemanticRef(
-          value,
-          prefix,
-        )};`;
+        css += `--${prefix}-color-${kebab}:${resolveSemanticRef(value, prefix)};`;
       }
     }
 

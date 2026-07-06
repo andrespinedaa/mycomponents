@@ -58,6 +58,14 @@ export function mergeComponents(
         ...(baseEntry?.variants ?? {}),
         ...(overrideEntry.variants ?? {}),
       },
+      sizes: {
+        ...(baseEntry?.sizes ?? {}),
+        ...(overrideEntry.sizes ?? {}),
+      },
+      slots: {
+        ...(baseEntry?.slots ?? {}),
+        ...(overrideEntry.slots ?? {}),
+      },
     };
   }
 

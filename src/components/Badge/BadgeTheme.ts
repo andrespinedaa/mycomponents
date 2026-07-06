@@ -5,12 +5,11 @@ export type BadgeThemeConfig = ThemeComponentConfig<BadgeConfig>;
 
 export const BadgeThemeComponent: BadgeThemeConfig = {
   prefix: "badge",
-  defaultProps: { variant: "Filled" },
   sizes: {
-    xs: { px: "4px",  py: "2px",  fontSize: "10px" },
-    sm: { px: "6px",  py: "2px",  fontSize: "11px" },
-    md: { px: "8px",  py: "3px",  fontSize: "12px" },
-    lg: { px: "10px", py: "4px",  fontSize: "13px" },
+    xs: { px: "4px", py: "2px", fontSize: "10px" },
+    sm: { px: "6px", py: "2px", fontSize: "11px" },
+    md: { px: "8px", py: "3px", fontSize: "12px" },
+    lg: { px: "10px", py: "4px", fontSize: "13px" },
   },
   variants: {
     Filled: {

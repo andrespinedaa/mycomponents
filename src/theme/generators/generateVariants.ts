@@ -1,8 +1,7 @@
+import type { ComponentStates, StylePropsTokens, Theme, VariantStates } from "../";
 import { resolveValue } from "../../system/resolve-value";
 import { camelToKebab } from "../../utils/string";
-import type { Theme } from "../theme.types";
-import type { ComponentStates, VariantStateConfig, VariantTokens } from "../theme.variants";
-import { resolveVarName } from "./css-gen-utils";
+import { generateTokensCSS } from "./css-gen-utils";
 import { STYLE_PROPS_DATA } from "./system-css.data";
 
 export function resolveTokenValue(key: string, value: string, theme: Theme): string {
@@ -36,20 +35,16 @@ export function generateComponentVariants(
     if (!stateConfig) continue;
 
     for (const [state, tokens] of Object.entries(stateConfig) as [
-      keyof VariantStateConfig,
-      VariantTokens | undefined,
+      keyof VariantStates,
+      StylePropsTokens | undefined,
     ][]) {
       if (!tokens || Object.keys(tokens).length === 0) continue;
 
       const stateSelector = STATE_SELECTORS[state] ?? "";
       const selector = `[data-slot="${componentName}"][data-variant="${variant}"]${stateSelector}`;
 
-      css += `${selector}{`;
-      for (const [key, value] of Object.entries(tokens)) {
-        if (value == null) continue;
-        css += `${resolveVarName(key, prefix)}:${resolveTokenValue(key, String(value), theme)};`;
-      }
-      css += "}";
+      const body = generateTokensCSS(tokens, prefix, theme);
+      if (body) css += `${selector}{${body}}`;
     }
   }
 

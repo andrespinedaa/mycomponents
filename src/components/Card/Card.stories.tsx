@@ -13,7 +13,7 @@ type Story = StoryObj<typeof Card>;
 // ─── Contenido de ejemplo reutilizable ───────────────────────────────────────
 const SampleContent = () => (
   <>
-    <Card.Section section="header" p="md" borderBottom="1px solid #e5e7eb">
+    <Card.Section section="header" p="md" borderBottom="1px solid #e5e7eb" >
       <strong>Card Header</strong>
     </Card.Section>
     <Card.Section section="body" p="md">

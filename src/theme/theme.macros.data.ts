@@ -37,7 +37,7 @@ export const defaultThemeMacros = {
   "@lineClamp": {
     display: "-webkit-box",
     WebkitBoxOrient: "vertical",
-    WebkitLineClamp: "var(--line-clamp, 3)" as unknown as number,
+    WebkitLineClamp: "var(--line-clamp, 3)",
     overflow: "hidden",
   },
   "@inherit": {

@@ -1,7 +1,6 @@
 import { camelToKebab } from "../../utils/string";
 import type { Theme } from "../theme.types";
-import { resolveVarName } from "./css-gen-utils";
-import { resolveTokenValue } from "./generateVariants";
+import { generateTokensCSS } from "./css-gen-utils";
 
 export function generateComponentSlots(
   componentName: string,
@@ -16,12 +15,8 @@ export function generateComponentSlots(
   for (const [slotValue, tokens] of Object.entries(config.slots)) {
     if (!tokens || Object.keys(tokens).length === 0) continue;
     const selector = `[data-slot="${componentName}"][data-${slotProp}="${slotValue}"]`;
-    css += `${selector}{`;
-    for (const [key, value] of Object.entries(tokens)) {
-      if (value == null) continue;
-      css += `${resolveVarName(key, prefix)}:${resolveTokenValue(key, String(value), theme)};`;
-    }
-    css += "}";
+    const body = generateTokensCSS(tokens as Record<string, unknown>, prefix, theme);
+    if (body) css += `${selector}{${body}}`;
   }
 
   return css;

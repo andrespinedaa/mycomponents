@@ -1,29 +1,21 @@
 import type { ElementType } from "react";
-import type {
-  BuiltInMacros,
-  ComponentVariants,
-  Scales,
-  StyleProps,
-  StyleProp,
-  ThemeMacros,
-} from "../../theme";
+import type { BuiltInMacros, ComponentVariants, Scales, StyleProps, SystemCSS, Theme, ThemeMacros } from "../../theme";
 import type { PolymorphicRef } from "../../types/polimorphic.types";
-
-export type { StyleProp };
 import type { FactoryDefaultPropsConfig } from "./factory.defaults";
 import type { FactoryFunctionOptions, FactoryRender } from "./factory.render";
 
-export type ModProp = Record<string, unknown> | string;
 export type VarsProp = Record<string, string>;
-export type ApplyProp = keyof ThemeMacros | BuiltInMacros;
+export type ModProp = Record<string, unknown> | string;
 export type OrientationProp = "horizontal" | "vertical";
+export type ApplyProp = keyof ThemeMacros | BuiltInMacros;
+export type StyleProp = SystemCSS | ((theme: Theme) => SystemCSS);
 
 export type BaseProps = {
   vars?: VarsProp;
   unstyled?: boolean;
   dataSlot?: string;
   mod?: ModProp | ModProp[];
-  renderRoot?: FactoryRender<Record<string, unknown>>;
+  renderRoot?: FactoryRender<FactoryRenderProps<FactoryConfig>>;
   className?: string;
   style?: StyleProp;
   children?: React.ReactNode;
@@ -51,8 +43,10 @@ export type FactoryInternalProps<Config extends FactoryConfig> = {
   size: Config["sizes"] | undefined;
 };
 
-export type FactoryRenderProps<Config extends FactoryConfig> =
-  FactoryDefaultPropsConfig<Config> & FactoryInternalProps<Config>;
+export type FactoryRenderProps<Config extends FactoryConfig> = FactoryDefaultPropsConfig<Config> &
+  FactoryInternalProps<Config>;
 
-export type ComponentFactoryOptions<Config extends FactoryConfig> =
-  FactoryFunctionOptions<Config, FactoryRenderProps<Config>>;
+export type ComponentFactoryOptions<Config extends FactoryConfig> = FactoryFunctionOptions<
+  Config,
+  FactoryRenderProps<Config>
+>;

@@ -272,6 +272,25 @@ Cuando el usuario diga `CREATE_STORYBOOK_{NOMBRE}`, crear un archivo `{Nombre}.s
 
 ---
 
+## Filosofía — el tema es la fuente de verdad en runtime
+
+Los generadores de CSS iteran directamente sobre `theme.X` — nunca sobre arrays o constantes paralelas hardcodeadas (como `["sm","md","lg","xl"]`). Si el tema cambia (el consumer agrega breakpoints, tokens, etc.), el CSS generado cambia automáticamente sin tocar el generador.
+
+**Regla:** si un generador necesita iterar keys del tema, usa `Object.keys(theme.X)`. Si necesita iterar valores, usa `Object.entries(theme.X)`. Nunca duplicar esa información en una constante separada.
+
+```ts
+// ✗ incorrecto — array paralelo que no refleja el tema del consumer
+const BP_ORDER = ["sm", "md", "lg", "xl"] as const;
+for (const bp of BP_ORDER.filter(bp => bp in theme.breakpoints)) { ... }
+
+// ✓ correcto — el tema es la fuente de verdad
+for (const bp of Object.keys(theme.breakpoints)) { ... }
+```
+
+Las constantes tipadas como `BREAKPOINT_KEYS` son válidas como fallback estático o para tipos — pero los generadores no las usan para iterar.
+
+---
+
 ## Filosofía de valores CSS — sin hardcode
 
 Nuestro sistema nunca escribe valores CSS hardcodeados en el render de un componente.

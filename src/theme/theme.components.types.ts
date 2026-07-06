@@ -16,36 +16,36 @@ import type {
   StackConfig,
   TextConfig,
 } from "../components/Primitives";
-import type { FactoryConfig } from "../factory/core/factories.types";
-import type { RequiredDefaultProps } from "../factory/core/factory.defaults";
-import type { ComponentVariants, SizeTokens, SlotTokens, VariantStateConfig } from "./theme.variants";
+import type { FactoryConfig, RequiredDefaultProps } from "../factory/core";
+import type { StylePropsTokens } from "./generators/system-css.types";
+import type { ComponentVariants, VariantStates } from "./theme.variants";
 
 export type ComponentConfigs = {
   /* Primitives */
   Box: BoxConfig;
   Text: TextConfig;
   Flex: FlexConfig;
-  Divider: DividerConfig;
-  Grid: GridBoxConfig;
   Image: ImgConfig;
   Stack: StackConfig;
+  Grid: GridBoxConfig;
+  Divider: DividerConfig;
   /* Components */
-  Alert: AlertConfig;
-  Avatar: AvatarConfig;
-  Badge: BadgeConfig;
-  Button: ButtonConfig;
   Card: CardConfig;
-  CardSection: CardSectionConfig;
+  Alert: AlertConfig;
+  Badge: BadgeConfig;
   Input: InputConfig;
+  Avatar: AvatarConfig;
+  Button: ButtonConfig;
+  CardSection: CardSectionConfig;
 };
 
 export type ThemeComponentOptions<Config extends FactoryConfig> = {
   prefix?: string;
   slotProp?: string;
   defaultProps?: RequiredDefaultProps<Config>;
-  slots?: Record<keyof Config["statics"], SlotTokens>;
-  sizes?: Partial<Record<NonNullable<Config["sizes"]>, SizeTokens>>;
-  variants?: Partial<Record<ComponentVariants, VariantStateConfig>>;
+  sizes?: Partial<Record<Config["sizes"], StylePropsTokens>>;
+  slots?: Partial<Record<keyof Config["statics"], StylePropsTokens>>;
+  variants?: Partial<Record<ComponentVariants, VariantStates>>;
 };
 
 export type ThemeComponents = {
