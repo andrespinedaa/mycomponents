@@ -1,10 +1,24 @@
 import type { CSSProperties } from "react";
-import type { CaseFormat, ConvertFormat } from "../../types/cases.types";
-import type { BreakpointKey, CSSLength, ColorValue, FontSizeValue, RadiusValue, SpacingValue } from "../theme.types";
+import type { CaseFormat, ConvertFormat, Prettify } from "../../types";
+import type {
+  PartialBreakPointKey,
+  CSSLength,
+  ColorValue,
+  FontSizeValue,
+  RadiusValue,
+  SpacingValue,
+} from "../core/theme.types";
+
+// ─── CSSMultiFormat ─────────────────────────────────────────────────────────────
+export type CSSMultiFormat<Format extends CaseFormat = "camel"> = {
+  [K in keyof CSSProperties as ConvertFormat<K & string, "camel", Format>]?: CSSProperties[K];
+};
 
 // ─── PropOverride ─────────────────────────────────────────────────────────────
+export type PropCategory = "spacing" | "color" | "radius" | "fontSize" | "raw";
+export type CSSPropertyName = Extract<keyof CSSProperties, string>;
 export type PropOverride<
-  CSSProp extends keyof CSSProperties,
+  CSSProp extends CSSPropertyName,
   Alias extends string,
   IsResponsive extends boolean = false,
 > = {
@@ -74,24 +88,8 @@ export const STYLE_PROPS_OVERRIDES = [
   { cssProp: "zIndex",                           alias: "zIndex",      responsive: true,  category: "raw"     },
   { cssProp: "flexGrow",                         alias: "flexGrow",    responsive: true,  category: "raw"     },
   { cssProp: "flexShrink",                       alias: "flexShrink",  responsive: true,  category: "raw"     },
+  
 ] as const satisfies readonly PropOverride<keyof CSSProperties, string, boolean>[];
-
-export type PartialBreakPointKey<T> = Partial<Record<BreakpointKey, T>>;
-export type Responsive<T> = T | PartialBreakPointKey<T>;
-
-// ─── StylePropDef ─────────────────────────────────────────────────────────────
-export type PropCategory = "spacing" | "color" | "radius" | "fontSize" | "raw";
-export type CSSPropertyName = Extract<keyof CSSProperties, string>;
-export type StylePropDef = {
-  properties: CSSPropertyName[];
-  category: PropCategory;
-  responsive: boolean;
-};
-
-// ─── CSSMultiFormat ─────────────────────────────────────────────────────────────
-export type CSSMultiFormat<Format extends CaseFormat = "camel"> = {
-  [K in keyof CSSProperties as ConvertFormat<K & string, "camel", Format>]?: CSSProperties[K];
-};
 
 // ─── SystemStyleProps Core ─────────────────────────────────────────────────────────
 export type SystemStyleProps<
@@ -117,43 +115,6 @@ export type SystemStyleProps<
 // ─── WithTokens — preserva literales de token en autocomplete ─────────────────
 export type WithTokens<T extends string> = T | CSSLength | (string & {});
 
-// ─── TokenizedStyleProps ───────────────────────────────────────────────────────────
-export type TokenizedStyleProps = {
-  bg?: Responsive<WithTokens<ColorValue>>;
-  color?: Responsive<WithTokens<ColorValue>>;
-  borderColor?: Responsive<WithTokens<ColorValue>>;
-  rounded?: Responsive<WithTokens<RadiusValue>>;
-  w?: Responsive<WithTokens<SpacingValue>>;
-  h?: Responsive<WithTokens<SpacingValue>>;
-  minW?: Responsive<WithTokens<SpacingValue>>;
-  maxW?: Responsive<WithTokens<SpacingValue>>;
-  minH?: Responsive<WithTokens<SpacingValue>>;
-  maxH?: Responsive<WithTokens<SpacingValue>>;
-  m?: Responsive<WithTokens<SpacingValue>>;
-  mx?: Responsive<WithTokens<SpacingValue>>;
-  my?: Responsive<WithTokens<SpacingValue>>;
-  mt?: Responsive<WithTokens<SpacingValue>>;
-  mr?: Responsive<WithTokens<SpacingValue>>;
-  mb?: Responsive<WithTokens<SpacingValue>>;
-  ml?: Responsive<WithTokens<SpacingValue>>;
-  p?: Responsive<WithTokens<SpacingValue>>;
-  px?: Responsive<WithTokens<SpacingValue>>;
-  py?: Responsive<WithTokens<SpacingValue>>;
-  pt?: Responsive<WithTokens<SpacingValue>>;
-  pr?: Responsive<WithTokens<SpacingValue>>;
-  pb?: Responsive<WithTokens<SpacingValue>>;
-  pl?: Responsive<WithTokens<SpacingValue>>;
-  gap?: Responsive<WithTokens<SpacingValue>>;
-  rowGap?: Responsive<WithTokens<SpacingValue>>;
-  columnGap?: Responsive<WithTokens<SpacingValue>>;
-  top?: Responsive<WithTokens<SpacingValue>>;
-  right?: Responsive<WithTokens<SpacingValue>>;
-  bottom?: Responsive<WithTokens<SpacingValue>>;
-  left?: Responsive<WithTokens<SpacingValue>>;
-  inset?: Responsive<WithTokens<SpacingValue>>;
-  fontSize?: Responsive<WithTokens<FontSizeValue>>;
-};
-
 // ─── CategoryToToken — fuente de verdad: categoría → tipo de token ────────────
 export type CategoryToToken = {
   spacing: SpacingValue;
@@ -162,8 +123,48 @@ export type CategoryToToken = {
   fontSize: FontSizeValue;
 };
 
+// ─── StylePropDef ─────────────────────────────────────────────────────────────
+export type StylePropDef = {
+  properties: CSSPropertyName[];
+  category: PropCategory;
+  responsive: boolean;
+};
+
+// ─── TokenizedStyleProps — derivado de STYLE_PROPS_OVERRIDES + CategoryToToken ─
+export type Responsive<T> = T | PartialBreakPointKey<T>;
+
+export type TokenizedStyleProps = Prettify<{
+  [O in (typeof STYLE_PROPS_OVERRIDES)[number] as O["category"] extends keyof CategoryToToken
+    ? O["alias"]
+    : never]?: O["responsive"] extends true
+    ? Responsive<WithTokens<CategoryToToken[O["category"] & keyof CategoryToToken]>>
+    : WithTokens<CategoryToToken[O["category"] & keyof CategoryToToken]>;
+}>;
+
 type ExcludedProps = "animation" | "animationName" | "counterReset" | "counterIncrement" | "quotes" | "content";
 type BaseStyleProps = SystemStyleProps<typeof STYLE_PROPS_OVERRIDES, ExcludedProps, "camel">;
+
+// ─── SystemCSS — CSS properties con tokens del tema ──────────────────────────
+type CSSPropCategoryPair = {
+  [I in keyof typeof STYLE_PROPS_OVERRIDES]: (typeof STYLE_PROPS_OVERRIDES)[I] extends {
+    cssProp: infer P;
+    category: infer C extends Exclude<PropCategory, "raw">;
+  }
+    ? P extends readonly (infer PS extends CSSPropertyName)[]
+      ? { prop: PS; cat: C }
+      : P extends CSSPropertyName
+      ? { prop: P; cat: C }
+      : never
+    : never;
+}[number];
+
+type CSSPropToCategory = { [K in CSSPropCategoryPair as K["prop"]]: K["cat"] };
+
+export type SystemCSS = {
+  [K in keyof CSSProperties]?: K extends keyof CSSPropToCategory
+    ? CategoryToToken[CSSPropToCategory[K]] | CSSProperties[K]
+    : CSSProperties[K];
+};
 
 export type StyleProps = Omit<BaseStyleProps, keyof TokenizedStyleProps> & TokenizedStyleProps;
 

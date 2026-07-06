@@ -1,4 +1,4 @@
-import type { DeepPartial, Prettify } from "../types/utils.types";
+import type { DeepPartial, Prettify } from "../../types/utils.types";
 import type { ThemeComponents } from "./theme.components.types";
 import type { Macros } from "./theme.macros.types";
 
@@ -23,6 +23,7 @@ export type RadiiScale = ScaleRange<"none" | "sm" | "md" | "lg" | "full">;
 export type SpacingScale = ScaleRange<"xs" | "sm" | "md" | "lg" | "xl" | "2xl">;
 export type BreakPointsScale = ScaleRange<"sm" | "md" | "lg" | "xl">;
 export type BreakpointKey = "base" | keyof ThemeBreakpoints;
+export type PartialBreakPointKey<T> = Partial<Record<BreakpointKey, T>>;
 
 // ─── Merge ──────────────────────────────────────────────────────────
 /** Fusiona `Base` con `Custom` — las keys de `Custom` sobreescriben las de `Base`. */

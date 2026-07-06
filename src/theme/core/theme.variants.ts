@@ -1,4 +1,4 @@
-import type { StylePropsTokens } from "./generators/system-css.types";
+import type { StylePropsTokens } from "../generators/system-css.types";
 
 // prettier-ignore
 export type ComponentVariants =

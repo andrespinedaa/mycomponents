@@ -3,7 +3,7 @@ import type {
   Theme,
   ThemeColors,
   ThemeOverride,
-} from "./theme.types";
+} from "./core/theme.types";
 
 export function mergeColors(
   base: ThemeColors,

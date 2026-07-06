@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { resolveMacros } from "./parse-macros";
-import { defaultThemeMacros } from "../theme/theme.macros.data";
+import { defaultThemeMacros } from "../theme/core/theme.macros.data";
 
 describe("resolveMacros", () => {
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { defaultTheme } from "../theme/default-theme";
+import { defaultTheme } from "../themes/default-theme";
 import { resolveValue } from "./resolve-value";
 
 const p = defaultTheme.cssVarPrefix;

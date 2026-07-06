@@ -1,12 +1,4 @@
-import type { CSSProperties } from "react";
-import {
-  STYLE_PROPS_OVERRIDES,
-  type CategoryToToken,
-  type CSSMultiFormat,
-  type CSSPropertyName,
-  type PropCategory,
-  type StylePropDef
-} from "./system-css.types";
+import { STYLE_PROPS_OVERRIDES, type CSSPropertyName, type PropCategory, type StylePropDef } from "./system-css.types";
 
 // ─── CSS_PASSTHROUGH — props sin alias, sin tokens, sin responsive ────────────
 // prettier-ignore
@@ -20,43 +12,6 @@ const CSS_PASSTHROUGH = [
   "cursor", "pointerEvents", "userSelect", "transition", "boxShadow", "justifyContent",
   "gridColumn", "gridRow", "gridArea", "gridAutoColumns", "gridAutoRows", "gridAutoFlow",
 ] as const;
-
-// ─── RawStyleProps (tema interno) ────────────────────────────────────────────
-type CSSOnly<T> = T extends number ? string : T;
-
-type AliasedRawProps = {
-  [O in (typeof STYLE_PROPS_OVERRIDES)[number] as O["alias"]]?: O["cssProp"] extends (infer P extends keyof CSSProperties)[]
-    ? CSSOnly<CSSProperties[P]>
-    : CSSOnly<CSSProperties[O["cssProp"] & keyof CSSProperties]>;
-};
-
-type RawCSSMultiFormat = { [K in keyof CSSMultiFormat]?: CSSOnly<CSSMultiFormat[K]> };
-
-export type RawStyleProps = Omit<RawCSSMultiFormat, keyof AliasedRawProps> &
-  AliasedRawProps &
-  Record<`--${string}`, string>;
-
-// ─── SystemCSS — CSS properties con tokens del tema ──────────────────────────
-type CSSPropCategoryPair = {
-  [I in keyof typeof STYLE_PROPS_OVERRIDES]: (typeof STYLE_PROPS_OVERRIDES)[I] extends {
-    cssProp: infer P;
-    category: infer C extends Exclude<PropCategory, "raw">;
-  }
-    ? P extends readonly (infer PS extends CSSPropertyName)[]
-      ? { prop: PS; cat: C }
-      : P extends CSSPropertyName
-      ? { prop: P; cat: C }
-      : never
-    : never;
-}[number];
-
-type CSSPropToCategory = { [K in CSSPropCategoryPair as K["prop"]]: K["cat"] };
-
-export type SystemCSS = {
-  [K in keyof CSSProperties]?: K extends keyof CSSPropToCategory
-    ? CategoryToToken[CSSPropToCategory[K]] | CSSProperties[K]
-    : CSSProperties[K];
-};
 
 // ─── CSS_PROP_TO_CATEGORY — lookup runtime para resolveStyle ─────────────────
 export const CSS_PROP_TO_CATEGORY: Partial<Record<string, PropCategory>> = Object.fromEntries(

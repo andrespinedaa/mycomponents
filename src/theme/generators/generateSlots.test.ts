@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { defaultTheme } from "../default-theme";
-import type { Theme } from "../theme.types";
+import { defaultTheme } from "../../themes/default-theme";
+import type { Theme } from "../core/theme.types";
 import { generateComponentSlots } from "./generateSlots";
 
 const p = defaultTheme.cssVarPrefix;

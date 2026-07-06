@@ -1,7 +1,7 @@
 import type { OrientationProp } from "../factory";
 import { useCreateProvider } from "../hooks/useCreateProvider";
 import type { Scales } from "../theme";
-import type { ComponentVariants } from "../theme/theme.variants";
+import type { ComponentVariants } from "../theme/core/theme.variants";
 
 export interface LayoutContextValue {
   orientation?: OrientationProp;

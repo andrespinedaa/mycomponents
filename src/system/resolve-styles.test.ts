@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { resolveStyle } from "./resolve-styles";
-import { defaultTheme } from "../theme/default-theme";
+import { defaultTheme } from "../themes/default-theme";
 
 const theme = defaultTheme;
 const prefix = theme.cssVarPrefix;

@@ -6,8 +6,8 @@ import {
   GRID_DISPLAYS,
   JUSTIFY_CONTENTS,
   JUSTIFY_ITEMS,
-} from "../theme/theme.macros.data";
-import type { FlexMacros, GridMacros, Macros } from "../theme/theme.macros.types";
+} from "../theme/core/theme.macros.data";
+import type { FlexMacros, GridMacros, Macros } from "../theme/core/theme.macros.types";
 
 function macroToCssValue<T extends string>(value: T): string {
   return value

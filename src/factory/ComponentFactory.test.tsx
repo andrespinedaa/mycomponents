@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import { Box } from "../components/Primitives/Box/Box";
 import { ThemeProvider, type SystemVariants } from "../theme";
 import { useTheme } from "../hooks";
-import { defaultTheme } from "../theme/default-theme";
+import { defaultTheme } from "../themes/default-theme";
 import { ComponentFactory } from "./ComponentFactory";
 import type { ComponentConfig, EmptyStatics } from "./core/factories.types";
 

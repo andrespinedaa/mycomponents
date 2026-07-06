@@ -6,7 +6,7 @@ import type {
   CardConfig,
   CardSectionConfig,
   InputConfig,
-} from "../components";
+} from "../../components";
 import type {
   BoxConfig,
   DividerConfig,
@@ -15,9 +15,9 @@ import type {
   ImgConfig,
   StackConfig,
   TextConfig,
-} from "../components/Primitives";
-import type { FactoryConfig, RequiredDefaultProps } from "../factory/core";
-import type { StylePropsTokens } from "./generators/system-css.types";
+} from "../../components/Primitives";
+import type { FactoryConfig, RequiredDefaultProps } from "../../factory/core";
+import type { StylePropsTokens } from "../generators/system-css.types";
 import type { ComponentVariants, VariantStates } from "./theme.variants";
 
 export type ComponentConfigs = {

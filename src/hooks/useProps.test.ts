@@ -1,7 +1,7 @@
 // src/hooks/useProps.test.ts
 import { describe, it, expect } from "vitest";
 import { useProps } from "./useProps";
-import { defaultTheme } from "../theme/default-theme";
+import { defaultTheme } from "../themes/default-theme";
 import type { SystemVariants } from "../theme";
 
 // Tipos de prueba

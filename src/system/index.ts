@@ -1,4 +1,3 @@
-export * from './css-registry';
 export * from './extract-style-props';
 export * from './get-mod';
 export * from './parse-macros';

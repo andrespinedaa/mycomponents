@@ -1,4 +1,4 @@
-import type { Theme } from "../theme.types";
+import type { Theme } from "../core/theme.types";
 import { RESPONSIVE_CSS_PROPS } from "./system-css.data";
 import { camelToKebab } from "../../utils/string";
 

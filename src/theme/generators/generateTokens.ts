@@ -1,5 +1,5 @@
 import { camelToKebab } from "../../utils/string";
-import type { Theme } from "../theme.types";
+import type { Theme } from "../core/theme.types";
 
 function resolveSemanticRef(value: string, prefix: string): string {
   const match = value.match(/^([a-z]+)\.(\d+)$/);

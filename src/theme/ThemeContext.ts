@@ -1,5 +1,5 @@
 import { useCreateProvider } from "../hooks/useCreateProvider";
-import type { ColorScheme, Theme } from "./theme.types";
+import type { ColorScheme, Theme } from "./core/theme.types";
 
 export interface ThemeContextValue {
   theme: Theme;

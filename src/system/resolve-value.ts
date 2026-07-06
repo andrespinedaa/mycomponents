@@ -1,5 +1,5 @@
 import type { PropCategory } from "../theme/generators/system-css.types";
-import type { Theme } from "../theme/theme.types";
+import type { Theme } from "../theme/core/theme.types";
 
 const SIZE_ALIASES: Record<string, string> = {
   full: "100%",

@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import { STYLE_PROPS_DATA } from "../theme/generators/system-css.data";
 import type { StyleProps } from "../theme/generators/system-css.data";
-import type { Theme } from "../theme/theme.types";
+import type { Theme } from "../theme/core/theme.types";
 import { resolveValue } from "./resolve-value";
 import { isResponsiveObject, cssPropToVarKey } from "./responsive.data";
 

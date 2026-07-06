@@ -1,6 +1,6 @@
-import type { Theme } from "../theme/theme.types";
-import { defaultThemeMacros } from "../theme/theme.macros.data";
-import { defaultThemeComponents } from "../theme/theme.components.data";
+import type { Theme } from "../theme/core/theme.types";
+import { defaultThemeMacros } from "../theme/core/theme.macros.data";
+import { defaultThemeComponents } from "../theme/core/theme.components.data";
 
 // ─── Terra — "Terracota sobre stone, balanceada y warm" ──────────────────────
 // Terracotta primary · teal secondary · stone neutral

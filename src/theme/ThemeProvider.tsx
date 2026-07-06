@@ -3,7 +3,7 @@ import { ThemeContext } from "./ThemeContext";
 import { generateComponents } from "./generators/generateComponents";
 import { generateResponsive } from "./generators/generateResponsive";
 import { generateTokens } from "./generators/generateTokens";
-import type { ColorScheme, Theme } from "./theme.types";
+import type { ColorScheme, Theme } from "./core/theme.types";
 
 export interface ThemeProviderProps {
   theme: Theme;

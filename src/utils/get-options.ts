@@ -1,5 +1,5 @@
 import type { PropCategory } from "../theme/generators/system-css.types";
-import type { Theme } from "../theme/theme.types";
+import type { Theme } from "../theme/core/theme.types";
 
 export function getOptions(category: PropCategory, theme: Theme) {
   switch (category) {

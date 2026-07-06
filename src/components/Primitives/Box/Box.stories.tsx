@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { defaultTheme } from "../../../theme";
 import { createSystemPropsArgTypes } from "../../../utils/createStylePropsArgTypes";
 import { Box } from "./Box";
+import { defaultTheme } from "../../../themes/default-theme";
 
 const meta = {
   title: "Primitives/Box",

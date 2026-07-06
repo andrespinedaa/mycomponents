@@ -1,4 +1,4 @@
-import type { Theme, ThemeBreakpoints } from "../theme.types";
+import type { Theme, ThemeBreakpoints } from "../core/theme.types";
 import { camelToKebab } from "../../utils/string";
 import { generateTokensCSS } from "./css-gen-utils";
 

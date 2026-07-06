@@ -3,7 +3,7 @@ import {
   type ComponentConfig,
   type EmptyStatics,
 } from "../../../factory";
-import type { Scales } from "../../../theme/theme.types";
+import type { Scales } from "../../../theme/core/theme.types";
 
 export interface StackOwnProps {}
 

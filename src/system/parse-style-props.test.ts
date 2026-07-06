@@ -1,7 +1,7 @@
 // src/system/parse-style-props.test.ts
 import { describe, it, expect } from "vitest";
 import { parseStyleProps } from "./parse-style-props";
-import { defaultTheme } from "../theme/default-theme";
+import { defaultTheme } from "../themes/default-theme";
 
 function asVars(styles: React.CSSProperties): Record<string, unknown> {
   return styles as Record<string, unknown>;

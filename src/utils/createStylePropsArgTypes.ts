@@ -1,5 +1,5 @@
 import type { ArgTypes } from "@storybook/react";
-import type { Theme } from "../theme/theme.types";
+import type { Theme } from "../theme/core/theme.types";
 import { STYLE_PROPS_DATA } from "../theme/generators/system-css.data";
 import { getOptions } from "./get-options";
 

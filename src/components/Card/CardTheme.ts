@@ -1,4 +1,4 @@
-import type { ThemeComponentConfig } from "../../theme/theme.components.types";
+import type { ThemeComponentConfig } from "../../theme/core/theme.components.types";
 import type { CardConfig } from "./Card";
 
 export type CardTheme = ThemeComponentConfig<CardConfig>;
