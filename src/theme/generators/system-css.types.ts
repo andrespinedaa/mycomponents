@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { CaseFormat, ConvertFormat } from "../../types/cases.types";
-import type { BaseColors, BaseRadii, BaseFontSizes, BaseSpacing } from "../theme.types";
+import type { ColorValue, FontSizeValue, RadiusValue, SpacingValue } from "../theme.types";
 
 // ─── Responsive ───────────────────────────────────────────────────────────────
 export const BREAKPOINT_KEYS = ["base", "sm", "md", "lg", "xl"] as const;
@@ -19,13 +19,9 @@ export type ThemeBreakpointKey = Exclude<BreakpointKey, "base">;
 export type PartialBreakPointKey<T> = Partial<Record<BreakpointKey, T>>;
 export type Responsive<T> = T | PartialBreakPointKey<T>;
 
-// ─── PropCategory ─────────────────────────────────────────────────────────────
-export type PropCategory = "spacing" | "color" | "radius" | "fontSize" | "raw";
-
-// ─── CSSPropertyName ─────────────────────────────────────────────────────────
-export type CSSPropertyName = Extract<keyof CSSProperties, string>;
-
 // ─── StylePropDef ─────────────────────────────────────────────────────────────
+export type PropCategory = "spacing" | "color" | "radius" | "fontSize" | "raw";
+export type CSSPropertyName = Extract<keyof CSSProperties, string>;
 export type StylePropDef = {
   properties: CSSPropertyName[];
   category: PropCategory;
@@ -66,27 +62,14 @@ export type SystemStyleProps<
     : never;
 } & Omit<
   CSSMultiFormat<Format>,
-  Extract<keyof CSSMultiFormat<Format>, Overrides[number]["cssProp"]> | ConvertFormat<Excluded & string, "camel", Format>
+  | Extract<keyof CSSMultiFormat<Format>, Overrides[number]["cssProp"]>
+  | ConvertFormat<Excluded & string, "camel", Format>
 >;
 
-// ─── Token value types ────────────────────────────────────────────────────────
-// Cada tipo corresponde a una PropCategory y define qué tokens acepta.
-// En SystemCSS se unen con CSSProperties[K] para aceptar también valores CSS nativos.
-
-type ColorScale = BaseColors[keyof BaseColors];
-export type ColorValue = `${keyof BaseColors}.${keyof ColorScale}`;
-export type SpacingValue = keyof BaseSpacing | "auto" | "full" | "screen" | "fit";
-export type RadiusValue = keyof BaseRadii;
-export type FontSizeValue = keyof BaseFontSizes;
-
 // ─── ExcludedProps ────────────────────────────────────────────────────────────
-// Props de CSSProperties que no participan en el sistema de styleProps.
 export type ExcludedProps = "animation" | "animationName" | "counterReset" | "counterIncrement" | "quotes" | "content";
 
 // ─── RichStyleProps ───────────────────────────────────────────────────────────
-// Override manual de aliases para agregar autocomplete de tokens del tema.
-// Reemplaza los tipos genéricos de BaseStyleProps (derivado automático) con tipos ricos.
-// Token | CSSProperties[K]: tokens del tema + cualquier valor CSS nativo válido.
 export type RichStyleProps = {
   bg?: Responsive<ColorValue | CSSProperties["background"]>;
   color?: Responsive<ColorValue | CSSProperties["color"]>;
