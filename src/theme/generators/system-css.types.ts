@@ -1,23 +1,22 @@
 import type { CSSProperties } from "react";
 import type { CaseFormat, ConvertFormat } from "../../types/cases.types";
-import type { ColorValue, FontSizeValue, RadiusValue, SpacingValue } from "../theme.types";
+import type { BreakpointKey, ColorValue, FontSizeValue, RadiusValue, SpacingValue, ThemeBreakpointKey } from "../theme.types";
 
 // ─── Responsive ───────────────────────────────────────────────────────────────
-export const BREAKPOINT_KEYS = ["base", "sm", "md", "lg", "xl"] as const;
+export const BREAKPOINT_KEYS = ["base", "sm", "md", "lg", "xl"] as const satisfies BreakpointKey[];
 // prettier-ignore
 export const DIMENSION_KEYS = [
   "h", "w", "minH", "maxH", "minW", "maxW",
   "p", "px", "py", "pt", "pb", "pl", "pr",
   "m", "mx", "my", "mt", "mb", "ml", "mr",
-  "fontSize", "lineHeight", "letterSpacing", 
+  "fontSize", "lineHeight", "letterSpacing",
   "fontWeight", "gap", "rowGap", "columnGap",
   "borderWidth",
 ] as const;
-export type BreakpointKey = (typeof BREAKPOINT_KEYS)[number];
 export type DimensionKey = (typeof DIMENSION_KEYS)[number];
-export type ThemeBreakpointKey = Exclude<BreakpointKey, "base">;
 export type PartialBreakPointKey<T> = Partial<Record<BreakpointKey, T>>;
 export type Responsive<T> = T | PartialBreakPointKey<T>;
+export type { BreakpointKey, ThemeBreakpointKey };
 
 // ─── StylePropDef ─────────────────────────────────────────────────────────────
 export type PropCategory = "spacing" | "color" | "radius" | "fontSize" | "raw";

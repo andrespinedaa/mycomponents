@@ -1,5 +1,4 @@
 import type { DeepPartial, Prettify } from "../types/utils.types";
-import type { ThemeBreakpointKey } from "./generators/system-css.types";
 import type { ThemeComponents } from "./theme.components.types";
 import type { Macros } from "./theme.macros.types";
 
@@ -11,18 +10,20 @@ export type CSSUnit =
   | "pc" | "cm" | "mm" | "in" | "svh" | "svw"
   | "dvh" | "dvw";
 
-export type CSSLength = `${number}${CSSUnit}` | "0";
 export type CSSColor = string;
+export type CSSLength = `${number}${CSSUnit}` | "0";
 
 // ─── Scales Range ──────────────────────────────────────────────────────────
 export interface CustomScales {}
 export type Scales = "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "full" | keyof CustomScales;
 export type ScaleRange<S extends Scales> = S;
-export type SpacingScale = ScaleRange<"xs" | "sm" | "md" | "lg" | "xl" | "2xl">;
-export type FontSizeScale = ScaleRange<SpacingScale | "3xl" | "4xl">;
-export type RadiiScale = ScaleRange<"none" | "sm" | "md" | "lg" | "full">;
 export type ShadowScale = ScaleRange<"sm" | "md" | "lg" | "xl">;
 export type ControlHeightScale = ScaleRange<"sm" | "md" | "lg">;
+export type FontSizeScale = ScaleRange<SpacingScale | "3xl" | "4xl">;
+export type RadiiScale = ScaleRange<"none" | "sm" | "md" | "lg" | "full">;
+export type SpacingScale = ScaleRange<"xs" | "sm" | "md" | "lg" | "xl" | "2xl">;
+export type ThemeBreakpointKey = ScaleRange<"sm" | "md" | "lg" | "xl">;
+export type BreakpointKey = "base" | ThemeBreakpointKey;
 
 // ─── Merge ──────────────────────────────────────────────────────────
 /** Fusiona `Base` con `Custom` — las keys de `Custom` sobreescriben las de `Base`. */
@@ -45,8 +46,8 @@ export type MergeColorsOverride<Base, Custom> = Prettify<
 >;
 
 // ─── Bases ───────────────────────────────────────────────────────────────
-export interface BaseSpacing extends Record<SpacingScale, CSSLength> {}
 export interface BaseRadii extends Record<RadiiScale, CSSLength> {}
+export interface BaseSpacing extends Record<SpacingScale, CSSLength> {}
 export interface BaseFontSizes extends Record<FontSizeScale, CSSLength> {}
 export interface BaseBreakpoints extends Record<ThemeBreakpointKey, CSSLength> {}
 
@@ -83,7 +84,7 @@ export interface BaseTypography {
 }
 
 // ─── Shadow ──────────────────────────────────────────────────────────────────
-export interface BaseShadows extends Record<ShadowScale, string> {}
+export interface BaseShadows extends Record<ShadowScale, CSSColor> {}
 
 // ─── Motion ──────────────────────────────────────────────────────────────────
 export interface BaseMotion {
@@ -115,32 +116,33 @@ export interface ThemeSemanticLayer {
 
 // ─── Extensiónes por el usuario ─────────────────────────────────────────────────
 export interface ConsumerTheme {}
-export interface ConsumerTypography {}
-export interface ConsumerShadows {}
-export interface ConsumerMotion {}
-export interface ConsumerSemanticColors {}
-export interface ConsumerColors {}
-export interface ConsumerSpacing {}
 export interface ConsumerRadii {}
+export interface ConsumerMotion {}
+export interface ConsumerColors {}
+export interface ConsumerShadows {}
+export interface ConsumerSpacing {}
 export interface ConsumerFontSizes {}
+export interface ConsumerTypography {}
+export interface ConsumerBreakPoints {}
+export interface ConsumerSemanticColors {}
 
 // ─── Values tokens ──────────────────────────────────────────────────────────
+export type RadiusValue = keyof ThemeRadii;
+export type FontSizeValue = keyof ThemeFontSizes;
 export type ColorScaleKeys = BaseColors[keyof BaseColors];
 export type ColorValue = `${keyof BaseColors}.${keyof ColorScaleKeys}`;
 export type SpacingValue = keyof ThemeSpacing | "auto" | "full" | "screen" | "fit";
-export type RadiusValue = keyof ThemeRadii;
-export type FontSizeValue = keyof ThemeFontSizes;
 
 // ─── Tipos finales ────────────────────────────────────────────────────────────
-export type ThemeTypography = MergeBaseCustoms<BaseTypography, ConsumerTypography>;
-export type ThemeShadows = MergeBaseCustoms<BaseShadows, ConsumerShadows>;
-export type ThemeMotion = MergeBaseCustoms<BaseMotion, ConsumerMotion>;
-export type ThemeSemanticColors = MergeBaseCustoms<BaseSemanticColors, ConsumerSemanticColors>;
-export type ThemeColors = MergeBaseCustoms<BaseColors, ConsumerColors>;
-export type ThemeSpacing = MergeBaseCustoms<BaseSpacing, ConsumerSpacing>;
 export type ThemeRadii = MergeBaseCustoms<BaseRadii, ConsumerRadii>;
+export type ThemeMotion = MergeBaseCustoms<BaseMotion, ConsumerMotion>;
+export type ThemeColors = MergeBaseCustoms<BaseColors, ConsumerColors>;
+export type ThemeShadows = MergeBaseCustoms<BaseShadows, ConsumerShadows>;
+export type ThemeSpacing = MergeBaseCustoms<BaseSpacing, ConsumerSpacing>;
 export type ThemeFontSizes = MergeBaseCustoms<BaseFontSizes, ConsumerFontSizes>;
-export type ThemeBreakpoints = Prettify<BaseBreakpoints>;
+export type ThemeTypography = MergeBaseCustoms<BaseTypography, ConsumerTypography>;
+export type ThemeBreakpoints = MergeBaseCustoms<BaseBreakpoints, ConsumerBreakPoints>;
+export type ThemeSemanticColors = MergeBaseCustoms<BaseSemanticColors, ConsumerSemanticColors>;
 
 // ─── Dark Theme ────────────────────────────────────────────────────────────
 export type DarkThemeOverride = {
@@ -177,8 +179,8 @@ export interface Theme extends ConsumerTheme {
   typography: ThemeTypography;
   shadows: ThemeShadows;
   motion: ThemeMotion;
-  semantic?: ThemeSemanticLayer;
-  dark?: DarkThemeOverride;
+  semantic: ThemeSemanticLayer;
+  dark: DarkThemeOverride;
 }
 
 export type ColorScheme = "light" | "dark";
