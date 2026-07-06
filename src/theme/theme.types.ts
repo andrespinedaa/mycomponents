@@ -49,7 +49,7 @@ export type MergeColorsOverride<Base, Custom> = Prettify<
 export interface BaseRadii extends Record<RadiiScale, CSSLength> {}
 export interface BaseSpacing extends Record<SpacingScale, CSSLength> {}
 export interface BaseFontSizes extends Record<FontSizeScale, CSSLength> {}
-export interface BaseBreakpoints extends Record<BreakpointKey, CSSLength> {}
+export interface BaseBreakpoints extends Record<BaseBreakPoints, CSSLength> {}
 
 // ─── Base Color ───────────────────────────────────────────────────────────────
 export type ColorScale = {
