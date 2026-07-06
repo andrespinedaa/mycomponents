@@ -12,7 +12,6 @@ export type CSSUnit =
   | "dvh" | "dvw";
 
 export type CSSLength = `${number}${CSSUnit}` | "0";
-export type CSSLengthOrKeyword = CSSLength | "auto" | "fit-content" | "min-content" | "max-content" | "none";
 export type CSSColor = string;
 
 // ─── Scales Range ──────────────────────────────────────────────────────────
@@ -24,13 +23,6 @@ export type FontSizeScale = ScaleRange<SpacingScale | "3xl" | "4xl">;
 export type RadiiScale = ScaleRange<"none" | "sm" | "md" | "lg" | "full">;
 export type ShadowScale = ScaleRange<"sm" | "md" | "lg" | "xl">;
 export type ControlHeightScale = ScaleRange<"sm" | "md" | "lg">;
-
-// ─── Values tokens ──────────────────────────────────────────────────────────
-export type ColorScaleKeys = BaseColors[keyof BaseColors];
-export type ColorValue = `${keyof BaseColors}.${keyof ColorScaleKeys}`;
-export type SpacingValue = keyof ThemeSpacing | "auto" | "full" | "screen" | "fit";
-export type RadiusValue = keyof ThemeRadii;
-export type FontSizeValue = keyof ThemeFontSizes;
 
 // ─── Merge ──────────────────────────────────────────────────────────
 /** Fusiona `Base` con `Custom` — las keys de `Custom` sobreescriben las de `Base`. */
@@ -52,7 +44,13 @@ export type MergeColorsOverride<Base, Custom> = Prettify<
   }
 >;
 
-// ─── Color ───────────────────────────────────────────────────────────────
+// ─── Bases ───────────────────────────────────────────────────────────────
+export interface BaseSpacing extends Record<SpacingScale, CSSLength> {}
+export interface BaseRadii extends Record<RadiiScale, CSSLength> {}
+export interface BaseFontSizes extends Record<FontSizeScale, CSSLength> {}
+export interface BaseBreakpoints extends Record<ThemeBreakpointKey, CSSLength> {}
+
+// ─── Base Color ───────────────────────────────────────────────────────────────
 export type ColorScale = {
   50: CSSColor;
   100: CSSColor;
@@ -76,7 +74,7 @@ export interface BaseColors {
   info: ColorScale;
 }
 
-// ─── Typography ───────────────────────────────────────────────────────────────
+// ─── Base typography ───────────────────────────────────────────────────────────────
 export interface BaseTypography {
   fontSans: string;
   fontMono: string;
@@ -126,17 +124,18 @@ export interface ConsumerSpacing {}
 export interface ConsumerRadii {}
 export interface ConsumerFontSizes {}
 
-// ─── Bases theme ─────────────────────────────────────────────────
-export interface BaseSpacing extends Record<SpacingScale, CSSLength> {}
-export interface BaseRadii extends Record<RadiiScale, CSSLength> {}
-export interface BaseFontSizes extends Record<FontSizeScale, CSSLength> {}
-export interface BaseBreakpoints extends Record<ThemeBreakpointKey, CSSLength> {}
+// ─── Values tokens ──────────────────────────────────────────────────────────
+export type ColorScaleKeys = BaseColors[keyof BaseColors];
+export type ColorValue = `${keyof BaseColors}.${keyof ColorScaleKeys}`;
+export type SpacingValue = keyof ThemeSpacing | "auto" | "full" | "screen" | "fit";
+export type RadiusValue = keyof ThemeRadii;
+export type FontSizeValue = keyof ThemeFontSizes;
+
+// ─── Tipos finales ────────────────────────────────────────────────────────────
 export type ThemeTypography = MergeBaseCustoms<BaseTypography, ConsumerTypography>;
 export type ThemeShadows = MergeBaseCustoms<BaseShadows, ConsumerShadows>;
 export type ThemeMotion = MergeBaseCustoms<BaseMotion, ConsumerMotion>;
 export type ThemeSemanticColors = MergeBaseCustoms<BaseSemanticColors, ConsumerSemanticColors>;
-
-// ─── Tipos finales ────────────────────────────────────────────────────────────
 export type ThemeColors = MergeBaseCustoms<BaseColors, ConsumerColors>;
 export type ThemeSpacing = MergeBaseCustoms<BaseSpacing, ConsumerSpacing>;
 export type ThemeRadii = MergeBaseCustoms<BaseRadii, ConsumerRadii>;
