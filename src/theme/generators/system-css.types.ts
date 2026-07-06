@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { CaseFormat, ConvertFormat } from "../../types/cases.types";
-import type { BreakpointKey, ColorValue, FontSizeValue, RadiusValue, SpacingValue, ThemeBreakpointKey } from "../theme.types";
+import type { BreakpointKey, ColorValue, FontSizeValue, RadiusValue, SpacingValue, BaseBreakPoints } from "../theme.types";
 
 // ─── Responsive ───────────────────────────────────────────────────────────────
 export const BREAKPOINT_KEYS = ["base", "sm", "md", "lg", "xl"] as const satisfies BreakpointKey[];
@@ -16,7 +16,7 @@ export const DIMENSION_KEYS = [
 export type DimensionKey = (typeof DIMENSION_KEYS)[number];
 export type PartialBreakPointKey<T> = Partial<Record<BreakpointKey, T>>;
 export type Responsive<T> = T | PartialBreakPointKey<T>;
-export type { BreakpointKey, ThemeBreakpointKey };
+export type { BreakpointKey, BaseBreakPoints };
 
 // ─── StylePropDef ─────────────────────────────────────────────────────────────
 export type PropCategory = "spacing" | "color" | "radius" | "fontSize" | "raw";

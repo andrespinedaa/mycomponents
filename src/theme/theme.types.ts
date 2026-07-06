@@ -22,8 +22,8 @@ export type ControlHeightScale = ScaleRange<"sm" | "md" | "lg">;
 export type FontSizeScale = ScaleRange<SpacingScale | "3xl" | "4xl">;
 export type RadiiScale = ScaleRange<"none" | "sm" | "md" | "lg" | "full">;
 export type SpacingScale = ScaleRange<"xs" | "sm" | "md" | "lg" | "xl" | "2xl">;
-export type ThemeBreakpointKey = ScaleRange<"sm" | "md" | "lg" | "xl">;
-export type BreakpointKey = "base" | ThemeBreakpointKey;
+export type BaseBreakPoints = ScaleRange<"sm" | "md" | "lg" | "xl">;
+export type BreakpointKey = "base" | BaseBreakPoints;
 
 // ─── Merge ──────────────────────────────────────────────────────────
 /** Fusiona `Base` con `Custom` — las keys de `Custom` sobreescriben las de `Base`. */
@@ -49,7 +49,7 @@ export type MergeColorsOverride<Base, Custom> = Prettify<
 export interface BaseRadii extends Record<RadiiScale, CSSLength> {}
 export interface BaseSpacing extends Record<SpacingScale, CSSLength> {}
 export interface BaseFontSizes extends Record<FontSizeScale, CSSLength> {}
-export interface BaseBreakpoints extends Record<ThemeBreakpointKey, CSSLength> {}
+export interface BaseBreakpoints extends Record<BreakpointKey, CSSLength> {}
 
 // ─── Base Color ───────────────────────────────────────────────────────────────
 export type ColorScale = {
