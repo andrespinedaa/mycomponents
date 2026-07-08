@@ -13,14 +13,14 @@ export type CardSectionConfig = ComponentConfig<{
   defaultTag: "div";
   ownProps: CardSectionOwnProps;
   statics: EmptyStatics;
-  defaultProps: { dataSlot: "Section"; section: "body" };
+  defaultProps: { section: "body" };
   sizes: "sm" | "md" | "lg" | "xl";
 }>;
 
 export const CardSection = ComponentFactory<CardSectionConfig>({
   componentName: "CardSection",
   defaultTag: "div",
-  defaultProps: { dataSlot: "Section", section: "body" },
+  defaultProps: { section: "body" },
   render: function CardSectionRender({ section, ref, ...rest }) {
     return <Flex ref={ref} mod={{ section }} {...rest} />;
   },

@@ -14,7 +14,7 @@ export function generateComponentSizes(
   for (const [sizeKey, tokens] of Object.entries(config.sizes)) {
     if (!tokens || Object.keys(tokens).length === 0) continue;
 
-    const body = generateTokensCSS(tokens as Record<string, unknown>, prefix, theme);
+    const body = generateTokensCSS(tokens as Record<string, unknown>, prefix, theme, config.prefixParent);
     if (!body) continue;
 
     // ─── Estático: [data-slot="X"][data-size="sm"] ────────────────────────

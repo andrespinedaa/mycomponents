@@ -2,8 +2,9 @@ import type { ElementType } from "react";
 import type { ComponentFactoryOptions, FactoryComponentReturn, FactoryConfig, FactoryRenderProps } from ".";
 import { useProps, useTheme } from "../hooks";
 import { extractStyleProps, getMod, resolvedStyles, resolveStyle } from "../system";
+import { resolveVarsDSL } from "../theme/generators/css-gen-utils";
 import type { PolymorphicPropsConfig } from "../types/polimorphic.types";
-import { typedRef } from "../utils";
+import { camelToKebab, typedRef } from "../utils";
 
 export function ComponentFactory<Config extends FactoryConfig>({
   componentName,
@@ -24,15 +25,21 @@ export function ComponentFactory<Config extends FactoryConfig>({
       dataSlot,
       renderRoot,
       style: styleRaw,
+      vars: varsRaw,
       "data-slot": inheritedSlot,
       ...restProps
     } = mergedProps as typeof mergedProps & { "data-slot"?: string };
+
+    const ownPrefix = componentName
+      ? (theme.components?.[componentName]?.prefix ?? camelToKebab(componentName))
+      : "";
+    const vars = resolveVarsDSL(varsRaw, ownPrefix);
 
     const dataName = dataSlot ?? inheritedSlot ?? componentName;
     const Element = (as ?? defaultTag) as ElementType;
 
     if (!render && !renderRoot) {
-      const { vars, apply, unstyled = false, ...rest } = restProps;
+      const { apply, unstyled = false, ...rest } = restProps;
       const { styleProps, componentProps } = extractStyleProps(rest);
       const { styles, hasResponsive } = resolvedStyles({
         styleProps,
@@ -48,10 +55,11 @@ export function ComponentFactory<Config extends FactoryConfig>({
 
     const modProps = getMod([mod, { size }, { variant }, { slot: dataName }]);
 
-    if (renderRoot) return renderRoot({ ref, style: styleRaw, ...restProps, ...modProps });
+    if (renderRoot) return renderRoot({ ref, style: styleRaw, vars, ...restProps, ...modProps });
 
     return render!({
       style: styleRaw,
+      vars,
       ...restProps,
       ...modProps,
       ref,

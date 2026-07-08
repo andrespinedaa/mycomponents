@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { defaultTheme } from "../../themes/default-theme";
 import type { Theme } from "../core/theme.types";
 import { generateComponentVariants, generateVariants } from "./generateVariants";
@@ -225,5 +225,67 @@ describe("generateVariants", () => {
     const result = generateVariants(theme);
     expect(result).toContain(`[data-slot="Card"][data-variant="Default"]`);
     expect(result).toContain(`[data-slot="Badge"][data-variant="Filled"]`);
+  });
+});
+
+// ─── DSL $prop en variants ────────────────────────────────────────────────────
+
+describe("generateComponentVariants — DSL $prop", () => {
+  it("$prop standalone en variant base resuelve var del padre", () => {
+    const config: TestConfig = {
+      prefix: "card-section",
+      prefixParent: "card",
+      variants: { Compact: { base: { color: "$color" } } },
+    };
+    const result = generateComponentVariants("CardSection", config, defaultTheme);
+    expect(result).toContain(`--card-section-color:var(--card-color);`);
+  });
+
+  it("$prop inline en variant resuelve dentro del valor", () => {
+    const config: TestConfig = {
+      prefix: "card-section",
+      prefixParent: "card",
+      variants: { Highlight: { base: { outline: "2px solid $borderColor" } } },
+    };
+    const result = generateComponentVariants("CardSection", config, defaultTheme);
+    expect(result).toContain(`--card-section-outline:2px solid var(--card-border-color);`);
+  });
+
+  it("$prop en estado hover de una variant", () => {
+    const config: TestConfig = {
+      prefix: "card-section",
+      prefixParent: "card",
+      variants: { Compact: { hover: { bg: "$background" } } },
+    };
+    const result = generateComponentVariants("CardSection", config, defaultTheme);
+    expect(result).toContain(`:hover`);
+    expect(result).toContain(`--card-section-background:var(--card-background);`);
+  });
+
+  it("$prop coexiste con tokens normales en la misma variant", () => {
+    const config: TestConfig = {
+      prefix: "card-section",
+      prefixParent: "card",
+      variants: {
+        Compact: {
+          base: {
+            bg: "neutral.50",      // token normal
+            color: "$color",       // $prop
+          },
+        },
+      },
+    };
+    const result = generateComponentVariants("CardSection", config, defaultTheme);
+    expect(result).toContain(`--card-section-background:var(--${p}-color-neutral-50);`);
+    expect(result).toContain(`--card-section-color:var(--card-color);`);
+  });
+
+  it("sin prefixParent, $prop apunta al propio prefix (auto-referencia)", () => {
+    const config: TestConfig = {
+      prefix: "card",
+      variants: { Default: { base: { color: "$color" } } },
+    };
+    const result = generateComponentVariants("Card", config, defaultTheme);
+    expect(result).toContain(`--card-color:var(--card-color);`);
   });
 });

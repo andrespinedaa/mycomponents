@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { defaultTheme } from "../../themes/default-theme";
 import type { Theme } from "../core/theme.types";
 import { generateComponentSizes, generateSizes } from "./generateSizes";
@@ -191,5 +191,50 @@ describe("generateSizes", () => {
     const result = generateSizes(theme);
     expect(result).toContain(`[data-slot="Card"][data-size="md"]`);
     expect(result).toContain(`[data-slot="Badge"][data-size="sm"]`);
+  });
+});
+
+// ─── DSL $prop en sizes ───────────────────────────────────────────────────────
+
+describe("generateComponentSizes — DSL $prop", () => {
+  it("$prop standalone en size resuelve var del padre", () => {
+    const config: TestConfig = {
+      prefix: "card-section",
+      prefixParent: "card",
+      sizes: { md: { gap: "$gap" } },
+    };
+    const result = generateComponentSizes("CardSection", config, defaultTheme);
+    expect(result).toContain(`--card-section-gap:var(--card-gap);`);
+  });
+
+  it("$prop inline en size resuelve var del padre dentro del valor", () => {
+    const config: TestConfig = {
+      prefix: "card-section",
+      prefixParent: "card",
+      sizes: { md: { borderRadius: "0 0 $rounded $rounded" } },
+    };
+    const result = generateComponentSizes("CardSection", config, defaultTheme);
+    expect(result).toContain(`--card-section-border-radius:0 0 var(--card-border-radius) var(--card-border-radius);`);
+  });
+
+  it("$prop en size también se repite en media queries responsive", () => {
+    const config: TestConfig = {
+      prefix: "card-section",
+      prefixParent: "card",
+      sizes: { md: { gap: "$gap" } },
+    };
+    const result = generateComponentSizes("CardSection", config, defaultTheme);
+    const mediaBlocks = result.match(/@media\([^)]+\)\{[^}]+\}/g) ?? [];
+    expect(mediaBlocks.length).toBeGreaterThan(0);
+    expect(mediaBlocks[0]).toContain(`var(--card-gap)`);
+  });
+
+  it("sin prefixParent, $prop apunta al propio prefix (auto-referencia)", () => {
+    const config: TestConfig = {
+      prefix: "card",
+      sizes: { md: { gap: "$gap" } },
+    };
+    const result = generateComponentSizes("Card", config, defaultTheme);
+    expect(result).toContain(`--card-gap:var(--card-gap);`);
   });
 });

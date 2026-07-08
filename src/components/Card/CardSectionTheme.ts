@@ -5,7 +5,7 @@ export type CardSectionTheme = ThemeComponentConfig<CardSectionConfig>;
 
 export const CardSectionThemeComponent: CardSectionTheme = {
   prefix: "card-section",
-  slotProp: "section",
+  prefixParent: "card",
   sizes: {
     sm: { p: "sm" },
     md: { p: "md" },
@@ -13,9 +13,9 @@ export const CardSectionThemeComponent: CardSectionTheme = {
     xl: { p: "xl" },
   },
   slots: {
-    header: { fontWeight: "600", borderBottom: "1px solid" },
-    media:  { overflow: "hidden" },
-    body:   { flex: "1" },
-    footer: { borderTop: "1px solid" },
+    header: { fontWeight: "600", borderBottom: "1px solid $borderColor" },
+    media: { overflow: "hidden" },
+    body: { flex: "1" },
+    footer: { borderTop: "1px solid $borderColor" },
   },
 };

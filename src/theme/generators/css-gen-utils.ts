@@ -14,15 +14,51 @@ export function getCssProp(key: string): string {
   return STYLE_PROPS_DATA[key]?.properties[0] ?? camelToKebab(key);
 }
 
+// Resuelve $prop → var(--target-css-prop).
+// Sin prefixParent: apunta al propio prefix del componente (auto-referencia).
+// Con prefixParent: apunta al prefix del padre (referencia cross-componente explícita).
+function resolveDollarProps(value: string, prefix: string, prefixParent: string | undefined): string {
+  const target = prefixParent ?? prefix;
+  return value.replace(/\$(\w+)/g, (_, prop) => `var(${resolveVarName(prop, target)})`);
+}
+
+// Resuelve $prop → var(--prefix-css-prop) en los valores de un VarsProp en runtime.
+// Usa el prefix propio del componente (no prefixParent).
+export function resolveVarsDSL(
+  vars: Record<string, string> | undefined,
+  prefix: string,
+): Record<string, string> | undefined {
+  if (!vars) return vars;
+  const result: Record<string, string> = {};
+  let changed = false;
+  for (const [key, value] of Object.entries(vars)) {
+    if (value.includes("$")) {
+      result[key] = value.replace(/\$(\w+)/g, (_, prop) => `var(${resolveVarName(prop, prefix)})`);
+      changed = true;
+    } else {
+      result[key] = value;
+    }
+  }
+  return changed ? result : vars;
+}
+
 export function generateTokensCSS(
   tokens: Record<string, unknown>,
   prefix: string,
   theme: Theme,
+  prefixParent?: string,
 ): string {
   let css = "";
   for (const [key, value] of Object.entries(tokens)) {
     if (value == null) continue;
-    css += `${resolveVarName(key, prefix)}:${resolveTokenValue(key, String(value), theme)};`;
+    const strValue = String(value);
+
+    if (strValue.includes("$")) {
+      css += `${resolveVarName(key, prefix)}:${resolveDollarProps(strValue, prefix, prefixParent)};`;
+      continue;
+    }
+
+    css += `${resolveVarName(key, prefix)}:${resolveTokenValue(key, strValue, theme)};`;
   }
   return css;
 }

@@ -43,7 +43,7 @@ export function generateComponentVariants(
       const stateSelector = STATE_SELECTORS[state] ?? "";
       const selector = `[data-slot="${componentName}"][data-variant="${variant}"]${stateSelector}`;
 
-      const body = generateTokensCSS(tokens, prefix, theme);
+      const body = generateTokensCSS(tokens, prefix, theme, config.prefixParent);
       if (body) css += `${selector}{${body}}`;
     }
   }

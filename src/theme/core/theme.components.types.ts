@@ -41,7 +41,7 @@ export type ComponentConfigs = {
 
 export type ThemeComponentOptions<Config extends FactoryConfig> = {
   prefix?: string;
-  slotProp?: string;
+  prefixParent?: string;
   defaultProps?: RequiredDefaultProps<Config>;
   sizes?: Partial<Record<Config["sizes"], StylePropsTokens>>;
   slots?: Partial<Record<keyof Config["statics"], StylePropsTokens>>;
