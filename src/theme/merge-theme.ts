@@ -35,6 +35,21 @@ export function mergeRecord<T extends Record<string, string>>(
   return { ...base, ...override } as T;
 }
 
+function mergeSlots(
+  base: Record<string, { presets?: Record<string, unknown> }> | undefined,
+  override: Record<string, { presets?: Record<string, unknown> }> | undefined,
+): Record<string, { presets?: Record<string, unknown> }> {
+  if (!override) return base ?? {};
+  const result = { ...base };
+  for (const [slot, slotConfig] of Object.entries(override)) {
+    result[slot] = {
+      ...(base?.[slot] ?? {}),
+      presets: { ...(base?.[slot]?.presets ?? {}), ...(slotConfig?.presets ?? {}) },
+    };
+  }
+  return result;
+}
+
 export function mergeComponents(
   base: Theme["components"],
   override: ThemeOverride["components"],
@@ -50,22 +65,11 @@ export function mergeComponents(
     (result as any)[key] = {
       ...baseEntry,
       ...overrideEntry,
-      defaultProps: {
-        ...(baseEntry?.defaultProps ?? {}),
-        ...(overrideEntry.defaultProps ?? {}),
-      },
-      variants: {
-        ...(baseEntry?.variants ?? {}),
-        ...(overrideEntry.variants ?? {}),
-      },
-      sizes: {
-        ...(baseEntry?.sizes ?? {}),
-        ...(overrideEntry.sizes ?? {}),
-      },
-      slots: {
-        ...(baseEntry?.slots ?? {}),
-        ...(overrideEntry.slots ?? {}),
-      },
+      defaultProps: { ...(baseEntry?.defaultProps ?? {}), ...(overrideEntry.defaultProps ?? {}) },
+      variants:     { ...(baseEntry?.variants ?? {}),     ...(overrideEntry.variants ?? {}) },
+      sizes:        { ...(baseEntry?.sizes ?? {}),         ...(overrideEntry.sizes ?? {}) },
+      presets:      { ...(baseEntry?.presets ?? {}),       ...(overrideEntry.presets ?? {}) },
+      slots: mergeSlots(baseEntry?.slots, overrideEntry.slots),
     };
   }
 

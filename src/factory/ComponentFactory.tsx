@@ -1,82 +1,93 @@
 import type { ElementType } from "react";
-import type { ComponentFactoryOptions, FactoryComponentReturn, FactoryConfig, FactoryRenderProps } from ".";
-import { useProps, useTheme } from "../hooks";
-import { extractStyleProps, getMod, resolvedStyles, resolveStyle } from "../system";
-import { resolveVarsDSL } from "../theme/generators/css-gen-utils";
 import type { PolymorphicPropsConfig } from "../types/polimorphic.types";
+import type { ComponentFactoryOptions, FactoryComponentReturn, FactoryConfig, FactoryRenderProps } from ".";
+import { useTheme } from "../hooks";
 import { camelToKebab, typedRef } from "../utils";
+import { resolveVarsDSL } from "../theme/generators/css-gen-utils";
+import { extractStyleProps, getMod, resolvedStyles, resolveStyle } from "../system";
 
 export function ComponentFactory<Config extends FactoryConfig>({
-  componentName,
-  statics,
   render,
-  defaultProps,
+  statics,
   defaultTag,
+  defaultProps,
+  componentName,
 }: ComponentFactoryOptions<Config>): FactoryComponentReturn<Config> {
   const Component = typedRef<HTMLElement, PolymorphicPropsConfig<Config>>((props, ref) => {
     const { theme } = useTheme();
-    const mergedProps = useProps(theme, props, componentName, defaultProps);
+    const componentConfig = theme.components[componentName];
+    const themeDefaults = componentConfig?.defaultProps ?? {};
+    const mergedProps = { ...(defaultProps ?? {}), ...themeDefaults, ...props };
 
     const {
       as,
       mod,
       size,
+      preset,
       variant,
       dataSlot,
       renderRoot,
-      style: styleRaw,
       vars: varsRaw,
+      style: styleRaw,
       "data-slot": inheritedSlot,
       ...restProps
-    } = mergedProps as typeof mergedProps & { "data-slot"?: string };
+    } = mergedProps;
 
-    const ownPrefix = componentName
-      ? (theme.components?.[componentName]?.prefix ?? camelToKebab(componentName))
-      : "";
-    const vars = resolveVarsDSL(varsRaw, ownPrefix);
-
-    const dataName = dataSlot ?? inheritedSlot ?? componentName;
-    const Element = (as ?? defaultTag) as ElementType;
-
+    const dataName = dataSlot ?? inheritedSlot ?? (componentName || undefined);
+    const vars = resolveVarsDSL(varsRaw, camelToKebab(componentName));
+    const modProps = getMod([mod, { slot: dataName }]);
+    
     if (!render && !renderRoot) {
+      const Element = (as ?? defaultTag) as ElementType;
       const { apply, unstyled = false, ...rest } = restProps;
       const { styleProps, componentProps } = extractStyleProps(rest);
       const { styles, hasResponsive } = resolvedStyles({
-        styleProps,
         vars,
-        style: resolveStyle(styleRaw, theme),
-        unstyled,
         apply,
         theme,
+        unstyled,
+        styleProps,
+        style: resolveStyle(styleRaw, theme),
       });
-      const modProps = getMod([mod, { size }, { variant }, { responsive: hasResponsive }, { slot: dataName }]);
-      return <Element ref={ref} style={styles} {...componentProps} {...modProps} />;
+      const ElementModProps = getMod([
+        mod,
+        { size },
+        { preset },
+        { variant },
+        { slot: dataName },
+        { responsive: hasResponsive },
+      ]);
+      return <Element ref={ref} style={styles} {...componentProps} {...ElementModProps} />;
     }
 
-    const modProps = getMod([mod, { size }, { variant }, { slot: dataName }]);
-
-    if (renderRoot) return renderRoot({ ref, style: styleRaw, vars, ...restProps, ...modProps });
+    if (renderRoot) return renderRoot({
+      ref,
+      vars,
+      size,
+      preset,
+      variant,
+      style: styleRaw,
+      ...modProps,
+      ...restProps,
+    } as FactoryRenderProps<Config>);
 
     return render!({
-      style: styleRaw,
-      vars,
-      ...restProps,
-      ...modProps,
       ref,
+      vars,
       size,
+      preset,
       variant,
+      style: styleRaw,
+      ...modProps,
+      ...restProps,
     } as FactoryRenderProps<Config>);
   }) as unknown as FactoryComponentReturn<Config>;
 
-  if (componentName) {
-    Component.displayName = componentName;
-  }
+  Component.displayName = componentName;
 
   if (statics && Object.keys(statics).length > 0) {
     Object.entries(statics).forEach(([key, SubComponent]) => {
-      if (componentName) {
-        SubComponent.displayName = `${componentName}.${key}`;
-      }
+      SubComponent.displayName = `${componentName}.${key}`;
     });
     Object.assign(Component, statics);
   }

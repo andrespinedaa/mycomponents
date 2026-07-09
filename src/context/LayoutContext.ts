@@ -1,7 +1,6 @@
 import type { OrientationProp } from "../factory";
 import { useCreateProvider } from "../hooks/useCreateProvider";
-import type { Scales } from "../theme";
-import type { ComponentVariants } from "../theme/core/theme.variants";
+import type { Scales, ComponentVariants } from "../theme";
 
 export interface LayoutContextValue {
   orientation?: OrientationProp;
@@ -9,5 +8,7 @@ export interface LayoutContextValue {
   variant?: ComponentVariants;
 }
 
-export const [LayoutProvider, useLayoutContext] =
-  useCreateProvider<LayoutContextValue>("Layout", {} as LayoutContextValue);
+export const [LayoutProvider, useLayoutContext, LayoutContext] = useCreateProvider<LayoutContextValue>(
+  "Layout",
+  {} as LayoutContextValue,
+);

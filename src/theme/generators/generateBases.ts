@@ -7,9 +7,10 @@ export function generateComponentBases(
   config: NonNullable<Theme["components"]>[string],
 ): string {
   if (!config?.variants && !config?.sizes && !config?.presets) return "";
-  const prefix = config.prefix ?? camelToKebab(componentName);
+  const prefix = camelToKebab(componentName);
 
   const usedKeys = new Set<string>();
+
   for (const stateConfig of Object.values(config.variants ?? {})) {
     if (!stateConfig) continue;
     for (const tokens of Object.values(stateConfig)) {
@@ -17,16 +18,16 @@ export function generateComponentBases(
       for (const key of Object.keys(tokens)) usedKeys.add(key);
     }
   }
+
   for (const tokens of Object.values(config.sizes ?? {})) {
     if (!tokens) continue;
     for (const key of Object.keys(tokens)) usedKeys.add(key);
   }
-  for (const setPresets of Object.values(config.presets ?? {})) {
-    if (!setPresets) continue;
-    for (const tokens of Object.values(setPresets)) {
-      if (!tokens) continue;
-      for (const key of Object.keys(tokens)) usedKeys.add(key);
-    }
+
+  // presets planos — slots no contribuyen al base reset (son estilos condicionales por posición)
+  for (const tokens of Object.values(config.presets ?? {})) {
+    if (!tokens) continue;
+    for (const key of Object.keys(tokens)) usedKeys.add(key);
   }
 
   if (usedKeys.size === 0) return "";
@@ -36,11 +37,4 @@ export function generateComponentBases(
     css += `${camelToKebab(getCssProp(key))}:var(${resolveVarName(key, prefix)},unset);`;
   }
   return css + "}";
-}
-
-export function generateBases(theme: Theme): string {
-  if (!theme.components) return "";
-  return Object.entries(theme.components)
-    .map(([name, config]) => generateComponentBases(name, config))
-    .join("");
 }

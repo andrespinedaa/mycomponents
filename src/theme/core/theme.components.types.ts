@@ -39,14 +39,15 @@ export type ComponentConfigs = {
   CardSection: CardSectionConfig;
 };
 
+type PartialPresets<Config extends FactoryConfig> = Partial<Record<Config["presets"], StylePropsTokens>>;
+
 export type ThemeComponentOptions<Config extends FactoryConfig> = {
-  prefix?: string;
-  prefixParent?: string;
-  slots?: Partial<Record<keyof Config["statics"], StylePropsTokens>>;
-  presets?: Record<string, Partial<Record<Config["sets"], StylePropsTokens>>>;
+  prefixParentName?: string;
   defaultProps?: RequiredDefaultProps<Config>;
   sizes?: Partial<Record<Config["sizes"], StylePropsTokens>>;
   variants?: Partial<Record<ComponentVariants, VariantStates>>;
+  slots?: Partial<Record<Config["slots"], { presets?: PartialPresets<Config> }>>;
+  presets?: PartialPresets<Config>;
 };
 
 export type ThemeComponents = {

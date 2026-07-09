@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 import { ComponentFactory, type ComponentConfig, type EmptyStatics, type OrientationProp } from "../../factory";
 import type { SystemVariants } from "../../theme";
-import { LayoutProvider } from "../../context/LayoutContext";
+import { LayoutProvider, useLayoutContext } from "../../context/LayoutContext";
 import { Flex } from "../Primitives";
 
 export type CardSectionSets = "default" | "background" | "top" | "gradient";
 
 export interface CardSectionOwnProps {
   section?: "header" | "body" | "footer" | "media";
-  set?: CardSectionSets;
+  preset?: CardSectionSets;
 }
 
 export type CardSectionConfig = ComponentConfig<{
@@ -16,17 +16,19 @@ export type CardSectionConfig = ComponentConfig<{
   defaultTag: "div";
   ownProps: CardSectionOwnProps;
   statics: EmptyStatics;
-  defaultProps: { section: "body"; set: "default" };
+  defaultProps: { section: "body"; preset: "default" };
   sizes: "sm" | "md" | "lg" | "xl";
-  sets: CardSectionSets;
+  presets: CardSectionSets;
+  slots: "header" | "body" | "footer" | "media";
 }>;
 
 export const CardSection = ComponentFactory<CardSectionConfig>({
   componentName: "CardSection",
   defaultTag: "div",
-  defaultProps: { section: "body", set: "default" },
-  render: function CardSectionRender({ section, set, ref, ...rest }) {
-    return <Flex ref={ref} mod={{ section, set }} {...rest} />;
+  defaultProps: { section: "body", preset: "default" },
+  render: function CardSectionRender({ section, preset, ref, ...rest }) {
+    const { size } = useLayoutContext();
+    return <Flex ref={ref} mod={{ section, preset, size }} {...rest} />;
   },
 });
 
@@ -48,24 +50,20 @@ export type CardConfig = ComponentConfig<{
     size: "md";
   };
   sizes: "sm" | "md" | "lg" | "xl";
-  sets: "";
+  presets: "";
+  slots: "";
 }>;
 
 export const Card = ComponentFactory<CardConfig>({
-  componentName: "Card",
   defaultTag: "div",
-  defaultProps: {
-    orientation: "vertical",
-    variant: "Default",
-    size: "md",
-    cursor: "pointer",
-  },
+  componentName: "Card",
   statics: { Section: CardSection },
+  defaultProps: { orientation: "vertical", variant: "Default", size: "md", cursor: "pointer" },
   render: function CardRender({ orientation, variant, children, ref, size, ...rest }) {
     const ctx = useMemo(() => ({ orientation, size, variant }), [orientation, size, variant]);
     return (
       <LayoutProvider value={ctx}>
-        <Flex ref={ref} mod={[{ orientation }]} {...rest}>
+        <Flex ref={ref} mod={[{ orientation, size, variant }]} {...rest}>
           {children}
         </Flex>
       </LayoutProvider>

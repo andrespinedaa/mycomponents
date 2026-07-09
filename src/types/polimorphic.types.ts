@@ -3,7 +3,7 @@ import type {
   FactoryConfig,
   SystemProps,
 } from "../factory/core/factories.types";
-import type { SizeProp } from "../factory";
+import type { PresetProp, SizeProp } from "../factory";
 
 export type AsProp<E extends ElementType> = {
   as?: E;
@@ -39,7 +39,8 @@ export type PolymorphicComponentProps<
 
 export type PolymorphicPropsConfig<Config extends FactoryConfig> =
   PolymorphicComponentProps<Config["defaultTag"], Config["ownProps"]> &
-    SizeProp<Config>;
+    SizeProp<Config> &
+    PresetProp<Config>;
 
 export type ElementRefType<E extends ElementType> =
   E extends keyof HTMLElementTagNameMap

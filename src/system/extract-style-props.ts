@@ -1,7 +1,6 @@
 import type { ElementType } from "react";
 import type { MyComponentProps } from "../factory/core";
-import { STYLE_PROPS_KEYS } from "../theme/generators/system-css.data";
-import type { StyleProps } from "../theme/generators/system-css.data";
+import { type StyleProps, STYLE_PROPS_KEYS } from "../theme/generators";
 
 export type ExtractedStyleProps<E extends ElementType, OwnProps extends object> = {
   styleProps: StyleProps;

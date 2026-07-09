@@ -14,7 +14,8 @@ export type BoxConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: {};
   sizes: Scales;
-  sets: string
+  presets: string;
+  slots: ""
 }>;
 
 export const Box = ComponentFactory<BoxConfig>({

@@ -4,7 +4,6 @@ import type { AvatarConfig } from "./Avatar";
 export type AvatarThemeConfig = ThemeComponentConfig<AvatarConfig>;
 
 export const AvatarThemeComponent: AvatarThemeConfig = {
-  prefix: "avatar",
   sizes: {
     xs: { w: "xs", h: "xs", fontSize: "xs" },
     sm: { w: "sm", h: "sm", fontSize: "sm" },

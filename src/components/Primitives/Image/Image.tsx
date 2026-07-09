@@ -10,10 +10,11 @@ export type ImgConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: {};
   sizes: Scales;
-  sets: string;
+  presets: string;
+  slots: "";
 }>;
 
 export const Image = ComponentFactory<ImgConfig>({
-  componentName: "Image",
   defaultTag: "img",
+  componentName: "Image",
 });

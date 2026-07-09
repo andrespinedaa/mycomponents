@@ -20,16 +20,17 @@ export type AlertConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: { severity: "info"; variant: "Subtle"; size: "md"; gap: "sm"; rounded: "md"; border: "1px solid" };
   sizes: ScaleRange<"sm" | "md" | "lg">;
-  sets: string;
+  presets: string;
+  slots: "";
 }>;
 
 export const Alert = ComponentFactory<AlertConfig>({
   componentName: "Alert",
   defaultTag: "div",
-  defaultProps: { severity: "info", variant: "Subtle", size: "md", gap: "sm", rounded: "md", border: "1px solid" },
-  render: function AlertRender({ severity, title, variant, closable, onClose, icon, children, ref, ...rest }) {
+  defaultProps: { severity: "info", variant: "Subtle", size: "md", gap: "sm", rounded: "md", border: "1px solid", role: "alert" },
+  render: function AlertRender({ severity, title, variant, size, closable, onClose, icon, children, ref, ...rest }) {
     return (
-      <Flex ref={ref} role="alert" {...rest}>
+      <Flex ref={ref} mod={{ size, variant }} {...rest}>
         <Box as="span" flexShrink={0} aria-hidden>
           {icon}
         </Box>

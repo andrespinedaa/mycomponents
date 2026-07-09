@@ -12,6 +12,10 @@ export type SizeProp<Config extends FactoryConfig> = {
   size?: Config["sizes"];
 };
 
+export type PresetProp<Config extends FactoryConfig> = {
+  preset?: Config["presets"];
+};
+
 export type OverrideJsxComponentProps<
   E extends ElementType,
   OwnProps = object,
@@ -30,7 +34,7 @@ export type FactoryFunctionOptions<
   Config extends FactoryConfig,
   RenderProps extends object,
 > = {
-  componentName?: Config["componentName"];
+  componentName: Config["componentName"];
   defaultTag: Config["defaultTag"];
   render?: FactoryRender<RenderProps>;
   statics?: Config["statics"];

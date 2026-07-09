@@ -14,11 +14,12 @@ export type StackConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: { gap: "md" };
   sizes: Scales;
-  sets: string
+  presets: string;
+  slots: ""
 }>;
 
 export const Stack = ComponentFactory<StackConfig>({
-  componentName: "Stack",
   defaultTag: "div",
+  componentName: "Stack",
   defaultProps: { gap: "md" },
 });

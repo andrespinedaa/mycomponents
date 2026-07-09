@@ -13,15 +13,16 @@ export type ButtonConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: { size: "md" };
   sizes: ScaleRange<"xs" | "sm" | "md" | "lg" | "xl">;
-  sets: string
+  presets: string;
+  slots: ""
 }>;
 
 export const Button = ComponentFactory<ButtonConfig>({
   componentName: "Button",
   defaultTag: "button",
   defaultProps: { size: "md" },
-  render: function ButtonRender({ size, ref, ...rest }) {
+  render: function ButtonRender({ size, variant, ref, ...rest }) {
     const resolvedSize = useResolvedSize(size);
-    return <Box ref={ref} mod={{ size: resolvedSize }} {...rest} />;
+    return <Box ref={ref} mod={{ size: resolvedSize, variant }} {...rest} />;
   },
 });

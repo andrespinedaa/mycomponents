@@ -4,7 +4,6 @@ import type { ButtonConfig } from "./Button";
 type ButtonThemeConfig = ThemeComponentConfig<ButtonConfig>;
 
 export const ButtonThemeComponent: ButtonThemeConfig = {
-  prefix: "btn",
   defaultProps: { variant: "Filled" },
   sizes: {
     xs: { h: "24px", fontSize: "11px", px: "8px"  },

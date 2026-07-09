@@ -26,7 +26,8 @@ export type AvatarConfig = ComponentConfig<{
     userSelect: "none";
   };
   sizes: ScaleRange<"xs" | "sm" | "md" | "lg" | "xl">;
-  sets: string
+  presets: string;
+  slots: "";
 }>;
 
 function getInitials(name: string): string {
@@ -39,12 +40,13 @@ export const Avatar = ComponentFactory<AvatarConfig>({
   componentName: "Avatar",
   defaultTag: "div",
   defaultProps: {
-    shape: "circle",
     size: "md",
-    display: "inline-flex",
-    overflow: "hidden",
     flexShrink: 0,
+    shape: "circle",
+    overflow: "hidden",
     userSelect: "none",
+    display: "inline-flex",
+    role: "img"
   },
   render: function AvatarRender({ src, alt, name, size, shape, children, ref, ...rest }) {
     const resolvedSize = useResolvedSize(size);
@@ -56,7 +58,6 @@ export const Avatar = ComponentFactory<AvatarConfig>({
           ref={ref}
           align="center"
           justify="center"
-          role="img"
           aria-label={alt ?? name}
           mod={{ size: resolvedSize }}
           rounded={shape === "circle" ? "full" : "md"}
@@ -76,7 +77,6 @@ export const Avatar = ComponentFactory<AvatarConfig>({
       <Flex
         ref={ref}
         apply="@flexCenter"
-        role="img"
         aria-label={alt ?? name}
         fontWeight={600}
         mod={{ size: resolvedSize }}

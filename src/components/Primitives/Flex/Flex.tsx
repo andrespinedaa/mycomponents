@@ -14,10 +14,11 @@ export type FlexConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: {};
   sizes: Scales;
-  sets: string
+  presets: string;
+  slots: ""
 }>;
 
 export const Flex = ComponentFactory<FlexConfig>({
-  componentName: "Flex",
   defaultTag: "div",
+  componentName: "Flex",
 });

@@ -22,7 +22,8 @@ export type TextConfig = ComponentConfig<{
     size: "md";
   };
   sizes: Scales;
-  sets: string
+  presets: string;
+  slots: ""
 }>;
 
 export const Text = ComponentFactory<TextConfig>({

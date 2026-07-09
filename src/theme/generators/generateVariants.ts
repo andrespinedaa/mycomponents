@@ -28,7 +28,7 @@ export function generateComponentVariants(
   theme: Theme,
 ): string {
   if (!config?.variants) return "";
-  const prefix = config.prefix ?? camelToKebab(componentName);
+  const prefix = camelToKebab(componentName);
   let css = "";
 
   for (const [variant, stateConfig] of Object.entries(config.variants)) {
@@ -43,7 +43,7 @@ export function generateComponentVariants(
       const stateSelector = STATE_SELECTORS[state] ?? "";
       const selector = `[data-slot="${componentName}"][data-variant="${variant}"]${stateSelector}`;
 
-      const body = generateTokensCSS(tokens, prefix, theme, config.prefixParent);
+      const body = generateTokensCSS(tokens, prefix, theme, config.prefixParentName);
       if (body) css += `${selector}{${body}}`;
     }
   }
@@ -51,9 +51,3 @@ export function generateComponentVariants(
   return css;
 }
 
-export function generateVariants(theme: Theme): string {
-  if (!theme.components) return "";
-  return Object.entries(theme.components)
-    .map(([name, config]) => generateComponentVariants(name, config, theme))
-    .join("");
-}

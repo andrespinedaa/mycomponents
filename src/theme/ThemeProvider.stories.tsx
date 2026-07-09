@@ -80,7 +80,6 @@ export const AllThemes: StoryObj = {
       style={{
         minHeight: "100vh",
         borderTop: "1px solid #e5e5e5",
-        divide: "x",
       }}
     >
       {themes.map(({ key, label, theme }) => (

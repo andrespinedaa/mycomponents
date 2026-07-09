@@ -1,5 +1,4 @@
-import type { PropCategory } from "../theme/generators/system-css.types";
-import type { Theme } from "../theme/core/theme.types";
+import type { PropCategory, Theme } from "../theme";
 
 const SIZE_ALIASES: Record<string, string> = {
   full: "100%",
@@ -8,11 +7,7 @@ const SIZE_ALIASES: Record<string, string> = {
   auto: "auto",
 };
 
-export function resolveValue(
-  value: string | number,
-  category: PropCategory,
-  theme: Theme,
-): string {
+export function resolveValue(value: string | number, category: PropCategory, theme: Theme): string {
   const v = String(value);
   const p = theme.cssVarPrefix;
 

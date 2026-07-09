@@ -4,7 +4,6 @@ import type { CardConfig } from "./Card";
 export type CardTheme = ThemeComponentConfig<CardConfig>;
 
 export const CardThemeComponent: CardTheme = {
-  prefix: "card",
   sizes: {
     sm: { p: "md", w: "240px", gap: "sm" },
     md: { p: "lg", w: "240px", gap: "md" },

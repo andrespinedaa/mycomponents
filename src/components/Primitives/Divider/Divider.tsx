@@ -1,10 +1,10 @@
-import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../../factory";
+import { ComponentFactory, type ComponentConfig, type EmptyStatics, type OrientationProp } from "../../../factory";
 import type { CSSLength, ColorValue, Scales } from "../../../theme";
 import { useLayoutContext } from "../../../context/LayoutContext";
 import { Box, Flex, Text } from "..";
 
 export interface DividerOwnProps {
-  orientation?: "horizontal" | "vertical";
+  orientation?: OrientationProp;
   position?: "start" | "center" | "end";
   thickness?: CSSLength;
   color?: ColorValue;
@@ -23,7 +23,8 @@ export type DividerConfig = ComponentConfig<{
     size: "md";
   };
   sizes: Scales;
-  sets: string;
+  presets: "label";
+  slots: "";
 }>;
 
 export const Divider = ComponentFactory<DividerConfig>({
@@ -31,30 +32,33 @@ export const Divider = ComponentFactory<DividerConfig>({
   componentName: "Divider",
   defaultProps: { orientation: "horizontal", position: "center", thickness: "1px", size: "md" },
   render: function DividerRender({
+    preset,
     ref,
     color,
     label,
     position,
     thickness,
     size: sizeProp,
+    variant: variantProp,
     orientation: orientationProp,
     ...rest
   }) {
     const layout = useLayoutContext();
-    const orientation = layout.orientation ?? orientationProp;
     const size = layout.size ?? sizeProp;
+    const variant = layout.variant ?? variantProp;
+    const orientation = layout.orientation ?? orientationProp;
     const thicknessVar = { "--divider-thickness": thickness };
 
     if (label) {
       return (
         <Flex
-          ref={ref}
-          role="separator"
-          aria-orientation={orientation}
-          mod={[{ orientation, size }]}
-          align="center"
           gap="sm"
+          ref={ref}
+          align="center"
+          role="separator"
           vars={thicknessVar}
+          aria-orientation={orientation}
+          mod={[{ orientation, size, variant }]}
           {...rest}
         >
           {position !== "start" && <Box flex={1} borderColor={color} />}
@@ -70,10 +74,10 @@ export const Divider = ComponentFactory<DividerConfig>({
       <Box
         ref={ref}
         role="separator"
-        mod={[{ orientation, size }]}
-        aria-orientation={orientation}
-        borderColor={color}
         vars={thicknessVar}
+        borderColor={color}
+        aria-orientation={orientation}
+        mod={[{ orientation, size, variant }]}
         {...rest}
       />
     );

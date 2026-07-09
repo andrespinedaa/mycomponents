@@ -1,7 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 import { defaultTheme } from "../../themes/default-theme";
 import type { Theme } from "../core/theme.types";
-import { generateComponentSizes, generateSizes } from "./generateSizes";
+import { generateComponentSizes } from "./generateSizes";
 
 const p = defaultTheme.cssVarPrefix;
 
@@ -12,18 +12,17 @@ type TestConfig = NonNullable<Theme["components"]>[string];
 describe("generateComponentSizes", () => {
   describe("guarda de salida temprana", () => {
     it("retorna vacío si no hay sizes", () => {
-      const config: TestConfig = { prefix: "card" };
+      const config: TestConfig = {};
       expect(generateComponentSizes("Card", config, defaultTheme)).toBe("");
     });
 
     it("retorna vacío si sizes es objeto vacío", () => {
-      const config: TestConfig = { prefix: "card", sizes: {} };
+      const config: TestConfig = { sizes: {} };
       expect(generateComponentSizes("Card", config, defaultTheme)).toBe("");
     });
 
     it("omite sizes con tokens vacíos", () => {
       const config: TestConfig = {
-        prefix: "card",
         sizes: { sm: {}, md: { p: "md" } },
       };
       const result = generateComponentSizes("Card", config, defaultTheme);
@@ -35,7 +34,6 @@ describe("generateComponentSizes", () => {
   describe("selector estático", () => {
     it("genera selector [data-slot][data-size] para el tamaño estático", () => {
       const config: TestConfig = {
-        prefix: "card",
         sizes: { md: { p: "md" } },
       };
       const result = generateComponentSizes("Card", config, defaultTheme);
@@ -44,7 +42,6 @@ describe("generateComponentSizes", () => {
 
     it("resuelve token de spacing en size a CSS var", () => {
       const config: TestConfig = {
-        prefix: "card",
         sizes: { md: { p: "md" } },
       };
       const result = generateComponentSizes("Card", config, defaultTheme);
@@ -53,7 +50,6 @@ describe("generateComponentSizes", () => {
 
     it("resuelve token de color en size a CSS var", () => {
       const config: TestConfig = {
-        prefix: "card",
         sizes: { md: { bg: "primary.50" } },
       };
       const result = generateComponentSizes("Card", config, defaultTheme);
@@ -62,7 +58,6 @@ describe("generateComponentSizes", () => {
 
     it("pasa valor arbitrario sin transformar", () => {
       const config: TestConfig = {
-        prefix: "card",
         sizes: { md: { w: "240px" } },
       };
       const result = generateComponentSizes("Card", config, defaultTheme);
@@ -73,7 +68,6 @@ describe("generateComponentSizes", () => {
   describe("selectores responsive (media queries)", () => {
     it("genera un @media query por cada breakpoint del tema", () => {
       const config: TestConfig = {
-        prefix: "card",
         sizes: { md: { p: "md" } },
       };
       const result = generateComponentSizes("Card", config, defaultTheme);
@@ -85,7 +79,6 @@ describe("generateComponentSizes", () => {
 
     it("cada breakpoint genera un bloque independiente con el mismo body de tokens", () => {
       const config: TestConfig = {
-        prefix: "card",
         sizes: { md: { p: "md" } },
       };
       const result = generateComponentSizes("Card", config, defaultTheme);
@@ -96,7 +89,6 @@ describe("generateComponentSizes", () => {
 
     it("el selector dentro del @media usa [data-size-{bp}] no [data-size]", () => {
       const config: TestConfig = {
-        prefix: "card",
         sizes: { md: { p: "md" } },
       };
       const result = generateComponentSizes("Card", config, defaultTheme);
@@ -109,10 +101,9 @@ describe("generateComponentSizes", () => {
     it("incluye breakpoints agregados por el consumer", () => {
       const theme: Theme = {
         ...defaultTheme,
-        breakpoints: { ...defaultTheme.breakpoints, "2xl": "1536px" },
+        breakpoints: { ...defaultTheme.breakpoints, "2xl": "1536px" } as Theme["breakpoints"],
       };
       const config: TestConfig = {
-        prefix: "card",
         sizes: { md: { p: "md" } },
       };
       const result = generateComponentSizes("Card", config, theme);
@@ -126,7 +117,6 @@ describe("generateComponentSizes", () => {
         breakpoints: {} as Theme["breakpoints"],
       };
       const config: TestConfig = {
-        prefix: "card",
         sizes: { md: { p: "md" } },
       };
       const result = generateComponentSizes("Card", config, theme);
@@ -138,7 +128,6 @@ describe("generateComponentSizes", () => {
   describe("múltiples sizes", () => {
     it("genera bloques independientes para cada size", () => {
       const config: TestConfig = {
-        prefix: "card",
         sizes: {
           sm: { p: "sm" },
           md: { p: "md" },
@@ -154,7 +143,6 @@ describe("generateComponentSizes", () => {
     it("cada size genera exactamente 1 bloque estático + N breakpoints media queries", () => {
       const bpCount = Object.keys(defaultTheme.breakpoints).length;
       const config: TestConfig = {
-        prefix: "card",
         sizes: { sm: { p: "sm" } },
       };
       const result = generateComponentSizes("Card", config, defaultTheme);
@@ -166,41 +154,12 @@ describe("generateComponentSizes", () => {
   });
 });
 
-// ─── generateSizes ───────────────────────────────────────────────────────────
-
-describe("generateSizes", () => {
-  it("retorna vacío si components es objeto vacío", () => {
-    const theme: Theme = { ...defaultTheme, components: {} as Theme["components"] };
-    expect(generateSizes(theme)).toBe("");
-  });
-
-  it("procesa múltiples componentes independientemente", () => {
-    const theme: Theme = {
-      ...defaultTheme,
-      components: {
-        Card: {
-          prefix: "card",
-          sizes: { md: { p: "md" } },
-        },
-        Badge: {
-          prefix: "badge",
-          sizes: { sm: { p: "sm" } },
-        },
-      } as Theme["components"],
-    };
-    const result = generateSizes(theme);
-    expect(result).toContain(`[data-slot="Card"][data-size="md"]`);
-    expect(result).toContain(`[data-slot="Badge"][data-size="sm"]`);
-  });
-});
-
 // ─── DSL $prop en sizes ───────────────────────────────────────────────────────
 
 describe("generateComponentSizes — DSL $prop", () => {
   it("$prop standalone en size resuelve var del padre", () => {
     const config: TestConfig = {
-      prefix: "card-section",
-      prefixParent: "card",
+      prefixParentName: "card",
       sizes: { md: { gap: "$gap" } },
     };
     const result = generateComponentSizes("CardSection", config, defaultTheme);
@@ -209,9 +168,8 @@ describe("generateComponentSizes — DSL $prop", () => {
 
   it("$prop inline en size resuelve var del padre dentro del valor", () => {
     const config: TestConfig = {
-      prefix: "card-section",
-      prefixParent: "card",
-      sizes: { md: { borderRadius: "0 0 $rounded $rounded" } },
+      prefixParentName: "card",
+      sizes: { md: { rounded: "0 0 $rounded $rounded" } },
     };
     const result = generateComponentSizes("CardSection", config, defaultTheme);
     expect(result).toContain(`--card-section-border-radius:0 0 var(--card-border-radius) var(--card-border-radius);`);
@@ -219,8 +177,7 @@ describe("generateComponentSizes — DSL $prop", () => {
 
   it("$prop en size también se repite en media queries responsive", () => {
     const config: TestConfig = {
-      prefix: "card-section",
-      prefixParent: "card",
+      prefixParentName: "card",
       sizes: { md: { gap: "$gap" } },
     };
     const result = generateComponentSizes("CardSection", config, defaultTheme);
@@ -229,9 +186,8 @@ describe("generateComponentSizes — DSL $prop", () => {
     expect(mediaBlocks[0]).toContain(`var(--card-gap)`);
   });
 
-  it("sin prefixParent, $prop apunta al propio prefix (auto-referencia)", () => {
+  it("sin prefixParentName, $prop apunta al propio prefix (auto-referencia)", () => {
     const config: TestConfig = {
-      prefix: "card",
       sizes: { md: { gap: "$gap" } },
     };
     const result = generateComponentSizes("Card", config, defaultTheme);

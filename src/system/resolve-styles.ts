@@ -1,9 +1,7 @@
 import type { CSSProperties } from "react";
-import type { ApplyProp, VarsProp } from "../factory/core/factories.types";
-import type { Theme } from "../theme/core/theme.types";
+import type { ApplyProp, VarsProp, StyleProp } from "../factory/core/factories.types";
+import { type Theme, type StyleProps, CSS_PROP_TO_CATEGORY } from "../theme";
 import { parseStyleProps } from "./parse-style-props";
-import type { StyleProp, StyleProps } from "../theme/generators/system-css.data";
-import { CSS_PROP_TO_CATEGORY } from "../theme/generators/system-css.data";
 import { resolveMacros } from "./parse-macros";
 import { resolveValue } from "./resolve-value";
 

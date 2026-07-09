@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 import { defaultTheme } from "../../themes/default-theme";
 import type { Theme } from "../core/theme.types";
 import { generateComponents } from "./generateComponents";
@@ -10,7 +10,7 @@ const p = defaultTheme.cssVarPrefix;
 describe("generateComponents", () => {
   describe("guarda de salida temprana", () => {
     it("retorna vacío si components es objeto vacío", () => {
-      const theme: Theme = { ...defaultTheme, components: {} as Theme["components"] };
+      const theme: Theme = { ...defaultTheme, components: {} as unknown as Theme["components"] };
       expect(generateComponents(theme)).toBe("");
     });
 
@@ -18,8 +18,8 @@ describe("generateComponents", () => {
       const theme: Theme = {
         ...defaultTheme,
         components: {
-          Empty: { prefix: "empty" },
-        } as Theme["components"],
+          Empty: {},
+        } as unknown as Theme["components"],
       };
       expect(generateComponents(theme)).toBe("");
     });
@@ -31,10 +31,9 @@ describe("generateComponents", () => {
         ...defaultTheme,
         components: {
           Card: {
-            prefix: "card",
             variants: { Default: { base: { bg: "neutral.50" } } },
           },
-        } as Theme["components"],
+        } as unknown as Theme["components"],
       };
       const result = generateComponents(theme);
       // Bases → selector sin calificador adicional + var CSS con ,unset
@@ -47,10 +46,9 @@ describe("generateComponents", () => {
         ...defaultTheme,
         components: {
           Card: {
-            prefix: "card",
             variants: { Default: { base: { bg: "neutral.50" } } },
           },
-        } as Theme["components"],
+        } as unknown as Theme["components"],
       };
       const result = generateComponents(theme);
       expect(result).toContain(`[data-variant="Default"]`);
@@ -62,10 +60,9 @@ describe("generateComponents", () => {
         ...defaultTheme,
         components: {
           Card: {
-            prefix: "card",
             sizes: { md: { p: "md" } },
           },
-        } as Theme["components"],
+        } as unknown as Theme["components"],
       };
       const result = generateComponents(theme);
       expect(result).toContain(`[data-size="md"]`);
@@ -73,19 +70,18 @@ describe("generateComponents", () => {
       expect(result).toContain(`var(--${p}-spacing-md)`);
     });
 
-    it("slots con presets no generan CSS estático (son inline styles)", () => {
+    it("slots con presets generan CSS con selector [data-section][data-preset]", () => {
       const theme: Theme = {
         ...defaultTheme,
         components: {
-          Card: {
-            prefix: "card",
-            slots: { header: { presets: { default: { borderTop: "1px solid" } } } },
+          CardSection: {
+            slots: { header: { presets: { default: { borderBottom: "1px solid" } } } },
           },
-        } as Theme["components"],
+        } as unknown as Theme["components"],
       };
       const result = generateComponents(theme);
-      expect(result).not.toContain(`[data-section=`);
-      expect(result).not.toContain(`--card-border-top`);
+      expect(result).toContain(`[data-slot="CardSection"][data-section="header"]`);
+      expect(result).toContain(`--card-section-border-bottom:1px solid`);
     });
   });
 
@@ -95,11 +91,10 @@ describe("generateComponents", () => {
         ...defaultTheme,
         components: {
           Card: {
-            prefix: "card",
             variants: { Default: { base: { bg: "neutral.50" } } },
             sizes: { md: { p: "md" } },
           },
-        } as Theme["components"],
+        } as unknown as Theme["components"],
       };
       const result = generateComponents(theme);
 
@@ -119,14 +114,12 @@ describe("generateComponents", () => {
         ...defaultTheme,
         components: {
           Card: {
-            prefix: "card",
             variants: { Default: { base: { bg: "neutral.50" } } },
           },
           Badge: {
-            prefix: "badge",
             variants: { Filled: { base: { bg: "primary.500" } } },
           },
-        } as Theme["components"],
+        } as unknown as Theme["components"],
       };
       const result = generateComponents(theme);
       expect(result).toContain(`[data-slot="Card"]`);
@@ -140,14 +133,12 @@ describe("generateComponents", () => {
         ...defaultTheme,
         components: {
           Card: {
-            prefix: "card",
             sizes: { md: { p: "md" } },
           },
           Badge: {
-            prefix: "badge",
             sizes: { md: { p: "sm" } },
           },
-        } as Theme["components"],
+        } as unknown as Theme["components"],
       };
       const result = generateComponents(theme);
       expect(result).toContain(`--card-padding:var(--${p}-spacing-md);`);
@@ -158,12 +149,11 @@ describe("generateComponents", () => {
       const theme: Theme = {
         ...defaultTheme,
         components: {
-          Empty: { prefix: "empty" },
+          Empty: {},
           Card: {
-            prefix: "card",
             variants: { Default: { base: { bg: "neutral.50" } } },
           },
-        } as Theme["components"],
+        } as unknown as Theme["components"],
       };
       const result = generateComponents(theme);
       expect(result).not.toContain(`[data-slot="Empty"]`);

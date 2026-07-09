@@ -24,7 +24,8 @@ export type InputConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: {};
   sizes: "sm" | "md" | "lg";
-  sets: string;
+  presets: string;
+  slots: "";
 }>;
 
 export const Input = ComponentFactory<InputConfig>({
@@ -54,11 +55,11 @@ export const Input = ComponentFactory<InputConfig>({
     ref,
     ...rest
   }) {
-    const layout = useLayoutContext();
     const { theme } = useTheme();
+    const layout = useLayoutContext();
     const resolvedSize = size ?? (layout.size as InputConfig["sizes"] | undefined) ?? "md";
     const resolvedVariant = variant ?? layout.variant ?? "Default";
-    const sizeConfig = theme.components?.Input?.sizes?.[resolvedSize] ?? {};
+    const sizeConfig = theme.components.Input?.sizes?.[resolvedSize] ?? {};
     const pxToken = (sizeConfig.px as string) ?? "sm";
     const pxValue = resolveValue(pxToken, "spacing", theme);
 

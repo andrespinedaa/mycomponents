@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+﻿import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
@@ -26,6 +26,8 @@ type TestConfig = ComponentConfig<{
   defaultProps: {
     variant: "Default";
   };
+  presets: string;
+  slots: string
 }>;
 
 type NoRenderConfig = ComponentConfig<{
@@ -35,6 +37,8 @@ type NoRenderConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: {};
   sizes: never;
+  presets: string,
+  slots: string
 }>;
 
 // ─── Componentes de prueba ────────────────────────────────────
@@ -55,19 +59,10 @@ const NoRenderComponent = ComponentFactory<NoRenderConfig>({
 });
 
 describe("ComponentFactory", () => {
-
   // ─── displayName ──────────────────────────────────────────────
   describe("displayName", () => {
     it("asigna displayName desde componentName", () => {
       expect(TestComponent.displayName).toBe("Test");
-    });
-
-    it("sin componentName no tiene displayName", () => {
-      const NoName = ComponentFactory<TestConfig>({
-        defaultTag: "button",
-        render: ({ children, ref }) => <Box ref={ref}>{children}</Box>,
-      });
-      expect(NoName.displayName).toBeUndefined();
     });
   });
 
@@ -89,7 +84,12 @@ describe("ComponentFactory", () => {
     });
 
     it("pasa HTMLAttributes al elemento", () => {
-      render(<TestComponent id="test-btn" aria-label="botón">btn</TestComponent>, { wrapper });
+      render(
+        <TestComponent id="test-btn" aria-label="botón">
+          btn
+        </TestComponent>,
+        { wrapper },
+      );
       const el = screen.getByText("btn");
       expect(el).toHaveAttribute("id", "test-btn");
       expect(el).toHaveAttribute("aria-label", "botón");
@@ -112,25 +112,21 @@ describe("ComponentFactory", () => {
     });
 
     it("style crudo fluye y se aplica", () => {
-      render(
-        <TestComponent style={{ cursor: "pointer" }}>btn</TestComponent>,
-        { wrapper },
-      );
+      render(<TestComponent style={{ cursor: "pointer" }}>btn</TestComponent>, { wrapper });
       expect(screen.getByText("btn")).toHaveStyle({ cursor: "pointer" });
     });
 
     it("vars fluyen como CSS custom properties", () => {
-      render(
-        <TestComponent vars={{ "--custom-color": "red" }}>btn</TestComponent>,
-        { wrapper },
-      );
+      render(<TestComponent vars={{ "--custom-color": "red" }}>btn</TestComponent>, { wrapper });
       const el = screen.getByText("btn");
       expect(el.style.getPropertyValue("--custom-color")).toBe("red");
     });
 
     it("style y styleProps coexisten sin pisarse", () => {
       render(
-        <TestComponent p="8px" style={{ cursor: "pointer" }}>btn</TestComponent>,
+        <TestComponent p="8px" style={{ cursor: "pointer" }}>
+          btn
+        </TestComponent>,
         { wrapper },
       );
       const el = screen.getByText("btn");
@@ -154,7 +150,9 @@ describe("ComponentFactory", () => {
 
     it("pasa HTMLAttributes en el fallback", () => {
       const { container } = render(
-        <NoRenderComponent id="no-render" aria-label="sin render">contenido</NoRenderComponent>,
+        <NoRenderComponent id="no-render" aria-label="sin render">
+          contenido
+        </NoRenderComponent>,
         { wrapper },
       );
       expect(container.firstChild).toHaveAttribute("id", "no-render");
@@ -162,50 +160,43 @@ describe("ComponentFactory", () => {
     });
 
     it("mod genera data attributes en el fallback", () => {
-      const { container } = render(
-        <NoRenderComponent mod={{ state: "active" }}>contenido</NoRenderComponent>,
-        { wrapper },
-      );
+      const { container } = render(<NoRenderComponent mod={{ state: "active" }}>contenido</NoRenderComponent>, {
+        wrapper,
+      });
       expect(container.firstChild).toHaveAttribute("data-state", "active");
     });
 
     it("styleProps se resuelven como inline style", () => {
-      const { container } = render(
-        <NoRenderComponent p="20px">contenido</NoRenderComponent>,
-        { wrapper },
-      );
+      const { container } = render(<NoRenderComponent p="20px">contenido</NoRenderComponent>, { wrapper });
       expect(container.firstChild).toHaveStyle({ padding: "20px" });
     });
 
     it("style crudo se aplica en el fallback", () => {
-      const { container } = render(
-        <NoRenderComponent style={{ opacity: "0.5" }}>contenido</NoRenderComponent>,
-        { wrapper },
-      );
+      const { container } = render(<NoRenderComponent style={{ opacity: "0.5" }}>contenido</NoRenderComponent>, {
+        wrapper,
+      });
       expect(container.firstChild).toHaveStyle({ opacity: "0.5" });
     });
 
     it("style y styleProps se mergean en el fallback", () => {
       const { container } = render(
-        <NoRenderComponent p="12px" style={{ cursor: "pointer" }}>contenido</NoRenderComponent>,
+        <NoRenderComponent p="12px" style={{ cursor: "pointer" }}>
+          contenido
+        </NoRenderComponent>,
         { wrapper },
       );
       expect(container.firstChild).toHaveStyle({ padding: "12px", cursor: "pointer" });
     });
 
     it("responsive styleProp genera data-responsive en el fallback", () => {
-      const { container } = render(
-        <NoRenderComponent p={{ base: "8px", md: "16px" }}>contenido</NoRenderComponent>,
-        { wrapper },
-      );
+      const { container } = render(<NoRenderComponent p={{ base: "8px", md: "16px" }}>contenido</NoRenderComponent>, {
+        wrapper,
+      });
       expect(container.firstChild).toHaveAttribute("data-responsive", "true");
     });
 
     it("styleProp estático no genera data-responsive", () => {
-      const { container } = render(
-        <NoRenderComponent p="8px">contenido</NoRenderComponent>,
-        { wrapper },
-      );
+      const { container } = render(<NoRenderComponent p="8px">contenido</NoRenderComponent>, { wrapper });
       expect(container.firstChild).not.toHaveAttribute("data-responsive", "true");
     });
   });
@@ -218,6 +209,7 @@ describe("ComponentFactory", () => {
     });
 
     it("size responsive genera data-size y data-size-md", () => {
+      // @ts-expect-error responsive size objects not yet reflected in SizeProp type
       render(<TestComponent size={{ base: "sm", md: "lg" }}>btn</TestComponent>, { wrapper });
       const el = screen.getByText("btn");
       expect(el).toHaveAttribute("data-size", "sm");
@@ -241,10 +233,7 @@ describe("ComponentFactory", () => {
     });
 
     it("dataSlot sobreescribe componentName", () => {
-      const { container } = render(
-        <NoRenderComponent dataSlot="custom">contenido</NoRenderComponent>,
-        { wrapper },
-      );
+      const { container } = render(<NoRenderComponent dataSlot="custom">contenido</NoRenderComponent>, { wrapper });
       expect(container.firstChild).toHaveAttribute("data-slot", "custom");
     });
 
@@ -256,8 +245,10 @@ describe("ComponentFactory", () => {
         statics: EmptyStatics;
         defaultProps: {};
         sizes: never;
+        presets: string;
+        slots: string;
       }>;
-      const Anon = ComponentFactory<AnonConfig>({ defaultTag: "div" });
+      const Anon = ComponentFactory<AnonConfig>({ componentName: "", defaultTag: "div" });
       const { container } = render(<Anon>contenido</Anon>, { wrapper });
       expect(container.firstChild).not.toHaveAttribute("data-slot");
     });
@@ -268,11 +259,16 @@ describe("ComponentFactory", () => {
     it("theme accesible via useTheme en renders que lo necesitan", () => {
       let prefix: string | undefined;
       const ThemeComponent = ComponentFactory<NoRenderConfig>({
-        defaultTag: "div",
+        componentName: "NoRender",
+        defaultTag: "section",
         render: function ThemeRender({ ref, children, ...rest }) {
           const { theme } = useTheme();
           prefix = theme.cssVarPrefix;
-          return <Box ref={ref} {...rest}>{children}</Box>;
+          return (
+            <Box ref={ref as any} {...rest}>
+              {children}
+            </Box>
+          );
         },
       });
       render(<ThemeComponent>x</ThemeComponent>, { wrapper });
@@ -294,7 +290,7 @@ describe("ComponentFactory", () => {
     const SubComponent = ComponentFactory<TestConfig>({
       defaultTag: "button",
       componentName: "Test",
-      render: ({ children, ref }) => <Box ref={ref}>{children}</Box>,
+      render: ({ children, ref }) => <Box ref={ref as any}>{children}</Box>,
     });
 
     type WithStaticsConfig = ComponentConfig<{
@@ -304,12 +300,14 @@ describe("ComponentFactory", () => {
       statics: { Sub: typeof SubComponent };
       defaultProps: {};
       sizes: never;
+      presets: string;
+      slots: string;
     }>;
 
     const WithStatics = ComponentFactory<WithStaticsConfig>({
       defaultTag: "div",
       componentName: "WithStatics",
-      render: ({ children, ref }) => <Box ref={ref}>{children}</Box>,
+      render: ({ children, ref }) => <Box ref={ref as any}>{children}</Box>,
       statics: { Sub: SubComponent },
     });
 
@@ -319,7 +317,9 @@ describe("ComponentFactory", () => {
 
     it("renderiza con sub-componentes", () => {
       render(
-        <WithStatics><WithStatics.Sub>sub</WithStatics.Sub></WithStatics>,
+        <WithStatics>
+          <WithStatics.Sub>sub</WithStatics.Sub>
+        </WithStatics>,
         { wrapper },
       );
       expect(screen.getByText("sub")).toBeInTheDocument();
@@ -330,7 +330,8 @@ describe("ComponentFactory", () => {
   describe("edge cases", () => {
     it("render que retorna null no lanza error", () => {
       const NullComponent = ComponentFactory<NoRenderConfig>({
-        defaultTag: "div",
+        componentName: "NoRender",
+        defaultTag: "section",
         render: () => null,
       });
       expect(() => render(<NullComponent />, { wrapper })).not.toThrow();

@@ -4,7 +4,6 @@ import type { BadgeConfig } from "./Badge";
 export type BadgeThemeConfig = ThemeComponentConfig<BadgeConfig>;
 
 export const BadgeThemeComponent: BadgeThemeConfig = {
-  prefix: "badge",
   sizes: {
     xs: { px: "4px", py: "2px", fontSize: "10px" },
     sm: { px: "6px", py: "2px", fontSize: "11px" },

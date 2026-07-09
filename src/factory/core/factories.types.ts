@@ -11,6 +11,7 @@ export type ApplyProp = keyof ThemeMacros | BuiltInMacros;
 export type StyleProp = SystemCSS | ((theme: Theme) => SystemCSS);
 
 export type BaseProps = {
+  "data-slot"?: string;
   vars?: VarsProp;
   unstyled?: boolean;
   dataSlot?: string;
@@ -31,7 +32,8 @@ export type FactoryConfig = {
   defaultTag: ElementType;
   ownProps: object;
   sizes: Scales;
-  sets: string;
+  presets: string;
+  slots: string;
   statics: FactoryStatics;
   defaultProps: object;
   componentName: string;
@@ -42,6 +44,7 @@ export type ComponentConfig<Config extends FactoryConfig> = Config;
 export type FactoryInternalProps<Config extends FactoryConfig> = {
   ref: PolymorphicRef<Config["defaultTag"]>;
   size: Config["sizes"];
+  preset: Config["presets"];
 };
 
 export type FactoryRenderProps<Config extends FactoryConfig> = FactoryDefaultPropsConfig<Config> &

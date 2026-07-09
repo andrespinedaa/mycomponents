@@ -21,7 +21,8 @@ export type DotBadgeConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: {};
   sizes: ScaleRange<"xs" | "sm" | "md" | "lg">;
-  sets: string
+  presets: string;
+  slots: ""
 }>;
 
 export const DotBadge = ComponentFactory<DotBadgeConfig>({
@@ -47,8 +48,9 @@ export type BadgeConfig = ComponentConfig<{
   ownProps: BadgeOwnProps;
   statics: EmptyStatics;
   defaultProps: { size: "md"; display: "inline-flex"; align: "center"; rounded: "full" };
-  sizes: "xs" | "sm" | "md" | "lg";
-  sets: string
+  sizes: ScaleRange<"xs" | "sm" | "md" | "lg">;
+  presets: string;
+  slots: ""
 }>;
 
 export const Badge = ComponentFactory<BadgeConfig>({
@@ -69,7 +71,7 @@ export const Badge = ComponentFactory<BadgeConfig>({
         <Box
           as="span"
           ref={ref}
-          mod={{ size: resolvedSize }}
+          mod={{ size: resolvedSize, variant: resolvedVariant }}
           fontWeight={600}
           gap="xs"
           {...rest}
