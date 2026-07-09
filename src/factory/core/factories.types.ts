@@ -31,6 +31,7 @@ export type FactoryConfig = {
   defaultTag: ElementType;
   ownProps: object;
   sizes: Scales;
+  sets: string;
   statics: FactoryStatics;
   defaultProps: object;
   componentName: string;
@@ -40,7 +41,7 @@ export type ComponentConfig<Config extends FactoryConfig> = Config;
 
 export type FactoryInternalProps<Config extends FactoryConfig> = {
   ref: PolymorphicRef<Config["defaultTag"]>;
-  size: Config["sizes"] | undefined;
+  size: Config["sizes"];
 };
 
 export type FactoryRenderProps<Config extends FactoryConfig> = FactoryDefaultPropsConfig<Config> &

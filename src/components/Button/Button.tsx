@@ -13,6 +13,7 @@ export type ButtonConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: { size: "md" };
   sizes: ScaleRange<"xs" | "sm" | "md" | "lg" | "xl">;
+  sets: string
 }>;
 
 export const Button = ComponentFactory<ButtonConfig>({

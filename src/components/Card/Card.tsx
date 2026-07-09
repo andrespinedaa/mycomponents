@@ -4,8 +4,11 @@ import type { SystemVariants } from "../../theme";
 import { LayoutProvider } from "../../context/LayoutContext";
 import { Flex } from "../Primitives";
 
+export type CardSectionSets = "default" | "background" | "top" | "gradient";
+
 export interface CardSectionOwnProps {
   section?: "header" | "body" | "footer" | "media";
+  set?: CardSectionSets;
 }
 
 export type CardSectionConfig = ComponentConfig<{
@@ -13,16 +16,17 @@ export type CardSectionConfig = ComponentConfig<{
   defaultTag: "div";
   ownProps: CardSectionOwnProps;
   statics: EmptyStatics;
-  defaultProps: { section: "body" };
+  defaultProps: { section: "body"; set: "default" };
   sizes: "sm" | "md" | "lg" | "xl";
+  sets: CardSectionSets;
 }>;
 
 export const CardSection = ComponentFactory<CardSectionConfig>({
   componentName: "CardSection",
   defaultTag: "div",
-  defaultProps: { section: "body" },
-  render: function CardSectionRender({ section, ref, ...rest }) {
-    return <Flex ref={ref} mod={{ section }} {...rest} />;
+  defaultProps: { section: "body", set: "default" },
+  render: function CardSectionRender({ section, set, ref, ...rest }) {
+    return <Flex ref={ref} mod={{ section, set }} {...rest} />;
   },
 });
 
@@ -44,6 +48,7 @@ export type CardConfig = ComponentConfig<{
     size: "md";
   };
   sizes: "sm" | "md" | "lg" | "xl";
+  sets: "";
 }>;
 
 export const Card = ComponentFactory<CardConfig>({
@@ -57,11 +62,10 @@ export const Card = ComponentFactory<CardConfig>({
   },
   statics: { Section: CardSection },
   render: function CardRender({ orientation, variant, children, ref, size, ...rest }) {
-    const flexDir = orientation === "horizontal" ? "row" : "column";
     const ctx = useMemo(() => ({ orientation, size, variant }), [orientation, size, variant]);
     return (
       <LayoutProvider value={ctx}>
-        <Flex ref={ref} mod={[{ orientation }]} flexDir={flexDir} {...rest}>
+        <Flex ref={ref} mod={[{ orientation }]} {...rest}>
           {children}
         </Flex>
       </LayoutProvider>

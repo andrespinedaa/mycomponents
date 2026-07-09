@@ -42,9 +42,10 @@ export type ComponentConfigs = {
 export type ThemeComponentOptions<Config extends FactoryConfig> = {
   prefix?: string;
   prefixParent?: string;
+  slots?: Partial<Record<keyof Config["statics"], StylePropsTokens>>;
+  presets?: Record<string, Partial<Record<Config["sets"], StylePropsTokens>>>;
   defaultProps?: RequiredDefaultProps<Config>;
   sizes?: Partial<Record<Config["sizes"], StylePropsTokens>>;
-  slots?: Partial<Record<keyof Config["statics"], StylePropsTokens>>;
   variants?: Partial<Record<ComponentVariants, VariantStates>>;
 };
 

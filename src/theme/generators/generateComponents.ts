@@ -1,8 +1,8 @@
 import type { Theme } from "../core/theme.types";
 import { generateComponentBases } from "./generateBases";
+import { generateComponentPresets } from "./generatePresets";
 import { generateComponentVariants } from "./generateVariants";
 import { generateComponentSizes } from "./generateSizes";
-import { generateComponentSlots } from "./generateSlots";
 
 function generateComponent(
   name: string,
@@ -13,7 +13,7 @@ function generateComponent(
     generateComponentBases(name, config) +
     generateComponentVariants(name, config, theme) +
     generateComponentSizes(name, config, theme) +
-    generateComponentSlots(name, config, theme)
+    generateComponentPresets(name, config, theme)
   );
 }
 

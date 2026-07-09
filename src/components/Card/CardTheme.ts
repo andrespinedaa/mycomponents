@@ -6,7 +6,7 @@ export type CardTheme = ThemeComponentConfig<CardConfig>;
 export const CardThemeComponent: CardTheme = {
   prefix: "card",
   sizes: {
-    sm: { p: "md", w: "240px", gap: "sm",  },
+    sm: { p: "md", w: "240px", gap: "sm" },
     md: { p: "lg", w: "240px", gap: "md" },
     lg: { p: "xl", w: "280px", gap: "lg" },
     xl: { p: "2xl", w: "320px", gap: "20px" },

@@ -1,18 +1,12 @@
-import {
-  ComponentFactory,
-  type ComponentConfig,
-  type EmptyStatics,
-} from "../../factory";
+import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../factory";
 import { resolveValue } from "../../system/resolve-value";
 import { Box, Flex, Text } from "../Primitives";
 import { useLayoutContext } from "../../context/LayoutContext";
 import type { InputHTMLAttributes } from "react";
 import type { SystemVariants } from "../../theme";
+import { useTheme } from "../../hooks";
 
-type SafeInputHTMLAttributes = Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  "size"
->;
+type SafeInputHTMLAttributes = Omit<InputHTMLAttributes<HTMLInputElement>, "size">;
 
 export interface InputOwnProps {
   label?: string;
@@ -30,6 +24,7 @@ export type InputConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: {};
   sizes: "sm" | "md" | "lg";
+  sets: string;
 }>;
 
 export const Input = ComponentFactory<InputConfig>({
@@ -57,19 +52,17 @@ export const Input = ComponentFactory<InputConfig>({
     onFocus,
     onBlur,
     ref,
-    theme,
     ...rest
   }) {
     const layout = useLayoutContext();
+    const { theme } = useTheme();
     const resolvedSize = size ?? (layout.size as InputConfig["sizes"] | undefined) ?? "md";
     const resolvedVariant = variant ?? layout.variant ?? "Default";
     const sizeConfig = theme.components?.Input?.sizes?.[resolvedSize] ?? {};
     const pxToken = (sizeConfig.px as string) ?? "sm";
     const pxValue = resolveValue(pxToken, "spacing", theme);
 
-    const inputId =
-      id ??
-      (label ? `input-${label.toLowerCase().replace(/\s+/g, "-")}` : undefined);
+    const inputId = id ?? (label ? `input-${label.toLowerCase().replace(/\s+/g, "-")}` : undefined);
     const hasError = Boolean(error);
 
     const wrapperStyle: React.CSSProperties = {
@@ -78,9 +71,7 @@ export const Input = ComponentFactory<InputConfig>({
       alignItems: "center",
       borderRadius: `var(--${theme.cssVarPrefix}-radius-md)`,
       border: `1px solid ${
-        hasError
-          ? `var(--${theme.cssVarPrefix}-color-danger-500)`
-          : `var(--${theme.cssVarPrefix}-color-neutral-300)`
+        hasError ? `var(--${theme.cssVarPrefix}-color-danger-500)` : `var(--${theme.cssVarPrefix}-color-neutral-300)`
       }`,
       background: disabled
         ? `var(--${theme.cssVarPrefix}-color-neutral-100)`
@@ -155,9 +146,7 @@ export const Input = ComponentFactory<InputConfig>({
             onFocus={onFocus}
             onBlur={onBlur}
             aria-invalid={hasError || undefined}
-            aria-describedby={
-              error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined
-            }
+            aria-describedby={error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined}
             style={{
               flex: 1,
               height: "100%",

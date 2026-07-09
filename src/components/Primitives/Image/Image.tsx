@@ -1,8 +1,4 @@
-import {
-  ComponentFactory,
-  type ComponentConfig,
-  type EmptyStatics,
-} from "../../../factory";
+import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../../factory";
 import type { Scales } from "../../../theme";
 
 export interface ImageProps {}
@@ -14,6 +10,7 @@ export type ImgConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: {};
   sizes: Scales;
+  sets: string;
 }>;
 
 export const Image = ComponentFactory<ImgConfig>({

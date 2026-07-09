@@ -20,6 +20,7 @@ export type AlertConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: { severity: "info"; variant: "Subtle"; size: "md"; gap: "sm"; rounded: "md"; border: "1px solid" };
   sizes: ScaleRange<"sm" | "md" | "lg">;
+  sets: string;
 }>;
 
 export const Alert = ComponentFactory<AlertConfig>({

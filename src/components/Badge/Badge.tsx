@@ -21,6 +21,7 @@ export type DotBadgeConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: {};
   sizes: ScaleRange<"xs" | "sm" | "md" | "lg">;
+  sets: string
 }>;
 
 export const DotBadge = ComponentFactory<DotBadgeConfig>({
@@ -47,6 +48,7 @@ export type BadgeConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: { size: "md"; display: "inline-flex"; align: "center"; rounded: "full" };
   sizes: "xs" | "sm" | "md" | "lg";
+  sets: string
 }>;
 
 export const Badge = ComponentFactory<BadgeConfig>({

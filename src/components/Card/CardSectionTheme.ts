@@ -12,10 +12,21 @@ export const CardSectionThemeComponent: CardSectionTheme = {
     lg: { p: "lg" },
     xl: { p: "xl" },
   },
-  slots: {
-    header: { fontWeight: "600", borderBottom: "1px solid $borderColor" },
-    media: { overflow: "hidden" },
-    body: { flex: "1" },
-    footer: { borderTop: "1px solid $borderColor" },
+  presets: {
+    header: {
+      default: { fontWeight: "600", borderBottom: "1px solid $borderColor" },
+    },
+    body: {
+      default: { flex: "1" },
+    },
+    footer: {
+      default: { borderTop: "1px solid $borderColor" },
+    },
+    media: {
+      default:    { overflow: "hidden" },
+      background: { position: "absolute", inset: "0", objectFit: "cover" },
+      top:        { alignSelf: "flex-start" },
+      gradient:   { maskImage: "linear-gradient(to bottom, black 60%, transparent)" },
+    },
   },
 };

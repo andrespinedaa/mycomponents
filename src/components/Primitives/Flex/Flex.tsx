@@ -14,6 +14,7 @@ export type FlexConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: {};
   sizes: Scales;
+  sets: string
 }>;
 
 export const Flex = ComponentFactory<FlexConfig>({

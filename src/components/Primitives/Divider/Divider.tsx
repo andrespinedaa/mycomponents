@@ -1,8 +1,4 @@
-import {
-  ComponentFactory,
-  type ComponentConfig,
-  type EmptyStatics,
-} from "../../../factory";
+import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../../factory";
 import type { CSSLength, ColorValue, Scales } from "../../../theme";
 import { useLayoutContext } from "../../../context/LayoutContext";
 import { Box, Flex, Text } from "..";
@@ -24,32 +20,29 @@ export type DividerConfig = ComponentConfig<{
     orientation: "horizontal";
     position: "center";
     thickness: "1px";
+    size: "md";
   };
   sizes: Scales;
+  sets: string;
 }>;
 
 export const Divider = ComponentFactory<DividerConfig>({
-  componentName: "Divider",
   defaultTag: "div",
-  defaultProps: {
-    orientation: "horizontal",
-    position: "center",
-    thickness: "1px",
-  },
+  componentName: "Divider",
+  defaultProps: { orientation: "horizontal", position: "center", thickness: "1px", size: "md" },
   render: function DividerRender({
-    orientation,
-    position,
-    thickness,
+    ref,
     color,
     label,
-    ref,
+    position,
+    thickness,
+    size: sizeProp,
+    orientation: orientationProp,
     ...rest
   }) {
     const layout = useLayoutContext();
-    const resolvedOrientation =
-      orientation ?? layout.orientation ?? "horizontal";
-    const isVertical = resolvedOrientation === "vertical";
-    const lineMacro = isVertical ? "@dividerLineV" : "@dividerLineH";
+    const orientation = layout.orientation ?? orientationProp;
+    const size = layout.size ?? sizeProp;
     const thicknessVar = { "--divider-thickness": thickness };
 
     if (label) {
@@ -57,21 +50,18 @@ export const Divider = ComponentFactory<DividerConfig>({
         <Flex
           ref={ref}
           role="separator"
-          aria-orientation={resolvedOrientation}
+          aria-orientation={orientation}
+          mod={[{ orientation, size }]}
           align="center"
           gap="sm"
           vars={thicknessVar}
           {...rest}
         >
-          {position !== "start" && (
-            <Box flex={1} apply={lineMacro} borderColor={color} />
-          )}
+          {position !== "start" && <Box flex={1} borderColor={color} />}
           <Text as="span" whiteSpace="nowrap">
             {label}
           </Text>
-          {position !== "end" && (
-            <Box flex={1} apply={lineMacro} borderColor={color} />
-          )}
+          {position !== "end" && <Box flex={1} borderColor={color} />}
         </Flex>
       );
     }
@@ -80,8 +70,8 @@ export const Divider = ComponentFactory<DividerConfig>({
       <Box
         ref={ref}
         role="separator"
-        aria-orientation={resolvedOrientation}
-        apply={lineMacro}
+        mod={[{ orientation, size }]}
+        aria-orientation={orientation}
         borderColor={color}
         vars={thicknessVar}
         {...rest}

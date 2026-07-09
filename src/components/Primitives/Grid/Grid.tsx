@@ -19,6 +19,7 @@ export type GridItemConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: {};
   sizes: Scales;
+  sets: string
 }>;
 
 const GridItem = ComponentFactory<GridItemConfig>({
@@ -66,6 +67,7 @@ export type GridBoxConfig = ComponentConfig<{
   statics: { Item: typeof GridItem };
   defaultProps: {};
   sizes: Scales;
+  sets: string
 }>;
 
 export const GridBox = ComponentFactory<GridBoxConfig>({

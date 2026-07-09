@@ -85,14 +85,12 @@ describe("generateComponentBases", () => {
       );
     });
 
-    it("genera base desde tokens de slots — borderTop → border-top", () => {
+    it("slots con presets no contribuyen al base CSS (son inline styles)", () => {
       const config: TestConfig = {
         prefix: "card",
-        slots: { Section: { borderTop: "1px solid" } },
+        slots: { header: { presets: { default: { borderTop: "1px solid" } } } },
       };
-      expect(generateComponentBases("Card", config)).toBe(
-        `[data-slot="Card"]{border-top:var(--card-border-top,unset);}`,
-      );
+      expect(generateComponentBases("Card", config)).toBe("");
     });
 
     it("genera múltiples props en un solo selector", () => {

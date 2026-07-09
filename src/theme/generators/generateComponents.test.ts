@@ -73,24 +73,24 @@ describe("generateComponents", () => {
       expect(result).toContain(`var(--${p}-spacing-md)`);
     });
 
-    it("incluye CSS de slots en la salida", () => {
+    it("slots con presets no generan CSS estático (son inline styles)", () => {
       const theme: Theme = {
         ...defaultTheme,
         components: {
           Card: {
             prefix: "card",
-            slots: { Section: { borderTop: "1px solid" } },
+            slots: { header: { presets: { default: { borderTop: "1px solid" } } } },
           },
         } as Theme["components"],
       };
       const result = generateComponents(theme);
-      expect(result).toContain(`[data-section="Section"]`);
-      expect(result).toContain(`--card-border-top:1px solid`);
+      expect(result).not.toContain(`[data-section=`);
+      expect(result).not.toContain(`--card-border-top`);
     });
   });
 
   describe("orden de secciones", () => {
-    it("genera en orden: bases → variants → sizes → slots por componente", () => {
+    it("genera en orden: bases → variants → sizes por componente", () => {
       const theme: Theme = {
         ...defaultTheme,
         components: {
@@ -98,25 +98,18 @@ describe("generateComponents", () => {
             prefix: "card",
             variants: { Default: { base: { bg: "neutral.50" } } },
             sizes: { md: { p: "md" } },
-            slots: { Section: { borderTop: "1px solid" } },
           },
         } as Theme["components"],
       };
       const result = generateComponents(theme);
 
-      // Bases: [data-slot="Card"]{ (sin calificador extra)
       const basesIdx = result.indexOf(`[data-slot="Card"]{`);
-      // Variants: [data-slot="Card"][data-variant=
       const variantsIdx = result.indexOf(`[data-variant=`);
-      // Sizes: [data-slot="Card"][data-size=
       const sizesIdx = result.indexOf(`[data-size=`);
-      // Slots: [data-slot="Card"][data-section=
-      const slotsIdx = result.indexOf(`[data-section=`);
 
       expect(basesIdx).toBeGreaterThanOrEqual(0);
       expect(variantsIdx).toBeGreaterThan(basesIdx);
       expect(sizesIdx).toBeGreaterThan(variantsIdx);
-      expect(slotsIdx).toBeGreaterThan(sizesIdx);
     });
   });
 
