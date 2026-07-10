@@ -27,7 +27,6 @@ export type AvatarConfig = ComponentConfig<{
   };
   sizes: ScaleRange<"xs" | "sm" | "md" | "lg" | "xl">;
   presets: string;
-  slots: "";
 }>;
 
 function getInitials(name: string): string {

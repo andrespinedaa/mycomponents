@@ -21,7 +21,6 @@ export type AlertConfig = ComponentConfig<{
   defaultProps: { severity: "info"; variant: "Subtle"; size: "md"; gap: "sm"; rounded: "md"; border: "1px solid" };
   sizes: ScaleRange<"sm" | "md" | "lg">;
   presets: string;
-  slots: "";
 }>;
 
 export const Alert = ComponentFactory<AlertConfig>({

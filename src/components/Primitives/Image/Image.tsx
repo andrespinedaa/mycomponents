@@ -11,7 +11,6 @@ export type ImgConfig = ComponentConfig<{
   defaultProps: {};
   sizes: Scales;
   presets: string;
-  slots: "";
 }>;
 
 export const Image = ComponentFactory<ImgConfig>({

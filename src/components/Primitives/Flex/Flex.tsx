@@ -15,7 +15,6 @@ export type FlexConfig = ComponentConfig<{
   defaultProps: {};
   sizes: Scales;
   presets: string;
-  slots: ""
 }>;
 
 export const Flex = ComponentFactory<FlexConfig>({

@@ -1,5 +1,6 @@
 import { camelToKebab } from "../../utils/string";
 import type { Theme } from "../core/theme.types";
+import { buildSlotSelector, resolveGeneratorNames } from "./css-gen-utils";
 import { getCssProp, resolveVarName } from "./css-gen-utils";
 
 export function generateComponentBases(
@@ -7,7 +8,7 @@ export function generateComponentBases(
   config: NonNullable<Theme["components"]>[string],
 ): string {
   if (!config?.variants && !config?.sizes && !config?.presets) return "";
-  const prefix = camelToKebab(componentName);
+  const { resolvedName, prefix } = resolveGeneratorNames(componentName, config);
 
   const usedKeys = new Set<string>();
 
@@ -24,7 +25,6 @@ export function generateComponentBases(
     for (const key of Object.keys(tokens)) usedKeys.add(key);
   }
 
-  // presets planos — slots no contribuyen al base reset (son estilos condicionales por posición)
   for (const tokens of Object.values(config.presets ?? {})) {
     if (!tokens) continue;
     for (const key of Object.keys(tokens)) usedKeys.add(key);
@@ -32,7 +32,8 @@ export function generateComponentBases(
 
   if (usedKeys.size === 0) return "";
 
-  let css = `[data-slot="${componentName}"]{`;
+  const selector = buildSlotSelector(resolvedName, config.parentName);
+  let css = `${selector}{`;
   for (const key of usedKeys) {
     css += `${camelToKebab(getCssProp(key))}:var(${resolveVarName(key, prefix)},unset);`;
   }

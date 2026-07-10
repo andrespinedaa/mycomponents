@@ -1,5 +1,6 @@
 import type { ThemeComponentConfig } from "../../theme/core/theme.components.types";
 import type { CardConfig } from "./Card";
+import { CardSectionThemeComponent } from "./CardSectionTheme";
 
 export type CardTheme = ThemeComponentConfig<CardConfig>;
 
@@ -48,5 +49,8 @@ export const CardThemeComponent: CardTheme = {
       },
       hover: { boxShadow: "0 10px 15px rgba(0,0,0,0.1)" },
     },
+  },
+  slots: {
+    Section: CardSectionThemeComponent,
   },
 };

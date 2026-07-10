@@ -9,12 +9,19 @@ function generateComponent(
   config: NonNullable<Theme["components"]>[string],
   theme: Theme,
 ): string {
-  return (
+  let css =
     generateComponentBases(name, config) +
     generateComponentVariants(name, config, theme) +
     generateComponentSizes(name, config, theme) +
-    generateComponentPresets(name, config, theme)
-  );
+    generateComponentPresets(name, config, theme);
+
+  if (config?.slots) {
+    for (const [slotKey, slotConfig] of Object.entries(config.slots)) {
+      if (slotConfig) css += generateComponent(slotKey, slotConfig, theme);
+    }
+  }
+
+  return css;
 }
 
 export function generateComponents(theme: Theme): string {

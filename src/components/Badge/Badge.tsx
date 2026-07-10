@@ -22,7 +22,6 @@ export type DotBadgeConfig = ComponentConfig<{
   defaultProps: {};
   sizes: ScaleRange<"xs" | "sm" | "md" | "lg">;
   presets: string;
-  slots: ""
 }>;
 
 export const DotBadge = ComponentFactory<DotBadgeConfig>({
@@ -50,7 +49,6 @@ export type BadgeConfig = ComponentConfig<{
   defaultProps: { size: "md"; display: "inline-flex"; align: "center"; rounded: "full" };
   sizes: ScaleRange<"xs" | "sm" | "md" | "lg">;
   presets: string;
-  slots: ""
 }>;
 
 export const Badge = ComponentFactory<BadgeConfig>({

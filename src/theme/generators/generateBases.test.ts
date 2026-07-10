@@ -77,11 +77,13 @@ describe("generateComponentBases", () => {
       );
     });
 
-    it("slots no contribuyen al base reset — son estilos condicionales por posición", () => {
+    it("slot component con parentName genera selector con data-slot-parent", () => {
       const config: TestConfig = {
-        slots: { header: { presets: { default: { borderBottom: "1px solid" } } } },
+        parentName: "Card",
+        presets: { header: { borderBottom: "1px solid" } },
       };
-      expect(generateComponentBases("CardSection", config)).toBe("");
+      const result = generateComponentBases("Section", config);
+      expect(result).toContain(`[data-slot="Section"][data-slot-parent="Card"]`);
     });
 
     it("presets planos sí contribuyen al base reset", () => {

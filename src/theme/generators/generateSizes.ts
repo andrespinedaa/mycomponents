@@ -1,6 +1,5 @@
 import type { Theme, ThemeBreakpoints } from "../core/theme.types";
-import { camelToKebab } from "../../utils/string";
-import { generateTokensCSS } from "./css-gen-utils";
+import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames } from "./css-gen-utils";
 
 export function generateComponentSizes(
   componentName: string,
@@ -8,26 +7,24 @@ export function generateComponentSizes(
   theme: Theme,
 ): string {
   if (!config?.sizes) return "";
-  const prefix = camelToKebab(componentName);
+  const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(componentName, config);
   let css = "";
 
   for (const [sizeKey, tokens] of Object.entries(config.sizes)) {
     if (!tokens || Object.keys(tokens).length === 0) continue;
 
-    const body = generateTokensCSS(tokens as Record<string, unknown>, prefix, theme, config.prefixParentName);
+    const body = generateTokensCSS(tokens as Record<string, unknown>, prefix, theme, parentPrefix);
     if (!body) continue;
 
-    // ─── Estático: [data-slot="X"][data-size="sm"] ────────────────────────
-    css += `[data-slot="${componentName}"][data-size="${sizeKey}"]{${body}}`;
+    const base = buildSlotSelector(resolvedName, config.parentName);
+    css += `${base}[data-size="${sizeKey}"]{${body}}`;
 
-    // ─── Responsive: @media(min-width) { [data-size-{bp}="sm"] } ─────────
     for (const bp of Object.keys(theme.breakpoints) as (keyof ThemeBreakpoints)[]) {
       const bpValue = theme.breakpoints[bp];
       if (!bpValue) continue;
-      css += `@media(min-width:${bpValue}){[data-slot="${componentName}"][data-size-${bp}="${sizeKey}"]{${body}}}`;
+      css += `@media(min-width:${bpValue}){${base}[data-size-${bp}="${sizeKey}"]{${body}}}`;
     }
   }
 
   return css;
 }
-

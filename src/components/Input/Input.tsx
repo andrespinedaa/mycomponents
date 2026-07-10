@@ -25,7 +25,6 @@ export type InputConfig = ComponentConfig<{
   defaultProps: {};
   sizes: "sm" | "md" | "lg";
   presets: string;
-  slots: "";
 }>;
 
 export const Input = ComponentFactory<InputConfig>({

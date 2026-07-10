@@ -14,7 +14,6 @@ export type ButtonConfig = ComponentConfig<{
   defaultProps: { size: "md" };
   sizes: ScaleRange<"xs" | "sm" | "md" | "lg" | "xl">;
   presets: string;
-  slots: ""
 }>;
 
 export const Button = ComponentFactory<ButtonConfig>({

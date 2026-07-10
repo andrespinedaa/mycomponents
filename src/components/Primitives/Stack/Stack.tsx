@@ -15,7 +15,6 @@ export type StackConfig = ComponentConfig<{
   defaultProps: { gap: "md" };
   sizes: Scales;
   presets: string;
-  slots: ""
 }>;
 
 export const Stack = ComponentFactory<StackConfig>({

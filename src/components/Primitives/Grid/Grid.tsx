@@ -20,7 +20,6 @@ export type GridItemConfig = ComponentConfig<{
   defaultProps: {};
   sizes: Scales;
   presets: string;
-  slots: ""
 }>;
 
 const GridItem = ComponentFactory<GridItemConfig>({
@@ -69,7 +68,6 @@ export type GridBoxConfig = ComponentConfig<{
   defaultProps: {};
   sizes: Scales;
   presets: string;
-  slots: ""
 }>;
 
 export const GridBox = ComponentFactory<GridBoxConfig>({

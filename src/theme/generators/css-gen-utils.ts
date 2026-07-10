@@ -3,6 +3,21 @@ import { STYLE_PROPS_DATA } from "./system-css.data";
 import type { Theme } from "../core/theme.types";
 import { resolveTokenValue } from "./generateVariants";
 
+export function resolveGeneratorNames(
+  componentName: string,
+  config: NonNullable<Theme["components"]>[string],
+): { resolvedName: string; prefix: string; parentPrefix: string | undefined } {
+  const resolvedName = config?.componentName ?? componentName;
+  const parentPrefix = config?.parentName ? camelToKebab(config.parentName) : undefined;
+  const prefix = parentPrefix ? `${parentPrefix}-${camelToKebab(resolvedName)}` : camelToKebab(resolvedName);
+  return { resolvedName, prefix, parentPrefix };
+}
+
+export function buildSlotSelector(resolvedName: string, parentName?: string): string {
+  const self = `[data-slot="${resolvedName}"]`;
+  return parentName ? `${self}[data-slot-parent="${parentName}"]` : self;
+}
+
 export function resolveVarName(key: string, prefix: string): string {
   const def = STYLE_PROPS_DATA[key];
   return def

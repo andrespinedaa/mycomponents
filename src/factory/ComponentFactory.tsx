@@ -15,7 +15,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
 }: ComponentFactoryOptions<Config>): FactoryComponentReturn<Config> {
   const Component = typedRef<HTMLElement, PolymorphicPropsConfig<Config>>((props, ref) => {
     const { theme } = useTheme();
-    const componentConfig = theme.components[componentName];
+    const componentConfig = theme.components?.[componentName];
     const themeDefaults = componentConfig?.defaultProps ?? {};
     const mergedProps = { ...(defaultProps ?? {}), ...themeDefaults, ...props };
 
@@ -33,10 +33,12 @@ export function ComponentFactory<Config extends FactoryConfig>({
       ...restProps
     } = mergedProps;
 
-    const dataName = dataSlot ?? inheritedSlot ?? (componentName || undefined);
-    const vars = resolveVarsDSL(varsRaw, camelToKebab(componentName));
-    const modProps = getMod([mod, { slot: dataName }]);
-    
+    const resolvedComponentName = componentConfig?.componentName ?? componentName;
+    const parentName = componentConfig?.parentName;
+    const dataName = dataSlot || inheritedSlot || resolvedComponentName || undefined;
+    const vars = resolveVarsDSL(varsRaw, camelToKebab(resolvedComponentName));
+    const modProps = getMod([mod, { slot: dataName }, { "slot-parent": parentName }]);
+
     if (!render && !renderRoot) {
       const Element = (as ?? defaultTag) as ElementType;
       const { apply, unstyled = false, ...rest } = restProps;
@@ -55,6 +57,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
         { preset },
         { variant },
         { slot: dataName },
+        { "slot-parent": parentName },
         { responsive: hasResponsive },
       ]);
       return <Element ref={ref} style={styles} {...componentProps} {...ElementModProps} />;

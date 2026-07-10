@@ -4,7 +4,6 @@ import type {
   BadgeConfig,
   ButtonConfig,
   CardConfig,
-  CardSectionConfig,
   InputConfig,
 } from "../../components";
 import type {
@@ -36,18 +35,18 @@ export type ComponentConfigs = {
   Input: InputConfig;
   Avatar: AvatarConfig;
   Button: ButtonConfig;
-  CardSection: CardSectionConfig;
 };
 
-type PartialPresets<Config extends FactoryConfig> = Partial<Record<Config["presets"], StylePropsTokens>>;
-
 export type ThemeComponentOptions<Config extends FactoryConfig> = {
-  prefixParentName?: string;
+  componentName?: string;
+  parentName?: string;
   defaultProps?: RequiredDefaultProps<Config>;
-  sizes?: Partial<Record<Config["sizes"], StylePropsTokens>>;
+  sizes?: Partial<Record<NonNullable<Config["sizes"]>, StylePropsTokens>>;
   variants?: Partial<Record<ComponentVariants, VariantStates>>;
-  slots?: Partial<Record<Config["slots"], { presets?: PartialPresets<Config> }>>;
-  presets?: PartialPresets<Config>;
+  presets?: Config["presets"] extends string
+    ? Partial<Record<Config["presets"], StylePropsTokens>>
+    : never;
+  slots?: Partial<Record<keyof Config["statics"], ThemeComponentConfig<FactoryConfig>>>;
 };
 
 export type ThemeComponents = {

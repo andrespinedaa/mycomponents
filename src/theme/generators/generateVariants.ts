@@ -1,7 +1,7 @@
 import type { ComponentStates, StylePropsTokens, Theme, VariantStates } from "../";
 import { resolveValue } from "../../system/resolve-value";
 import { camelToKebab } from "../../utils/string";
-import { generateTokensCSS } from "./css-gen-utils";
+import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames } from "./css-gen-utils";
 import { STYLE_PROPS_DATA } from "./system-css.data";
 
 export function resolveTokenValue(key: string, value: string, theme: Theme): string {
@@ -28,7 +28,7 @@ export function generateComponentVariants(
   theme: Theme,
 ): string {
   if (!config?.variants) return "";
-  const prefix = camelToKebab(componentName);
+  const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(componentName, config);
   let css = "";
 
   for (const [variant, stateConfig] of Object.entries(config.variants)) {
@@ -41,13 +41,13 @@ export function generateComponentVariants(
       if (!tokens || Object.keys(tokens).length === 0) continue;
 
       const stateSelector = STATE_SELECTORS[state] ?? "";
-      const selector = `[data-slot="${componentName}"][data-variant="${variant}"]${stateSelector}`;
+      const base = buildSlotSelector(resolvedName, config.parentName);
+      const selector = `${base}[data-variant="${variant}"]${stateSelector}`;
 
-      const body = generateTokensCSS(tokens, prefix, theme, config.prefixParentName);
+      const body = generateTokensCSS(tokens, prefix, theme, parentPrefix);
       if (body) css += `${selector}{${body}}`;
     }
   }
 
   return css;
 }
-

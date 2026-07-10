@@ -1,4 +1,4 @@
-﻿import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { defaultTheme } from "../../themes/default-theme";
 import type { Theme } from "../core/theme.types";
 import { generateComponentVariants } from "./generateVariants";
@@ -7,26 +7,26 @@ const p = defaultTheme.cssVarPrefix;
 
 type TestConfig = NonNullable<Theme["components"]>[string];
 
-// ─── generateComponentVariants ───────────────────────────────────────────────
+// --- generateComponentVariants -----------------------------------------------
 
 describe("generateComponentVariants", () => {
   describe("guarda de salida temprana", () => {
-    it("retorna vacío si no hay variants", () => {
+    it("retorna vac�o si no hay variants", () => {
       const config: TestConfig = {};
       expect(generateComponentVariants("Card", config, defaultTheme)).toBe("");
     });
 
-    it("retorna vacío si variants es objeto vacío", () => {
+    it("retorna vac�o si variants es objeto vac�o", () => {
       const config: TestConfig = { variants: {} };
       expect(generateComponentVariants("Card", config, defaultTheme)).toBe("");
     });
 
-    it("omite estados con tokens vacíos", () => {
+    it("omite estados con tokens vac�os", () => {
       const config: TestConfig = {
         variants: { Default: { base: {}, hover: { bg: "neutral.100" } } },
       };
       const result = generateComponentVariants("Card", config, defaultTheme);
-      // base vacío → no genera bloque sin sufijo de estado
+      // base vac�o ? no genera bloque sin sufijo de estado
       expect(result).not.toContain(`[data-variant="Default"]{`);
       expect(result).toContain(`[data-variant="Default"]:hover{`);
     });
@@ -92,7 +92,7 @@ describe("generateComponentVariants", () => {
     });
   });
 
-  describe("resolución de tokens", () => {
+  describe("resoluci�n de tokens", () => {
     it("resuelve token de color a CSS var", () => {
       const config: TestConfig = {
         variants: { Default: { base: { bg: "neutral.50" } } },
@@ -134,8 +134,8 @@ describe("generateComponentVariants", () => {
     });
   });
 
-  describe("múltiples variantes y estados", () => {
-    it("genera bloques independientes para múltiples variantes", () => {
+  describe("m�ltiples variantes y estados", () => {
+    it("genera bloques independientes para m�ltiples variantes", () => {
       const config: TestConfig = {
         variants: {
           Default: { base: { bg: "neutral.50" } },
@@ -147,7 +147,7 @@ describe("generateComponentVariants", () => {
       expect(result).toContain(`[data-variant="Filled"]`);
     });
 
-    it("genera bloques independientes para múltiples estados de una variante", () => {
+    it("genera bloques independientes para m�ltiples estados de una variante", () => {
       const config: TestConfig = {
         variants: {
           Default: {
@@ -183,40 +183,44 @@ describe("generateComponentVariants", () => {
   });
 });
 
-// ─── DSL $prop en variants ────────────────────────────────────────────────────
+// --- DSL $prop en variants ----------------------------------------------------
 
-describe("generateComponentVariants — DSL $prop", () => {
+describe("generateComponentVariants � DSL $prop", () => {
   it("$prop standalone en variant base resuelve var del padre", () => {
     const config: TestConfig = {
-      prefixParentName: "card",
+      parentName: "Card",
+      componentName: "Section",
       variants: { Default: { base: { color: "$color" } } },
     };
-    const result = generateComponentVariants("CardSection", config, defaultTheme);
+    const result = generateComponentVariants("Section", config, defaultTheme);
     expect(result).toContain(`--card-section-color:var(--card-color);`);
   });
 
   it("$prop inline en variant resuelve dentro del valor", () => {
     const config: TestConfig = {
-      prefixParentName: "card",
+      parentName: "Card",
+      componentName: "Section",
       variants: { Filled: { base: { outline: "2px solid $borderColor" } } },
     };
-    const result = generateComponentVariants("CardSection", config, defaultTheme);
+    const result = generateComponentVariants("Section", config, defaultTheme);
     expect(result).toContain(`--card-section-outline:2px solid var(--card-border-color);`);
   });
 
   it("$prop en estado hover de una variant", () => {
     const config: TestConfig = {
-      prefixParentName: "card",
+      parentName: "Card",
+      componentName: "Section",
       variants: { Default: { hover: { bg: "$background" } } },
     };
-    const result = generateComponentVariants("CardSection", config, defaultTheme);
+    const result = generateComponentVariants("Section", config, defaultTheme);
     expect(result).toContain(`:hover`);
     expect(result).toContain(`--card-section-background:var(--card-background);`);
   });
 
   it("$prop coexiste con tokens normales en la misma variant", () => {
     const config: TestConfig = {
-      prefixParentName: "card",
+      parentName: "Card",
+      componentName: "Section",
       variants: {
         Default: {
           base: {
@@ -226,12 +230,12 @@ describe("generateComponentVariants — DSL $prop", () => {
         },
       },
     };
-    const result = generateComponentVariants("CardSection", config, defaultTheme);
+    const result = generateComponentVariants("Section", config, defaultTheme);
     expect(result).toContain(`--card-section-background:var(--${p}-color-neutral-50);`);
     expect(result).toContain(`--card-section-color:var(--card-color);`);
   });
 
-  it("sin prefixParentName, $prop apunta al propio prefix (auto-referencia)", () => {
+  it("sin parentName, $prop apunta al propio prefix (auto-referencia)", () => {
     const config: TestConfig = {
       variants: { Default: { base: { color: "$color" } } },
     };

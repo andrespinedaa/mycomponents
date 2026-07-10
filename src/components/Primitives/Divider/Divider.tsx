@@ -24,7 +24,6 @@ export type DividerConfig = ComponentConfig<{
   };
   sizes: Scales;
   presets: "label";
-  slots: "";
 }>;
 
 export const Divider = ComponentFactory<DividerConfig>({

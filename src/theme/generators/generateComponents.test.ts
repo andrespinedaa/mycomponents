@@ -70,17 +70,24 @@ describe("generateComponents", () => {
       expect(result).toContain(`var(--${p}-spacing-md)`);
     });
 
-    it("slots con presets generan CSS con selector [data-section][data-preset]", () => {
+    it("slots en ThemeConfig generan CSS recursivamente con data-slot-parent", () => {
       const theme: Theme = {
         ...defaultTheme,
         components: {
-          CardSection: {
-            slots: { header: { presets: { default: { borderBottom: "1px solid" } } } },
+          Card: {
+            slots: {
+              Section: {
+                componentName: "Section",
+                parentName: "Card",
+                presets: { header: { borderBottom: "1px solid" } },
+              },
+            },
           },
         } as unknown as Theme["components"],
       };
       const result = generateComponents(theme);
-      expect(result).toContain(`[data-slot="CardSection"][data-section="header"]`);
+      expect(result).toContain(`[data-slot="Section"][data-slot-parent="Card"]`);
+      expect(result).toContain(`[data-section="header"]`);
       expect(result).toContain(`--card-section-border-bottom:1px solid`);
     });
   });

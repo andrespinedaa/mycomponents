@@ -32,8 +32,7 @@ export type FactoryConfig = {
   defaultTag: ElementType;
   ownProps: object;
   sizes: Scales;
-  presets: string;
-  slots: string;
+  presets: string | undefined;
   statics: FactoryStatics;
   defaultProps: object;
   componentName: string;

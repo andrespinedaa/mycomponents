@@ -15,7 +15,6 @@ export type BoxConfig = ComponentConfig<{
   defaultProps: {};
   sizes: Scales;
   presets: string;
-  slots: ""
 }>;
 
 export const Box = ComponentFactory<BoxConfig>({
