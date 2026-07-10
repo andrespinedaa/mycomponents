@@ -12,8 +12,8 @@ export const CardSectionThemeComponent: CardSectionTheme = {
     lg: { p: "lg" },
     xl: { p: "xl" },
   },
-  presets: {
-    header: { fontWeight: "600", borderBottom: "1px solid $borderColor" },
+  sections: {
+    header: { borderBottom: "1px solid $borderColor" },
     body: { flex: "1" },
     footer: { borderTop: "1px solid $borderColor" },
     media: { overflow: "hidden" },

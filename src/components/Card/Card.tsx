@@ -1,13 +1,11 @@
 import { useMemo } from "react";
 import { LayoutProvider } from "../../context/LayoutContext";
 import { ComponentFactory, type ComponentConfig, type OrientationProp } from "../../factory";
-import type { SystemVariants } from "../../theme";
 import { Flex } from "../Primitives";
 import { CardSection } from "./CardSection";
 
 export interface CardOwnProps {
   orientation?: OrientationProp;
-  variant?: SystemVariants<"Filled" | "Elevated" | "Default" | "Outlined">;
 }
 
 export type CardConfig = ComponentConfig<{
@@ -23,7 +21,8 @@ export type CardConfig = ComponentConfig<{
     size: "md";
   };
   sizes: "sm" | "md" | "lg" | "xl";
-  presets: "";
+  presets: string;
+  variants: "Filled" | "Elevated" | "Default" | "Outlined";
 }>;
 
 export const Card = ComponentFactory<CardConfig>({

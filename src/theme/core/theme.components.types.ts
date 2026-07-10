@@ -17,7 +17,7 @@ import type {
 } from "../../components/Primitives";
 import type { FactoryConfig, RequiredDefaultProps } from "../../factory/core";
 import type { StylePropsTokens } from "../generators/system-css.types";
-import type { ComponentVariants, VariantStates } from "./theme.variants";
+import type { ComponentStates, ComponentVariants } from "./theme.types";
 
 export type ComponentConfigs = {
   /* Primitives */
@@ -37,20 +37,30 @@ export type ComponentConfigs = {
   Button: ButtonConfig;
 };
 
+export type VariantStates = Partial<Record<ComponentStates, StylePropsTokens>>;
+
+type PartialPresets<Config extends FactoryConfig> = Partial<
+  Record<Config["presets"], StylePropsTokens>
+>;
+
+type SectionEntry<Config extends FactoryConfig> = StylePropsTokens & {
+  presets?: PartialPresets<Config>;
+};
+
 export type ThemeComponentOptions<Config extends FactoryConfig> = {
-  componentName?: string;
   parentName?: string;
+  componentName?: string;
   defaultProps?: RequiredDefaultProps<Config>;
-  sizes?: Partial<Record<NonNullable<Config["sizes"]>, StylePropsTokens>>;
+  sizes?: Partial<Record<Config["sizes"], StylePropsTokens>>;
   variants?: Partial<Record<ComponentVariants, VariantStates>>;
-  presets?: Config["presets"] extends string
-    ? Partial<Record<Config["presets"], StylePropsTokens>>
-    : never;
-  slots?: Partial<Record<keyof Config["statics"], ThemeComponentConfig<FactoryConfig>>>;
+  sections?: Partial<Record<NonNullable<Config["sections"]>, SectionEntry<Config>>>;
+  presets?: PartialPresets<Config>;
+  slots?: Record<keyof Config["statics"], ThemeComponentConfig<FactoryConfig>>;
 };
 
 export type ThemeComponents = {
   [K in keyof ComponentConfigs]: ThemeComponentOptions<ComponentConfigs[K]>;
 } & Record<string, ThemeComponentConfig<FactoryConfig>>;
 
+// helpers
 export type ThemeComponentConfig<Config extends FactoryConfig> = ThemeComponentOptions<Config>;

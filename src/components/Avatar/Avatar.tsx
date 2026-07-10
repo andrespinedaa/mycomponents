@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../factory";
+import { useResolvedSize } from "../../hooks";
 import { Box } from "../Primitives/Box";
 import { Flex } from "../Primitives/Flex/Flex";
-import { useResolvedSize } from "../../hooks";
-import type { ScaleRange } from "../../theme";
 
 export interface AvatarOwnProps {
   src?: string;
@@ -25,8 +24,9 @@ export type AvatarConfig = ComponentConfig<{
     flexShrink: 0;
     userSelect: "none";
   };
-  sizes: ScaleRange<"xs" | "sm" | "md" | "lg" | "xl">;
+  sizes: "xs" | "sm" | "md" | "lg" | "xl";
   presets: string;
+  variants: "Default";
 }>;
 
 function getInitials(name: string): string {
@@ -45,7 +45,7 @@ export const Avatar = ComponentFactory<AvatarConfig>({
     overflow: "hidden",
     userSelect: "none",
     display: "inline-flex",
-    role: "img"
+    role: "img",
   },
   render: function AvatarRender({ src, alt, name, size, shape, children, ref, ...rest }) {
     const resolvedSize = useResolvedSize(size);

@@ -3,7 +3,7 @@ import {
   type ComponentConfig,
   type EmptyStatics,
 } from "../../../factory";
-import type { Scales } from "../../../theme";
+import type { ComponentVariants, Scales } from "../../../theme";
 
 export interface BoxProps {}
 
@@ -15,6 +15,7 @@ export type BoxConfig = ComponentConfig<{
   defaultProps: {};
   sizes: Scales;
   presets: string;
+  variants: ComponentVariants; 
 }>;
 
 export const Box = ComponentFactory<BoxConfig>({

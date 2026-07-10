@@ -3,10 +3,8 @@ import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../..
 import { Flex } from "../Primitives";
 
 export type CardSectionSets = "default" | "background" | "top" | "gradient";
-export type SlotsCardSection = "header" | "body" | "footer" | "media";
 
 export interface CardSectionOwnProps {
-  section?: SlotsCardSection;
   preset?: CardSectionSets;
 }
 
@@ -15,17 +13,19 @@ export type CardSectionConfig = ComponentConfig<{
   defaultTag: "div";
   ownProps: CardSectionOwnProps;
   statics: EmptyStatics;
+  sections: "header" | "body" | "footer" | "media";
   defaultProps: { section: "body"; preset: "default" };
   sizes: "sm" | "md" | "lg" | "xl";
   presets: CardSectionSets;
+  variants: "Default";
 }>;
 
 export const CardSection = ComponentFactory<CardSectionConfig>({
   defaultTag: "div",
   componentName: "CardSection",
   defaultProps: { section: "body", preset: "default" },
-  render: function CardSectionRender({ section, preset, ref, ...rest }) {
+  render: function CardSectionRender({ ref, ...rest }) {
     const { size } = useLayoutContext();
-    return <Flex ref={ref} mod={{ section, preset, size }} {...rest} />;
+    return <Flex ref={ref} mod={{ size }} {...rest} />;
   },
 });

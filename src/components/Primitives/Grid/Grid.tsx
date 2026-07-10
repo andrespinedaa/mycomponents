@@ -1,5 +1,5 @@
 import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../../factory";
-import type { Scales } from "../../../theme";
+import type { ComponentVariants, Scales } from "../../../theme";
 import { Box } from "../Box";
 
 // ─── GridBox.Item ─────────────────────────────────────────────────────────────
@@ -20,13 +20,24 @@ export type GridItemConfig = ComponentConfig<{
   defaultProps: {};
   sizes: Scales;
   presets: string;
+  variants: ComponentVariants;
 }>;
 
 const GridItem = ComponentFactory<GridItemConfig>({
   componentName: "GridItem",
   defaultTag: "div",
-  render: function GridItemRender({ colSpan, rowSpan, colStart, colEnd, rowStart, rowEnd, ref, ...rest }) {
-    const resolveSpan = (span?: number | "full") => (span === "full" ? "1 / -1" : span ? `span ${span}` : undefined);
+  render: function GridItemRender({
+    colSpan,
+    rowSpan,
+    colStart,
+    colEnd,
+    rowStart,
+    rowEnd,
+    ref,
+    ...rest
+  }) {
+    const resolveSpan = (span?: number | "full") =>
+      span === "full" ? "1 / -1" : span ? `span ${span}` : undefined;
 
     return (
       <Box
@@ -68,6 +79,7 @@ export type GridBoxConfig = ComponentConfig<{
   defaultProps: {};
   sizes: Scales;
   presets: string;
+  variants: ComponentVariants;
 }>;
 
 export const GridBox = ComponentFactory<GridBoxConfig>({

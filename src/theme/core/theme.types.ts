@@ -14,16 +14,31 @@ export type CSSColor = string;
 export type CSSLength = `${number}${CSSUnit}` | "0";
 
 // ─── Scales Range ──────────────────────────────────────────────────────────
-export type Scales = "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "full" | keyof ConsumerScales;
-export type ScaleRange<S extends Scales> = S;
+// prettier-ignore
+export type BreakpointKey = "base" | keyof ThemeBreakpoints;
+export type PartialBreakPointKey<T> = Partial<Record<BreakpointKey, T>>;
 export type ShadowScale = ScaleRange<"sm" | "md" | "lg" | "xl">;
 export type ControlHeightScale = ScaleRange<"sm" | "md" | "lg">;
+export type BreakPointsScale = ScaleRange<"sm" | "md" | "lg" | "xl">;
 export type FontSizeScale = ScaleRange<SpacingScale | "3xl" | "4xl">;
 export type RadiiScale = ScaleRange<"none" | "sm" | "md" | "lg" | "full">;
 export type SpacingScale = ScaleRange<"xs" | "sm" | "md" | "lg" | "xl" | "2xl">;
-export type BreakPointsScale = ScaleRange<"sm" | "md" | "lg" | "xl">;
-export type BreakpointKey = "base" | keyof ThemeBreakpoints;
-export type PartialBreakPointKey<T> = Partial<Record<BreakpointKey, T>>;
+export type Scales = "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "full" | keyof ConsumerScales;
+
+// ─── Variants ──────────────────────────────────────────────────────────
+// prettier-ignore
+export type ComponentVariants =
+  | "Filled" | "Outlined" | "Elevated"
+  | "Ghost" | "Subtle" | "Transparent"
+  | "Link" | "Tonal" | "Soft" | "Default"
+  | "Unstyled";
+
+// ─── States ──────────────────────────────────────────────────────────
+// prettier-ignore
+export type ComponentStates =
+  | "base" | "hover" | "focus" | "active"
+  | "disabled" | "loading" | "selected"
+  | "checked" | "invalid";
 
 // ─── Merge ──────────────────────────────────────────────────────────
 /** Fusiona `Base` con `Custom` — las keys de `Custom` sobreescriben las de `Base`. */
@@ -185,3 +200,8 @@ export interface Theme extends ConsumerTheme {
 }
 
 export type ColorScheme = "light" | "dark";
+
+// ─── Helpers ─────
+export type SystemVariants<Allowed extends ComponentVariants> = Allowed;
+export type SystemStatus<Allowed extends ComponentStates> = Allowed;
+export type ScaleRange<Allowed extends Scales> = Allowed;

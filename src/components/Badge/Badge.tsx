@@ -15,13 +15,14 @@ export interface DotBadgeOwnProps {
 }
 
 export type DotBadgeConfig = ComponentConfig<{
-  componentName: "DotBadge";
-  defaultTag: "span";
-  ownProps: DotBadgeOwnProps;
-  statics: EmptyStatics;
-  defaultProps: {};
-  sizes: ScaleRange<"xs" | "sm" | "md" | "lg">;
   presets: string;
+  defaultProps: {};
+  defaultTag: "span";
+  variants: "Default";
+  statics: EmptyStatics;
+  componentName: "DotBadge";
+  ownProps: DotBadgeOwnProps;
+  sizes: "xs" | "sm" | "md" | "lg";
 }>;
 
 export const DotBadge = ComponentFactory<DotBadgeConfig>({
@@ -29,15 +30,20 @@ export const DotBadge = ComponentFactory<DotBadgeConfig>({
   defaultTag: "span",
   defaultProps: {},
   render: function DotBadgeRender({ dotColor, ref, ...rest }) {
-    return <Box as="span" ref={ref} vars={dotColor ? { "--dot-color": dotColor } : undefined} {...rest} />;
+    return (
+      <Box
+        as="span"
+        ref={ref}
+        vars={dotColor ? { "--dot-color": dotColor } : undefined}
+        {...rest}
+      />
+    );
   },
 });
 
 export interface BadgeOwnProps {
-  variant?: SystemVariants<"Filled" | "Subtle" | "Outlined">;
   dotIcon?: FactoryRender<{
     size: BadgeConfig["sizes"];
-    variant: BadgeOwnProps["variant"];
   }>;
 }
 
@@ -49,16 +55,23 @@ export type BadgeConfig = ComponentConfig<{
   defaultProps: { size: "md"; display: "inline-flex"; align: "center"; rounded: "full" };
   sizes: ScaleRange<"xs" | "sm" | "md" | "lg">;
   presets: string;
+  variants: SystemVariants<"Default">;
 }>;
 
 export const Badge = ComponentFactory<BadgeConfig>({
   componentName: "Badge",
   defaultTag: "span",
-  defaultProps: { size: "md", display: "inline-flex", align: "center", rounded: "full" },
+  defaultProps: {
+    size: "md",
+    display: "inline-flex",
+    align: "center",
+    rounded: "full",
+    variant: "Default",
+  },
   render: function BadgeRender({ variant, size, dotIcon, children, ref, ...rest }) {
     const resolvedSize = useResolvedSize(size);
     const layout = useLayoutContext();
-    const resolvedVariant = variant ?? (layout.variant as BadgeOwnProps["variant"]) ?? "Filled";
+    const resolvedVariant = variant ?? layout.variant ?? "Filled";
 
     const ctx = useMemo(
       () => ({ size: resolvedSize, variant: resolvedVariant }),
@@ -74,7 +87,6 @@ export const Badge = ComponentFactory<BadgeConfig>({
           gap="xs"
           {...rest}
         >
-          {dotIcon && dotIcon({ size: resolvedSize, variant: resolvedVariant })}
           {children}
         </Box>
       </LayoutProvider>

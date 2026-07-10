@@ -3,7 +3,7 @@ import {
   type ComponentConfig,
   type EmptyStatics,
 } from "../../../factory";
-import type { Scales } from "../../../theme";
+import type { ComponentVariants, Scales } from "../../../theme";
 
 export interface FlexOwnProps {}
 
@@ -15,6 +15,7 @@ export type FlexConfig = ComponentConfig<{
   defaultProps: {};
   sizes: Scales;
   presets: string;
+  variants: ComponentVariants;
 }>;
 
 export const Flex = ComponentFactory<FlexConfig>({

@@ -1,16 +1,12 @@
 import type { ComponentPropsWithRef, ElementType, JSX } from "react";
-import type {
-  FactoryConfig,
-  SystemProps,
-} from "../factory/core/factories.types";
-import type { PresetProp, SizeProp } from "../factory";
+import type { FactoryConfig, SystemProps, VariantProp } from "../factory/core/factories.types";
+import type { PresetProp, SectionProp, SizeProp } from "../factory";
 
 export type AsProp<E extends ElementType> = {
   as?: E;
 };
 
-export type PolymorphicRef<E extends ElementType> =
-  ComponentPropsWithRef<E>["ref"];
+export type PolymorphicRef<E extends ElementType> = ComponentPropsWithRef<E>["ref"];
 
 export type JSXProps<E extends ElementType> = JSX.LibraryManagedAttributes<
   E,
@@ -27,24 +23,26 @@ export type PolymorphicOmit<E extends ElementType, OwnProps = object> = Omit<
   PolymorphicPropsToOmit<E, OwnProps>
 >;
 
-export type PolymorphicProps<
-  E extends ElementType,
-  OwnProps = object,
-> = AsProp<E> & OwnProps & PolymorphicOmit<E, OwnProps>;
+export type PolymorphicProps<E extends ElementType, OwnProps = object> = AsProp<E> &
+  OwnProps &
+  PolymorphicOmit<E, OwnProps>;
 
-export type PolymorphicComponentProps<
-  E extends ElementType,
-  OwnProps = object,
-> = PolymorphicProps<E, OwnProps & SystemProps>;
+export type PolymorphicComponentProps<E extends ElementType, OwnProps = object> = PolymorphicProps<
+  E,
+  OwnProps & SystemProps
+>;
 
-export type PolymorphicPropsConfig<Config extends FactoryConfig> =
-  PolymorphicComponentProps<Config["defaultTag"], Config["ownProps"]> &
-    SizeProp<Config> &
-    PresetProp<Config>;
+export type PolymorphicPropsConfig<Config extends FactoryConfig> = PolymorphicComponentProps<
+  Config["defaultTag"],
+  Config["ownProps"]
+> &
+  SizeProp<Config> &
+  PresetProp<Config> &
+  SectionProp<Config> &
+  VariantProp<Config>;
 
-export type ElementRefType<E extends ElementType> =
-  E extends keyof HTMLElementTagNameMap
-    ? HTMLElementTagNameMap[E]
-    : E extends keyof SVGElementTagNameMap
-    ? SVGElementTagNameMap[E]
-    : HTMLElement;
+export type ElementRefType<E extends ElementType> = E extends keyof HTMLElementTagNameMap
+  ? HTMLElementTagNameMap[E]
+  : E extends keyof SVGElementTagNameMap
+  ? SVGElementTagNameMap[E]
+  : HTMLElement;

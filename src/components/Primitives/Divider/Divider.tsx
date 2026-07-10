@@ -1,5 +1,5 @@
 import { ComponentFactory, type ComponentConfig, type EmptyStatics, type OrientationProp } from "../../../factory";
-import type { CSSLength, ColorValue, Scales } from "../../../theme";
+import type { CSSLength, ColorValue, ComponentVariants, Scales } from "../../../theme";
 import { useLayoutContext } from "../../../context/LayoutContext";
 import { Box, Flex, Text } from "..";
 
@@ -24,6 +24,7 @@ export type DividerConfig = ComponentConfig<{
   };
   sizes: Scales;
   presets: "label";
+  variants: ComponentVariants;
 }>;
 
 export const Divider = ComponentFactory<DividerConfig>({

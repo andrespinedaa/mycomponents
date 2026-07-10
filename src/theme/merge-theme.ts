@@ -35,16 +35,22 @@ export function mergeRecord<T extends Record<string, string>>(
   return { ...base, ...override } as T;
 }
 
-function mergeSlots(
-  base: Record<string, { presets?: Record<string, unknown> }> | undefined,
-  override: Record<string, { presets?: Record<string, unknown> }> | undefined,
-): Record<string, { presets?: Record<string, unknown> }> {
+function mergeSections(
+  base: Record<string, Record<string, unknown>> | undefined,
+  override: Record<string, Record<string, unknown>> | undefined,
+): Record<string, Record<string, unknown>> {
   if (!override) return base ?? {};
   const result = { ...base };
-  for (const [slot, slotConfig] of Object.entries(override)) {
-    result[slot] = {
-      ...(base?.[slot] ?? {}),
-      presets: { ...(base?.[slot]?.presets ?? {}), ...(slotConfig?.presets ?? {}) },
+  for (const [sectionName, sectionEntry] of Object.entries(override)) {
+    const baseSection = base?.[sectionName] ?? {};
+    const { presets: basePresets, ...baseTokens } = baseSection as { presets?: Record<string, unknown> };
+    const { presets: overridePresets, ...overrideTokens } = sectionEntry as { presets?: Record<string, unknown> };
+    result[sectionName] = {
+      ...baseTokens,
+      ...overrideTokens,
+      ...(basePresets || overridePresets
+        ? { presets: { ...(basePresets ?? {}), ...(overridePresets ?? {}) } }
+        : {}),
     };
   }
   return result;
@@ -69,7 +75,7 @@ export function mergeComponents(
       variants:     { ...(baseEntry?.variants ?? {}),     ...(overrideEntry.variants ?? {}) },
       sizes:        { ...(baseEntry?.sizes ?? {}),         ...(overrideEntry.sizes ?? {}) },
       presets:      { ...(baseEntry?.presets ?? {}),       ...(overrideEntry.presets ?? {}) },
-      slots: mergeSlots(baseEntry?.slots, overrideEntry.slots),
+      sections: mergeSections(baseEntry?.sections, overrideEntry.sections),
     };
   }
 

@@ -51,6 +51,6 @@ export const CardThemeComponent: CardTheme = {
     },
   },
   slots: {
-    Section: CardSectionThemeComponent,
+    Section: CardSectionThemeComponent
   },
 };

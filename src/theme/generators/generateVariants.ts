@@ -1,6 +1,5 @@
-import type { ComponentStates, StylePropsTokens, Theme, VariantStates } from "../";
+import type { ComponentStates, StylePropsTokens, Theme } from "../";
 import { resolveValue } from "../../system/resolve-value";
-import { camelToKebab } from "../../utils/string";
 import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames } from "./css-gen-utils";
 import { STYLE_PROPS_DATA } from "./system-css.data";
 
@@ -35,7 +34,7 @@ export function generateComponentVariants(
     if (!stateConfig) continue;
 
     for (const [state, tokens] of Object.entries(stateConfig) as [
-      keyof VariantStates,
+      ComponentStates,
       StylePropsTokens | undefined,
     ][]) {
       if (!tokens || Object.keys(tokens).length === 0) continue;

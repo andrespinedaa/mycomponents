@@ -1,10 +1,9 @@
+import type { InputHTMLAttributes } from "react";
+import { useLayoutContext } from "../../context/LayoutContext";
 import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../factory";
+import { useTheme } from "../../hooks";
 import { resolveValue } from "../../system/resolve-value";
 import { Box, Flex, Text } from "../Primitives";
-import { useLayoutContext } from "../../context/LayoutContext";
-import type { InputHTMLAttributes } from "react";
-import type { SystemVariants } from "../../theme";
-import { useTheme } from "../../hooks";
 
 type SafeInputHTMLAttributes = Omit<InputHTMLAttributes<HTMLInputElement>, "size">;
 
@@ -14,7 +13,6 @@ export interface InputOwnProps {
   error?: string;
   leftSection?: React.ReactNode;
   rightSection?: React.ReactNode;
-  variant?: SystemVariants<"Default" | "Filled" | "Unstyled">;
 }
 
 export type InputConfig = ComponentConfig<{
@@ -25,6 +23,7 @@ export type InputConfig = ComponentConfig<{
   defaultProps: {};
   sizes: "sm" | "md" | "lg";
   presets: string;
+  variants: "Default" | "Filled" | "Unstyled";
 }>;
 
 export const Input = ComponentFactory<InputConfig>({
@@ -71,7 +70,9 @@ export const Input = ComponentFactory<InputConfig>({
       alignItems: "center",
       borderRadius: `var(--${theme.cssVarPrefix}-radius-md)`,
       border: `1px solid ${
-        hasError ? `var(--${theme.cssVarPrefix}-color-danger-500)` : `var(--${theme.cssVarPrefix}-color-neutral-300)`
+        hasError
+          ? `var(--${theme.cssVarPrefix}-color-danger-500)`
+          : `var(--${theme.cssVarPrefix}-color-neutral-300)`
       }`,
       background: disabled
         ? `var(--${theme.cssVarPrefix}-color-neutral-100)`

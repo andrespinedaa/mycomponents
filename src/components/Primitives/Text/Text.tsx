@@ -4,7 +4,7 @@ import {
   type ComponentConfig,
   type EmptyStatics,
 } from "../../../factory";
-import type { Scales } from "../../../theme";
+import type { ComponentVariants, Scales } from "../../../theme";
 import { Box } from "../Box";
 
 export interface TextOwnProps {
@@ -23,6 +23,7 @@ export type TextConfig = ComponentConfig<{
   };
   sizes: Scales;
   presets: string;
+  variants: ComponentVariants;
 }>;
 
 export const Text = ComponentFactory<TextConfig>({
