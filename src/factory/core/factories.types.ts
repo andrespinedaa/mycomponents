@@ -1,4 +1,5 @@
 import type { ElementType } from "react";
+import type { ModProps } from "../../system/get-mod";
 import type {
   BuiltInMacros,
   ComponentVariants,
@@ -9,8 +10,8 @@ import type {
   ThemeMacros,
 } from "../../theme";
 import type { PolymorphicRef } from "../../types/polimorphic.types";
-import type { FactoryDefaultPropsConfig } from "./factory.defaults";
-import type { FactoryFunctionOptions, FactoryRender } from "./factory.render";
+import type { DefaultProps, FactoryDefaultPropsConfig } from "./factory.defaults";
+import type { FactoryFunctionOptions } from "./factory.render";
 
 export type VarsProp = Record<string, string>;
 export type ModProp = Record<string, unknown> | string;
@@ -63,8 +64,23 @@ export type VariantProp<Config extends FactoryConfig> = {
   variant?: Config["variants"];
 };
 
+// Props que renderRoot recibe — element-agnosticas para poder spreadearse en cualquier elemento.
+// Usa HTMLAttributes<HTMLElement> (base comun) en lugar de attrs especificos del defaultTag,
+// lo que evita conflictos de tipo como `translate: CSSValue` vs `translate: "yes"|"no"`.
+export type RenderRootPayload<Config extends FactoryConfig> =
+  Omit<React.HTMLAttributes<HTMLElement>, "translate"> &
+  ModProps &
+  Config["ownProps"] &
+  SizeProp<Config> &
+  PresetProp<Config> &
+  SectionProp<Config> &
+  VariantProp<Config> & {
+    ref?: React.Ref<any>;
+    vars?: VarsProp;
+  };
+
 export type RenderRootProp<Config extends FactoryConfig> = {
-  renderRoot?: FactoryRender<FactoryRenderProps<Config>>;
+  renderRoot?: (props: RenderRootPayload<Config>) => React.ReactNode;
 };
 
 export type ConfigProps<Config extends FactoryConfig> = SizeProp<Config> &
@@ -77,13 +93,18 @@ export type ComponentConfig<Config extends FactoryConfig> = Config;
 
 type Unpack<T> = T extends string ? T : undefined;
 
-export type FactoryInternalProps<Config extends FactoryConfig> = {
+type InternalRawProps<Config extends FactoryConfig> = {
   ref: PolymorphicRef<Config["defaultTag"]>;
   size?: Config["sizes"];
   preset?: Unpack<Config["presets"]>;
   section?: Unpack<Config["sections"]>;
   variant?: Config["variants"];
 };
+
+export type FactoryInternalProps<Config extends FactoryConfig> = DefaultProps<
+  InternalRawProps<Config>,
+  NonNullable<Config["defaultProps"]>
+>;
 
 export type FactoryRenderProps<Config extends FactoryConfig> = FactoryDefaultPropsConfig<Config> &
   FactoryInternalProps<Config>;

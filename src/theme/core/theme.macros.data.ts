@@ -70,6 +70,17 @@ export const defaultThemeMacros = {
   },
   // Resets
   "@noMargin": { margin: 0 },
+  "@inputReset": {
+    flex: "1",
+    height: "100%",
+    border: "none",
+    background: "transparent",
+    outline: "none",
+    font: "inherit",
+    color: "inherit",
+    minWidth: 0,
+    padding: 0,
+  },
   "@resetButton": {
     background: "none",
     border: "none",

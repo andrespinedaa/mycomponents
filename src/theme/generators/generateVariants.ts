@@ -13,6 +13,7 @@ const STATE_SELECTORS: Record<ComponentStates, string> = {
   base: "",
   hover: ":hover",
   focus: ":focus-visible",
+  focusWithin: ":focus-within",
   active: ":active",
   disabled: "[data-disabled]",
   loading: "[data-loading]",

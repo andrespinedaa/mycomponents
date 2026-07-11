@@ -14,7 +14,6 @@ export type BoxConfig = ComponentConfig<{
   statics: EmptyStatics;
   defaultProps: {};
   sizes: Scales;
-  presets: string;
   variants: ComponentVariants; 
 }>;
 

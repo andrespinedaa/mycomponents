@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../factory";
-import { useResolvedSize } from "../../hooks";
+import { useResolveLayout } from "../../hooks";
 import { Box } from "../Primitives/Box";
 import { Flex } from "../Primitives/Flex/Flex";
 
@@ -40,15 +40,25 @@ export const Avatar = ComponentFactory<AvatarConfig>({
   defaultTag: "div",
   defaultProps: {
     size: "md",
+    role: "img",
     flexShrink: 0,
     shape: "circle",
     overflow: "hidden",
     userSelect: "none",
     display: "inline-flex",
-    role: "img",
   },
-  render: function AvatarRender({ src, alt, name, size, shape, children, ref, ...rest }) {
-    const resolvedSize = useResolvedSize(size);
+  render: function AvatarRender({
+    src,
+    alt,
+    ref,
+    name,
+    shape,
+    children,
+    size: sizeProp,
+    variant: variantProp,
+    ...rest
+  }) {
+    const { size, variant } = useResolveLayout({ size: sizeProp, variant: variantProp });
     const [imgError, setImgError] = useState(false);
 
     if (src && !imgError) {
@@ -58,7 +68,7 @@ export const Avatar = ComponentFactory<AvatarConfig>({
           align="center"
           justify="center"
           aria-label={alt ?? name}
-          mod={{ size: resolvedSize }}
+          mod={{ size, variant }}
           rounded={shape === "circle" ? "full" : "md"}
           {...rest}
         >
@@ -78,7 +88,7 @@ export const Avatar = ComponentFactory<AvatarConfig>({
         apply="@flexCenter"
         aria-label={alt ?? name}
         fontWeight={600}
-        mod={{ size: resolvedSize }}
+        mod={{ size }}
         rounded={shape === "circle" ? "full" : "md"}
         {...rest}
       >

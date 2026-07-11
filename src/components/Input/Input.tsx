@@ -1,8 +1,5 @@
 import type { InputHTMLAttributes } from "react";
-import { useLayoutContext } from "../../context/LayoutContext";
 import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../factory";
-import { useTheme } from "../../hooks";
-import { resolveValue } from "../../system/resolve-value";
 import { Box, Flex, Text } from "../Primitives";
 
 type SafeInputHTMLAttributes = Omit<InputHTMLAttributes<HTMLInputElement>, "size">;
@@ -20,7 +17,7 @@ export type InputConfig = ComponentConfig<{
   defaultTag: "div";
   ownProps: InputOwnProps & SafeInputHTMLAttributes;
   statics: EmptyStatics;
-  defaultProps: {};
+  defaultProps: { size: "md"; variant: "Default" };
   sizes: "sm" | "md" | "lg";
   presets: string;
   variants: "Default" | "Filled" | "Unstyled";
@@ -29,111 +26,72 @@ export type InputConfig = ComponentConfig<{
 export const Input = ComponentFactory<InputConfig>({
   componentName: "Input",
   defaultTag: "div",
+  defaultProps: { size: "md", variant: "Default" },
   render: function InputRender({
-    label,
-    hint,
-    error,
-    leftSection,
-    rightSection,
-    size,
-    variant,
+    ref,
     id,
-    children,
     type,
+    name,
+    hint,
+    label,
     value,
-    defaultValue,
-    placeholder,
+    error,
+    onBlur,
+    onFocus,
     disabled,
     required,
-    readOnly,
-    name,
     onChange,
-    onFocus,
-    onBlur,
-    ref,
+    readOnly,
+    placeholder,
+    leftSection,
+    rightSection,
+    defaultValue,
+    size,
+    variant,
+    "data-slot": _slot,
+    "data-mod": _mod,
     ...rest
   }) {
-    const { theme } = useTheme();
-    const layout = useLayoutContext();
-    const resolvedSize = size ?? (layout.size as InputConfig["sizes"] | undefined) ?? "md";
-    const resolvedVariant = variant ?? layout.variant ?? "Default";
-    const sizeConfig = theme.components.Input?.sizes?.[resolvedSize] ?? {};
-    const pxToken = (sizeConfig.px as string) ?? "sm";
-    const pxValue = resolveValue(pxToken, "spacing", theme);
-
     const inputId = id ?? (label ? `input-${label.toLowerCase().replace(/\s+/g, "-")}` : undefined);
     const hasError = Boolean(error);
 
-    const wrapperStyle: React.CSSProperties = {
-      position: "relative",
-      display: "flex",
-      alignItems: "center",
-      borderRadius: `var(--${theme.cssVarPrefix}-radius-md)`,
-      border: `1px solid ${
-        hasError
-          ? `var(--${theme.cssVarPrefix}-color-danger-500)`
-          : `var(--${theme.cssVarPrefix}-color-neutral-300)`
-      }`,
-      background: disabled
-        ? `var(--${theme.cssVarPrefix}-color-neutral-100)`
-        : `var(--${theme.cssVarPrefix}-color-neutral-50)`,
-      transition: "border-color 0.15s, box-shadow 0.15s",
-      opacity: disabled ? 0.6 : 1,
-    };
-
     return (
-      <Box ref={ref} mod={{ size: resolvedSize, variant: resolvedVariant }} {...rest}>
+      <Box ref={ref} display="flex" flexDir="column" {...rest}>
         {label && (
           <Text
             as="label"
             htmlFor={inputId}
             size="sm"
             weight={500}
-            style={{ display: "block", marginBottom: "0.375rem" }}
+            mb="xs"
           >
             {label}
             {required && (
-              <span
-                style={{
-                  color: `var(--${theme.cssVarPrefix}-color-danger-500)`,
-                  marginLeft: "2px",
-                }}
-              >
+              <Text as="span" color="danger.500" ml="2px">
                 *
-              </span>
+              </Text>
             )}
           </Text>
         )}
-        <div
-          style={wrapperStyle}
-          onFocus={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = hasError
-              ? `var(--${theme.cssVarPrefix}-color-danger-500)`
-              : `var(--${theme.cssVarPrefix}-color-primary-500)`;
-            (e.currentTarget as HTMLElement).style.boxShadow = hasError
-              ? `0 0 0 3px var(--${theme.cssVarPrefix}-color-danger-100)`
-              : `0 0 0 3px var(--${theme.cssVarPrefix}-color-primary-100)`;
-          }}
-          onBlur={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = hasError
-              ? `var(--${theme.cssVarPrefix}-color-danger-500)`
-              : `var(--${theme.cssVarPrefix}-color-neutral-300)`;
-            (e.currentTarget as HTMLElement).style.boxShadow = "none";
-          }}
+
+        <Box
+          data-slot="Input"
+          data-variant={variant}
+          data-size={size}
+          data-disabled={disabled || undefined}
+          data-invalid={hasError || undefined}
+          display="flex"
+          align="center"
+          position="relative"
         >
           {leftSection && (
-            <Flex
-              apply="@flexCenter"
-              style={{
-                paddingLeft: pxValue,
-                paddingRight: "0.25rem",
-                flexShrink: 0,
-              }}
-            >
+            <Flex apply="@flexCenter" flexShrink={1} px="xs">
               {leftSection}
             </Flex>
           )}
-          <input
+
+          <Box
+            as="input"
             id={inputId}
             type={type}
             value={value}
@@ -147,54 +105,27 @@ export const Input = ComponentFactory<InputConfig>({
             onFocus={onFocus}
             onBlur={onBlur}
             aria-invalid={hasError || undefined}
-            aria-describedby={error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined}
-            style={{
-              flex: 1,
-              height: "100%",
-              border: "none",
-              background: "transparent",
-              outline: "none",
-              fontSize: "inherit",
-              color: "inherit",
-              paddingLeft: leftSection ? "0" : pxValue,
-              paddingRight: rightSection ? "0" : pxValue,
-              minWidth: 0,
-            }}
+            aria-describedby={
+              error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined
+            }
+            apply="@inputReset"
+            flexGrow={1}
           />
+
           {rightSection && (
-            <Flex
-              apply="@flexCenter"
-              style={{
-                paddingRight: pxValue,
-                paddingLeft: "0.25rem",
-                flexShrink: 0,
-              }}
-            >
+            <Flex apply="@flexCenter" flexShrink={1} px="xs">
               {rightSection}
             </Flex>
           )}
-        </div>
+        </Box>
+
         {error && (
-          <Text
-            id={`${inputId}-error`}
-            size="xs"
-            style={{
-              marginTop: "0.25rem",
-              color: `var(--${theme.cssVarPrefix}-color-danger-600)`,
-            }}
-          >
+          <Text id={`${inputId}-error`} size="xs" color="danger.600" mt="xs">
             {error}
           </Text>
         )}
         {!error && hint && (
-          <Text
-            id={`${inputId}-hint`}
-            size="xs"
-            style={{
-              marginTop: "0.25rem",
-              color: `var(--${theme.cssVarPrefix}-color-neutral-500)`,
-            }}
-          >
+          <Text id={`${inputId}-hint`} size="xs" color="neutral.500" mt="xs">
             {hint}
           </Text>
         )}

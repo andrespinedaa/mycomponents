@@ -1,4 +1,9 @@
-import { ComponentFactory, type ComponentConfig, type EmptyStatics, type OrientationProp } from "../../../factory";
+import {
+  ComponentFactory,
+  type ComponentConfig,
+  type EmptyStatics,
+  type OrientationProp,
+} from "../../../factory";
 import type { CSSLength, ColorValue, ComponentVariants, Scales } from "../../../theme";
 import { useLayoutContext } from "../../../context/LayoutContext";
 import { Box, Flex, Text } from "..";

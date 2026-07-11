@@ -4,6 +4,7 @@ import type {
   FactoryComponentReturn,
   FactoryConfig,
   FactoryRenderProps,
+  RenderRootPayload,
 } from ".";
 import { useTheme } from "../hooks";
 import { camelToKebab, typedRef } from "../utils";
@@ -87,10 +88,12 @@ export function ComponentFactory<Config extends FactoryConfig>({
     }
 
     const modProps = getMod([mod, { slot: dataName }, { "slot-parent": parentName }]);
-    const renderFunction = renderRoot ?? render!;
-    const payloadRender = { ref, vars, ...modProps, ...restProps } as FactoryRenderProps<Config>;
+    const basePayload = { vars, ...modProps, ...restProps };
 
-    return renderFunction(payloadRender);
+    if (renderRoot) {
+      return renderRoot({ ref, ...basePayload } as unknown as RenderRootPayload<Config>);
+    }
+    return render!({ ref, ...basePayload } as FactoryRenderProps<Config>);
   });
 
   Component.displayName = componentName;

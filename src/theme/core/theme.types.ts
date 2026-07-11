@@ -36,7 +36,7 @@ export type ComponentVariants =
 // ─── States ──────────────────────────────────────────────────────────
 // prettier-ignore
 export type ComponentStates =
-  | "base" | "hover" | "focus" | "active"
+  | "base" | "hover" | "focus" | "focusWithin" | "active"
   | "disabled" | "loading" | "selected"
   | "checked" | "invalid";
 

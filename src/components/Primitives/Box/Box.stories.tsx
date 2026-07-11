@@ -77,8 +77,8 @@ export const WithRef: Story = {
 export const RenderRoot: Story = {
   render: () => (
     <Box
-      renderRoot={(props) => (
-        <a href="https://example.com" {...props}>
+      renderRoot={({ ref, ...props }) => (
+        <a href="https://example.com" ref={ref} {...props}>
           Renderizado como enlace externo
         </a>
       )}

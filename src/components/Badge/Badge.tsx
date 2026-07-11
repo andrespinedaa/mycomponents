@@ -1,13 +1,13 @@
 import { useMemo } from "react";
+import { LayoutProvider } from "../../context/LayoutContext";
 import {
   ComponentFactory,
   type ComponentConfig,
   type EmptyStatics,
   type FactoryRender,
 } from "../../factory";
+import { useResolveLayout } from "../../hooks";
 import type { ScaleRange, SystemVariants } from "../../theme";
-import { LayoutProvider, useLayoutContext } from "../../context/LayoutContext";
-import { useResolvedSize } from "../../hooks";
 import { Box } from "../Primitives/Box";
 
 export interface DotBadgeOwnProps {
@@ -68,25 +68,20 @@ export const Badge = ComponentFactory<BadgeConfig>({
     rounded: "full",
     variant: "Default",
   },
-  render: function BadgeRender({ variant, size, dotIcon, children, ref, ...rest }) {
-    const resolvedSize = useResolvedSize(size);
-    const layout = useLayoutContext();
-    const resolvedVariant = variant ?? layout.variant ?? "Filled";
+  render: function BadgeRender({
+    ref,
+    dotIcon,
+    children,
+    size: sizeProp,
+    variant: variantProp,
+    ...rest
+  }) {
+    const { size, variant } = useResolveLayout({ size: sizeProp, variant: variantProp });
+    const ctx = useMemo(() => ({ size, variant }), [size, variant]);
 
-    const ctx = useMemo(
-      () => ({ size: resolvedSize, variant: resolvedVariant }),
-      [resolvedSize, resolvedVariant],
-    );
     return (
       <LayoutProvider value={ctx}>
-        <Box
-          as="span"
-          ref={ref}
-          mod={{ size: resolvedSize, variant: resolvedVariant }}
-          fontWeight={600}
-          gap="xs"
-          {...rest}
-        >
+        <Box as="span" ref={ref} gap="xs" fontWeight={600} mod={{ size, variant }} {...rest}>
           {children}
         </Box>
       </LayoutProvider>
