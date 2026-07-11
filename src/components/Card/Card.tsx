@@ -9,19 +9,12 @@ export interface CardOwnProps {
 }
 
 export type CardConfig = ComponentConfig<{
-  componentName: "Card";
   defaultTag: "div";
+  componentName: "Card";
   ownProps: CardOwnProps;
-  statics: {
-    Section: typeof CardSection;
-  };
-  defaultProps: {
-    orientation: "vertical";
-    variant: "Default";
-    size: "md";
-  };
   sizes: "sm" | "md" | "lg" | "xl";
-  presets: string;
+  statics: { Section: typeof CardSection };
+  defaultProps: { orientation: "vertical" };
   variants: "Filled" | "Elevated" | "Default" | "Outlined";
 }>;
 

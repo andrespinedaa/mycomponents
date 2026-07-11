@@ -1,6 +1,9 @@
 import type { ComponentPropsWithRef, ElementType, JSX } from "react";
-import type { FactoryConfig, SystemProps, VariantProp } from "../factory/core/factories.types";
-import type { PresetProp, SectionProp, SizeProp } from "../factory";
+import type {
+  ConfigProps,
+  FactoryConfig,
+  SystemProps
+} from "../factory/core/factories.types";
 
 export type AsProp<E extends ElementType> = {
   as?: E;
@@ -36,10 +39,7 @@ export type PolymorphicPropsConfig<Config extends FactoryConfig> = PolymorphicCo
   Config["defaultTag"],
   Config["ownProps"]
 > &
-  SizeProp<Config> &
-  PresetProp<Config> &
-  SectionProp<Config> &
-  VariantProp<Config>;
+  ConfigProps<Config>;
 
 export type ElementRefType<E extends ElementType> = E extends keyof HTMLElementTagNameMap
   ? HTMLElementTagNameMap[E]

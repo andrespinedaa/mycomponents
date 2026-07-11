@@ -6,20 +6,20 @@ describe("extractStyleProps", () => {
   // ─── StyleProps ───────────────────────────────────────────────
   describe("styleProps", () => {
     it("separa margin a styleProps", () => {
-      const { styleProps, componentProps } = extractStyleProps({ m: "md" });
+      const { styleProps, elementProps } = extractStyleProps({ m: "md" });
       expect(styleProps).toHaveProperty("m", "md");
-      expect(componentProps).not.toHaveProperty("m");
+      expect(elementProps).not.toHaveProperty("m");
     });
 
     it("separa padding a styleProps", () => {
-      const { styleProps, componentProps } = extractStyleProps({
+      const { styleProps, elementProps } = extractStyleProps({
         p: "sm",
         px: "lg",
       });
       expect(styleProps).toHaveProperty("p", "sm");
       expect(styleProps).toHaveProperty("px", "lg");
-      expect(componentProps).not.toHaveProperty("p");
-      expect(componentProps).not.toHaveProperty("px");
+      expect(elementProps).not.toHaveProperty("p");
+      expect(elementProps).not.toHaveProperty("px");
     });
 
     it("separa color y bg a styleProps", () => {
@@ -62,42 +62,42 @@ describe("extractStyleProps", () => {
     });
   });
 
-  // ─── componentProps ───────────────────────────────────────────
-  describe("componentProps", () => {
-    it("pasa onClick a componentProps", () => {
+  // ─── elementProps ───────────────────────────────────────────
+  describe("elementProps", () => {
+    it("pasa onClick a elementProps", () => {
       const fn = () => {};
-      const { componentProps, styleProps } = extractStyleProps({ onClick: fn });
-      expect(componentProps).toHaveProperty("onClick", fn);
+      const { elementProps, styleProps } = extractStyleProps({ onClick: fn });
+      expect(elementProps).toHaveProperty("onClick", fn);
       expect(styleProps).not.toHaveProperty("onClick");
     });
 
-    it("pasa href a componentProps", () => {
-      const { componentProps } = extractStyleProps({ href: "/home" });
-      expect(componentProps).toHaveProperty("href", "/home");
+    it("pasa href a elementProps", () => {
+      const { elementProps } = extractStyleProps({ href: "/home" });
+      expect(elementProps).toHaveProperty("href", "/home");
     });
 
-    it("pasa data-testid a componentProps", () => {
-      const { componentProps } = extractStyleProps({ "data-testid": "mi-box" });
-      expect(componentProps).toHaveProperty("data-testid", "mi-box");
+    it("pasa data-testid a elementProps", () => {
+      const { elementProps } = extractStyleProps({ "data-testid": "mi-box" });
+      expect(elementProps).toHaveProperty("data-testid", "mi-box");
     });
 
-    it("pasa type a componentProps", () => {
-      const { componentProps } = extractStyleProps({ type: "submit" });
-      expect(componentProps).toHaveProperty("type", "submit");
+    it("pasa type a elementProps", () => {
+      const { elementProps } = extractStyleProps({ type: "submit" });
+      expect(elementProps).toHaveProperty("type", "submit");
     });
 
-    it("pasa aria-label a componentProps", () => {
-      const { componentProps } = extractStyleProps({
+    it("pasa aria-label a elementProps", () => {
+      const { elementProps } = extractStyleProps({
         "aria-label": "descripción",
       });
-      expect(componentProps).toHaveProperty("aria-label", "descripción");
+      expect(elementProps).toHaveProperty("aria-label", "descripción");
     });
   });
 
   // ─── Mixto ────────────────────────────────────────────────────
-  describe("mixto — StyleProps y componentProps juntos", () => {
+  describe("mixto — StyleProps y elementProps juntos", () => {
     it("separa correctamente props mixtas", () => {
-      const { styleProps, componentProps } = extractStyleProps({
+      const { styleProps, elementProps } = extractStyleProps({
         p: "md",
         bg: "primary.500",
         onClick: () => {},
@@ -107,12 +107,12 @@ describe("extractStyleProps", () => {
 
       expect(styleProps).toHaveProperty("p", "md");
       expect(styleProps).toHaveProperty("bg", "primary.500");
-      expect(componentProps).toHaveProperty("onClick");
-      expect(componentProps).toHaveProperty("href", "/home");
-      expect(componentProps).toHaveProperty("aria-label", "caja");
+      expect(elementProps).toHaveProperty("onClick");
+      expect(elementProps).toHaveProperty("href", "/home");
+      expect(elementProps).toHaveProperty("aria-label", "caja");
 
-      expect(componentProps).not.toHaveProperty("p");
-      expect(componentProps).not.toHaveProperty("bg");
+      expect(elementProps).not.toHaveProperty("p");
+      expect(elementProps).not.toHaveProperty("bg");
       expect(styleProps).not.toHaveProperty("onClick");
       expect(styleProps).not.toHaveProperty("href");
     });
@@ -121,14 +121,14 @@ describe("extractStyleProps", () => {
   // ─── Edge cases ───────────────────────────────────────────────
   describe("edge cases", () => {
     it("retorna objetos vacíos con props vacías", () => {
-      const { styleProps, componentProps } = extractStyleProps({});
+      const { styleProps, elementProps } = extractStyleProps({});
       expect(Object.keys(styleProps)).toHaveLength(0);
-      expect(Object.keys(componentProps)).toHaveLength(0);
+      expect(Object.keys(elementProps)).toHaveLength(0);
     });
 
-    it("preserva valores undefined en componentProps", () => {
-      const { componentProps } = extractStyleProps({ onClick: undefined });
-      expect(componentProps).toHaveProperty("onClick", undefined);
+    it("preserva valores undefined en elementProps", () => {
+      const { elementProps } = extractStyleProps({ onClick: undefined });
+      expect(elementProps).toHaveProperty("onClick", undefined);
     });
 
     it("preserva valores undefined en styleProps", () => {
@@ -136,9 +136,9 @@ describe("extractStyleProps", () => {
       expect(styleProps).toHaveProperty("p", undefined);
     });
 
-    it("preserva valores null en componentProps", () => {
-      const { componentProps } = extractStyleProps({ onClick: null });
-      expect(componentProps).toHaveProperty("onClick", null);
+    it("preserva valores null en elementProps", () => {
+      const { elementProps } = extractStyleProps({ onClick: null });
+      expect(elementProps).toHaveProperty("onClick", null);
     });
 
     it("preserva valores numéricos en styleProps", () => {

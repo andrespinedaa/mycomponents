@@ -24,7 +24,6 @@ export type BaseProps = {
   unstyled?: boolean;
   dataSlot?: string;
   mod?: ModProp | ModProp[];
-  renderRoot?: FactoryRender<FactoryRenderProps<FactoryConfig>>;
   className?: string;
   style?: StyleProp;
   children?: React.ReactNode;
@@ -40,7 +39,7 @@ export type FactoryConfig = {
   ownProps: object;
   sizes: Scales;
   variants: ComponentVariants;
-  presets: string;
+  presets?: string;
   sections?: string;
   statics: FactoryStatics;
   defaultProps: object;
@@ -64,19 +63,26 @@ export type VariantProp<Config extends FactoryConfig> = {
   variant?: Config["variants"];
 };
 
+export type RenderRootProp<Config extends FactoryConfig> = {
+  renderRoot?: FactoryRender<FactoryRenderProps<Config>>;
+};
+
 export type ConfigProps<Config extends FactoryConfig> = SizeProp<Config> &
   PresetProp<Config> &
   SectionProp<Config> &
-  VariantProp<Config>;
+  VariantProp<Config> &
+  RenderRootProp<Config>;
 
 export type ComponentConfig<Config extends FactoryConfig> = Config;
 
+type Unpack<T> = T extends string ? T : undefined;
+
 export type FactoryInternalProps<Config extends FactoryConfig> = {
   ref: PolymorphicRef<Config["defaultTag"]>;
-  size: Config["sizes"];
-  preset: Config["presets"];
-  section: Config["sections"];
-  variant: Config["variants"];
+  size?: Config["sizes"];
+  preset?: Unpack<Config["presets"]>;
+  section?: Unpack<Config["sections"]>;
+  variant?: Config["variants"];
 };
 
 export type FactoryRenderProps<Config extends FactoryConfig> = FactoryDefaultPropsConfig<Config> &

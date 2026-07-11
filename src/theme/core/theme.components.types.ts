@@ -40,7 +40,7 @@ export type ComponentConfigs = {
 export type VariantStates = Partial<Record<ComponentStates, StylePropsTokens>>;
 
 type PartialPresets<Config extends FactoryConfig> = Partial<
-  Record<Config["presets"], StylePropsTokens>
+  Record<NonNullable<Config["presets"]>, StylePropsTokens>
 >;
 
 type SectionEntry<Config extends FactoryConfig> = StylePropsTokens & {
@@ -50,12 +50,12 @@ type SectionEntry<Config extends FactoryConfig> = StylePropsTokens & {
 export type ThemeComponentOptions<Config extends FactoryConfig> = {
   parentName?: string;
   componentName?: string;
+  presets?: PartialPresets<Config>;
   defaultProps?: RequiredDefaultProps<Config>;
   sizes?: Partial<Record<Config["sizes"], StylePropsTokens>>;
   variants?: Partial<Record<ComponentVariants, VariantStates>>;
-  sections?: Partial<Record<NonNullable<Config["sections"]>, SectionEntry<Config>>>;
-  presets?: PartialPresets<Config>;
   slots?: Record<keyof Config["statics"], ThemeComponentConfig<FactoryConfig>>;
+  sections?: Partial<Record<NonNullable<Config["sections"]>, SectionEntry<Config>>>;
 };
 
 export type ThemeComponents = {

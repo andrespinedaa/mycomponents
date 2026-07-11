@@ -1,9 +1,14 @@
 import type { ElementType } from "react";
-import type { PolymorphicPropsConfig } from "../types/polimorphic.types";
-import type { ComponentFactoryOptions, FactoryComponentReturn, FactoryConfig, FactoryRenderProps } from ".";
+import type {
+  ComponentFactoryOptions,
+  FactoryComponentReturn,
+  FactoryConfig,
+  FactoryRenderProps,
+} from ".";
 import { useTheme } from "../hooks";
 import { camelToKebab, typedRef } from "../utils";
 import { resolveVarsDSL } from "../theme/generators/css-gen-utils";
+import type { PolymorphicPropsConfig } from "../types/polimorphic.types";
 import { extractStyleProps, getMod, resolvedStyles, resolveStyle } from "../system";
 
 export function ComponentFactory<Config extends FactoryConfig>({
@@ -13,37 +18,53 @@ export function ComponentFactory<Config extends FactoryConfig>({
   defaultProps,
   componentName,
 }: ComponentFactoryOptions<Config>): FactoryComponentReturn<Config> {
-  const Component = typedRef<HTMLElement, PolymorphicPropsConfig<Config>>((props, ref) => {
+  const Component = typedRef<HTMLElement, PolymorphicPropsConfig<Config>>(function ComponentRender(
+    props,
+    ref,
+  ) {
     const { theme } = useTheme();
     const componentConfig = theme.components?.[componentName];
-    const themeDefaults = componentConfig?.defaultProps ?? {};
-    const mergedProps = { ...(defaultProps ?? {}), ...themeDefaults, ...props };
+    const resolvedComponentName = componentConfig?.componentName ?? componentName;
+    const parentName = componentConfig?.parentName;
+    const mergedProps = {
+      ...(defaultProps ?? {}),
+      ...(componentConfig?.defaultProps ?? {}),
+      ...props,
+    };
 
     const {
-      as,
       mod,
-      size,
-      preset,
-      section,
-      variant,
       dataSlot,
       renderRoot,
       vars: varsRaw,
-      style: styleRaw,
       "data-slot": inheritedSlot,
       ...restProps
     } = mergedProps;
 
-    const resolvedComponentName = componentConfig?.componentName ?? componentName;
-    const parentName = componentConfig?.parentName;
-    const dataName = dataSlot || inheritedSlot || resolvedComponentName || undefined;
     const vars = resolveVarsDSL(varsRaw, camelToKebab(resolvedComponentName));
-    const modProps = getMod([mod, { slot: dataName }, { "slot-parent": parentName }]);
+    const dataName = dataSlot || inheritedSlot || resolvedComponentName || undefined;
+
+    Component.displayName = resolvedComponentName;
+    if (statics) {
+      Object.entries(statics).forEach(([key, SubComponent]) => {
+        SubComponent.displayName = `${resolvedComponentName}.${key}`;
+      });
+    }
 
     if (!render && !renderRoot) {
+      const {
+        as,
+        size,
+        apply,
+        preset,
+        section,
+        variant,
+        style: styleRaw,
+        unstyled = false,
+        ...rest
+      } = restProps;
       const Element = (as ?? defaultTag) as ElementType;
-      const { apply, unstyled = false, ...rest } = restProps;
-      const { styleProps, componentProps } = extractStyleProps(rest);
+      const { styleProps, elementProps } = extractStyleProps(rest);
       const { styles, hasResponsive } = resolvedStyles({
         vars,
         apply,
@@ -52,7 +73,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
         styleProps,
         style: resolveStyle(styleRaw, theme),
       });
-      const ElementModProps = getMod([
+      const elementModProps = getMod([
         mod,
         { size },
         { preset },
@@ -62,42 +83,20 @@ export function ComponentFactory<Config extends FactoryConfig>({
         { "slot-parent": parentName },
         { responsive: hasResponsive },
       ]);
-      return <Element ref={ref} style={styles} {...componentProps} {...ElementModProps} />;
+      return <Element ref={ref} style={styles} {...elementProps} {...elementModProps} />;
     }
 
-    if (renderRoot) return renderRoot({
-      ref,
-      vars,
-      size,
-      preset,
-      section,
-      variant,
-      style: styleRaw,
-      ...modProps,
-      ...restProps,
-    } as FactoryRenderProps<Config>);
+    const modProps = getMod([mod, { slot: dataName }, { "slot-parent": parentName }]);
+    const renderFunction = renderRoot ?? render!;
+    const payloadRender = { ref, vars, ...modProps, ...restProps } as FactoryRenderProps<Config>;
 
-    return render!({
-      ref,
-      vars,
-      size,
-      preset,
-      section,
-      variant,
-      style: styleRaw,
-      ...modProps,
-      ...restProps,
-    } as FactoryRenderProps<Config>);
-  }) as unknown as FactoryComponentReturn<Config>;
+    return renderFunction(payloadRender);
+  });
 
   Component.displayName = componentName;
-
-  if (statics && Object.keys(statics).length > 0) {
-    Object.entries(statics).forEach(([key, SubComponent]) => {
-      SubComponent.displayName = `${componentName}.${key}`;
-    });
+  if (statics) {
     Object.assign(Component, statics);
   }
 
-  return Component;
+  return Component as unknown as FactoryComponentReturn<Config>;
 }
