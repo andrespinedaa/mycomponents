@@ -3,8 +3,8 @@ import { useResolveLayout } from "../../hooks";
 import type { StylePropsTokens } from "../../theme";
 import { Flex } from "../Primitives";
 
-export type CardSectionSets = "background" | "top" | "gradient";
-export type CardSectionMediaSets = "top" | "bottom" | "background";
+export type CardSectionSets = "cover" | "alignTop" | "gradient";
+export type CardSectionMediaSets = "alignTop" | "alignBottom" | "cover";
 export type CardSectionHeaderSets = "static" | "underground";
 export type CardSectionFooterSets = "static" | "undergorund";
 export type CardSectionBodySets = "compact";

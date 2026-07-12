@@ -17,9 +17,9 @@ export const CardSectionThemeComponent: CardSectionTheme = {
     footer: { borderTop: "1px solid $borderColor" },
     media: {
       overflow: "hidden",
-      background: { objectFit: "cover", w: "100%", h: "100%" },
-      top:        { objectPosition: "top" },
-      bottom:     { objectPosition: "bottom" },
+      cover:      { objectFit: "cover", w: "100%", h: "100%" },
+      alignTop:   { objectPosition: "top" },
+      alignBottom: { objectPosition: "bottom" },
     },
   },
 };
