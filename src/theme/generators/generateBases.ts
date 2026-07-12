@@ -7,7 +7,7 @@ export function generateComponentBases(
   componentName: string,
   config: NonNullable<Theme["components"]>[string],
 ): string {
-  if (!config?.variants && !config?.sizes && !config?.presets) return "";
+  if (!config?.variants && !config?.sizes && !config?.presets && !config?.sections) return "";
   const { resolvedName, prefix } = resolveGeneratorNames(componentName, config);
 
   const usedKeys = new Set<string>();
@@ -28,6 +28,16 @@ export function generateComponentBases(
   for (const tokens of Object.values(config.presets ?? {})) {
     if (!tokens) continue;
     for (const key of Object.keys(tokens)) usedKeys.add(key);
+  }
+
+  for (const sectionEntry of Object.values(config.sections ?? {})) {
+    if (!sectionEntry) continue;
+    const { presets: sectionPresets, ...sectionTokens } = sectionEntry as Record<string, unknown> & { presets?: Record<string, unknown> };
+    for (const key of Object.keys(sectionTokens)) usedKeys.add(key);
+    for (const presetTokens of Object.values(sectionPresets ?? {})) {
+      if (!presetTokens) continue;
+      for (const key of Object.keys(presetTokens)) usedKeys.add(key);
+    }
   }
 
   if (usedKeys.size === 0) return "";

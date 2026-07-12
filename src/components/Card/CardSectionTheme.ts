@@ -4,7 +4,6 @@ import type { CardSectionConfig } from "./CardSection";
 export type CardSectionTheme = ThemeComponentConfig<CardSectionConfig>;
 
 export const CardSectionThemeComponent: CardSectionTheme = {
-  componentName: "SectionMy",
   parentName: "Card",
   sizes: {
     sm: { p: "sm" },
@@ -13,11 +12,17 @@ export const CardSectionThemeComponent: CardSectionTheme = {
     xl: { p: "xl" },
   },
   sections: {
-    header: {
-      default: { borderBottom: "1px solid $borderColor" },
+    header: { borderBottom: "1px solid $borderColor" },
+    body: { flex: "1" },
+    footer: { borderTop: "1px solid $borderColor" },
+    media: {
+      overflow: "hidden",
+      presets: {
+        background: { objectFit: "cover", w: "100%", h: "100%" },
+        top:        { objectPosition: "top" },
+        bottom:     { objectPosition: "bottom" },
+        gradient:   { objectFit: "cover", w: "100%", h: "100%" },
+      },
     },
-    body: { default: { flex: "1" } },
-    footer: { default: { borderTop: "1px solid $borderColor" } },
-    media: { default: { overflow: "hidden" } },
   },
 };
