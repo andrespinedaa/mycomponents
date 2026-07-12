@@ -57,7 +57,7 @@ export type PresetProp<Config extends FactoryConfig> = {
 };
 
 export type SectionProp<Config extends FactoryConfig> = {
-  section?: keyof NonNullable<Config["sections"]>;
+  section?: Unpack<Config["sections"]>;
 };
 
 export type VariantProp<Config extends FactoryConfig> = {
@@ -89,13 +89,17 @@ export type ConfigProps<Config extends FactoryConfig> = SizeProp<Config> &
 
 export type ComponentConfig<Config extends FactoryConfig> = Config;
 
-type Unpack<T> = T extends string ? T : undefined;
+type Unpack<T> = T extends string
+  ? T
+  : T extends Record<string, object>
+    ? keyof T
+    : undefined;
 
 type InternalRawProps<Config extends FactoryConfig> = {
   ref: PolymorphicRef<Config["defaultTag"]>;
   size?: Config["sizes"];
   preset?: Unpack<Config["presets"]>;
-  section?: keyof NonNullable<Config["sections"]>;
+  section?: Unpack<Config["sections"]>;
   variant?: Config["variants"];
 };
 

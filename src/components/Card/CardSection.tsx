@@ -35,8 +35,8 @@ export const CardSection = ComponentFactory<CardSectionConfig>({
   defaultTag: "div",
   componentName: "CardSection",
   defaultProps: { section: "body", size: "md", variant: "Default" },
-  render: function CardSectionRender({ ref, size: sizeProp, variant: variantProp, section, ...rest }) {
+  render: function CardSectionRender({ ref, size: sizeProp, variant: variantProp, ...rest }) {
     const { size, variant } = useResolveLayout({ size: sizeProp, variant: variantProp });
-    return <Flex ref={ref} mod={{ size, variant, section }} {...rest} />;
+    return <Flex ref={ref} mod={{ size, variant }} {...rest} />;
   },
 });
