@@ -7,10 +7,10 @@ import type {
   RenderRootPayload,
 } from ".";
 import { useTheme } from "../hooks";
-import { camelToKebab, typedRef } from "../utils";
+import { extractStyleProps, getMod, resolvedStyles, resolveStyle } from "../system";
 import { resolveVarsDSL } from "../theme/generators/css-gen-utils";
 import type { PolymorphicPropsConfig } from "../types/polimorphic.types";
-import { extractStyleProps, getMod, resolvedStyles, resolveStyle } from "../system";
+import { camelToKebab, typedRef } from "../utils";
 
 export function ComponentFactory<Config extends FactoryConfig>({
   render,
@@ -25,6 +25,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
   ) {
     const { theme } = useTheme();
     const componentConfig = theme.components?.[componentName];
+    const resolvedDefaultTag = componentConfig?.defaultTag ?? defaultTag;
     const resolvedComponentName = componentConfig?.componentName ?? componentName;
     const parentName = componentConfig?.parentName;
     const mergedProps = {
@@ -64,7 +65,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
         unstyled = false,
         ...rest
       } = restProps;
-      const Element = (as ?? defaultTag) as ElementType;
+      const Element = (as ?? resolvedDefaultTag) as ElementType;
       const { styleProps, elementProps } = extractStyleProps(rest);
       const { styles, hasResponsive } = resolvedStyles({
         vars,

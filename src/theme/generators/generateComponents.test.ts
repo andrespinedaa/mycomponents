@@ -70,26 +70,39 @@ describe("generateComponents", () => {
       expect(result).toContain(`var(--${p}-spacing-md)`);
     });
 
-    it("sections en ThemeConfig de un compound child generan data-section + data-preset", () => {
+    it("entradas top-level con parentName son omitidas (se generan via slots del padre)", () => {
       const theme: Theme = {
         ...defaultTheme,
         components: {
           CardSection: {
             componentName: "Section",
             parentName: "Card",
-            sections: {
-              header: {
-                borderBottom: "1px solid",
-                presets: { compact: { p: "sm" } },
+            sizes: { md: { p: "md" } },
+          },
+        } as unknown as Theme["components"],
+      };
+      // CardSection tiene parentName → se salta en top-level; Card no está en el tema → no hay recursión
+      expect(generateComponents(theme)).toBe("");
+    });
+
+    it("slot con parentName genera CSS cuando lo recursiona el padre", () => {
+      const theme: Theme = {
+        ...defaultTheme,
+        components: {
+          Card: {
+            slots: {
+              Section: {
+                componentName: "Section",
+                parentName: "Card",
+                sizes: { md: { p: "md" } },
               },
             },
           },
         } as unknown as Theme["components"],
       };
       const result = generateComponents(theme);
-      expect(result).toContain(`[data-slot="Section"][data-slot-parent="Card"][data-section="header"]`);
-      expect(result).toContain(`--card-section-border-bottom:1px solid`);
-      expect(result).toContain(`[data-section="header"][data-preset="compact"]`);
+      expect(result).toContain(`[data-slot="Section"][data-slot-parent="Card"]`);
+      expect(result).toContain(`--card-section-padding`);
     });
   });
 

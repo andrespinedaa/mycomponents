@@ -1,3 +1,4 @@
+import type { ElementType } from "react";
 import type {
   AlertConfig,
   AvatarConfig,
@@ -6,6 +7,7 @@ import type {
   CardConfig,
   InputConfig,
 } from "../../components";
+import type { CardSectionConfig } from "../../components/Card/CardSection";
 import type {
   BoxConfig,
   DividerConfig,
@@ -30,6 +32,7 @@ export type ComponentConfigs = {
   Divider: DividerConfig;
   /* Components */
   Card: CardConfig;
+  CardSection: CardSectionConfig;
   Alert: AlertConfig;
   Badge: BadgeConfig;
   Input: InputConfig;
@@ -43,19 +46,23 @@ type PartialPresets<Config extends FactoryConfig> = Partial<
   Record<NonNullable<Config["presets"]>, StylePropsTokens>
 >;
 
-type SectionEntry<Config extends FactoryConfig> = StylePropsTokens & {
-  presets?: PartialPresets<Config>;
-};
+type PartialSections<Config extends FactoryConfig> = Partial<
+  Record<
+    NonNullable<Config["sections"]>,
+    Partial<Record<NonNullable<Config["presets"]>, StylePropsTokens>>
+  >
+>;
 
 export type ThemeComponentOptions<Config extends FactoryConfig> = {
   parentName?: string;
   componentName?: string;
+  defaultTag?: ElementType;
   presets?: PartialPresets<Config>;
+  sections?: PartialSections<Config>;
   defaultProps?: RequiredDefaultProps<Config>;
   sizes?: Partial<Record<Config["sizes"], StylePropsTokens>>;
   variants?: Partial<Record<ComponentVariants, VariantStates>>;
   slots?: Record<keyof Config["statics"], ThemeComponentConfig<FactoryConfig>>;
-  sections?: Partial<Record<NonNullable<Config["sections"]>, SectionEntry<Config>>>;
 };
 
 export type ThemeComponents = {
