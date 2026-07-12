@@ -32,11 +32,14 @@ export function generateComponentBases(
 
   for (const sectionEntry of Object.values(config.sections ?? {})) {
     if (!sectionEntry) continue;
-    const { presets: sectionPresets, ...sectionTokens } = sectionEntry as Record<string, unknown> & { presets?: Record<string, unknown> };
-    for (const key of Object.keys(sectionTokens)) usedKeys.add(key);
-    for (const presetTokens of Object.values(sectionPresets ?? {})) {
-      if (!presetTokens) continue;
-      for (const key of Object.keys(presetTokens)) usedKeys.add(key);
+    for (const [key, value] of Object.entries(sectionEntry as Record<string, unknown>)) {
+      if (value && typeof value === "object") {
+        // section preset entry — collect its tokens
+        for (const k of Object.keys(value as object)) usedKeys.add(k);
+      } else {
+        // base style prop for this section
+        usedKeys.add(key);
+      }
     }
   }
 

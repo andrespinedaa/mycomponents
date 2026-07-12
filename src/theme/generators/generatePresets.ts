@@ -24,20 +24,27 @@ export function generateComponentPresets(
   if (config.sections) {
     for (const [sectionName, sectionEntry] of Object.entries(config.sections)) {
       if (!sectionEntry) continue;
-      const { presets: sectionPresets, ...sectionTokens } = sectionEntry as Record<string, unknown> & { presets?: Record<string, unknown> };
       const sectionSelector = `${base}[data-section="${sectionName}"]`;
+      const baseTokens: Record<string, unknown> = {};
+      const sectionPresets: Record<string, Record<string, unknown>> = {};
 
-      if (Object.keys(sectionTokens).length > 0) {
-        const body = generateTokensCSS(sectionTokens, prefix, theme, parentPrefix);
+      for (const [key, value] of Object.entries(sectionEntry as Record<string, unknown>)) {
+        if (value && typeof value === "object") {
+          sectionPresets[key] = value as Record<string, unknown>;
+        } else {
+          baseTokens[key] = value;
+        }
+      }
+
+      if (Object.keys(baseTokens).length > 0) {
+        const body = generateTokensCSS(baseTokens, prefix, theme, parentPrefix);
         if (body) css += `${sectionSelector}{${body}}`;
       }
 
-      if (sectionPresets) {
-        for (const [presetName, presetTokens] of Object.entries(sectionPresets)) {
-          if (!presetTokens || Object.keys(presetTokens).length === 0) continue;
-          const body = generateTokensCSS(presetTokens as Record<string, unknown>, prefix, theme, parentPrefix);
-          if (body) css += `${sectionSelector}[data-preset="${presetName}"]{${body}}`;
-        }
+      for (const [presetName, presetTokens] of Object.entries(sectionPresets)) {
+        if (Object.keys(presetTokens).length === 0) continue;
+        const body = generateTokensCSS(presetTokens, prefix, theme, parentPrefix);
+        if (body) css += `${sectionSelector}[data-preset="${presetName}"]{${body}}`;
       }
     }
   }

@@ -46,20 +46,12 @@ type PartialPresets<Config extends FactoryConfig> = Partial<
   Record<NonNullable<Config["presets"]>, StylePropsTokens>
 >;
 
-type SectionEntry<Config extends FactoryConfig> = StylePropsTokens & {
-  presets?: PartialPresets<Config>;
-};
-
-type PartialSections<Config extends FactoryConfig> = Partial<
-  Record<NonNullable<Config["sections"]>, SectionEntry<Config>>
->;
-
 export type ThemeComponentOptions<Config extends FactoryConfig> = {
   parentName?: string;
   componentName?: string;
   defaultTag?: ElementType;
   presets?: PartialPresets<Config>;
-  sections?: PartialSections<Config>;
+  sections?: Partial<NonNullable<Config["sections"]>>;
   defaultProps?: RequiredDefaultProps<Config>;
   sizes?: Partial<Record<Config["sizes"], StylePropsTokens>>;
   variants?: Partial<Record<ComponentVariants, VariantStates>>;

@@ -13,16 +13,13 @@ export const CardSectionThemeComponent: CardSectionTheme = {
   },
   sections: {
     header: { borderBottom: "1px solid $borderColor" },
-    body: { flex: "1" },
+    body:   { flex: "1" },
     footer: { borderTop: "1px solid $borderColor" },
     media: {
       overflow: "hidden",
-      presets: {
-        background: { objectFit: "cover", w: "100%", h: "100%" },
-        top:        { objectPosition: "top" },
-        bottom:     { objectPosition: "bottom" },
-        gradient:   { objectFit: "cover", w: "100%", h: "100%" },
-      },
+      background: { objectFit: "cover", w: "100%", h: "100%" },
+      top:        { objectPosition: "top" },
+      bottom:     { objectPosition: "bottom" },
     },
   },
 };

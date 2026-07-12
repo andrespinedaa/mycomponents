@@ -36,15 +36,15 @@ export type FactoryStatics = Record<string, React.ComponentType<any>>;
 export type EmptyStatics = Record<string, never>;
 
 export type FactoryConfig = {
-  defaultTag: ElementType;
-  ownProps: object;
   sizes: Scales;
-  variants: ComponentVariants;
+  ownProps: object;
   presets?: string;
-  sections?: string;
-  statics: FactoryStatics;
+  sections?: Record<string, object>;
   defaultProps: object;
   componentName: string;
+  statics: FactoryStatics;
+  defaultTag: ElementType;
+  variants: ComponentVariants;
 };
 
 // ─── Props que necesitan Config ──────────────────────────────────────────────────────────
@@ -57,7 +57,7 @@ export type PresetProp<Config extends FactoryConfig> = {
 };
 
 export type SectionProp<Config extends FactoryConfig> = {
-  section?: Config["sections"];
+  section?: keyof NonNullable<Config["sections"]>;
 };
 
 export type VariantProp<Config extends FactoryConfig> = {
@@ -65,8 +65,6 @@ export type VariantProp<Config extends FactoryConfig> = {
 };
 
 // Props que renderRoot recibe — element-agnosticas para poder spreadearse en cualquier elemento.
-// Usa HTMLAttributes<HTMLElement> (base comun) en lugar de attrs especificos del defaultTag,
-// lo que evita conflictos de tipo como `translate: CSSValue` vs `translate: "yes"|"no"`.
 export type RenderRootPayload<Config extends FactoryConfig> =
   Omit<React.HTMLAttributes<HTMLElement>, "translate"> &
   ModProps &
@@ -97,7 +95,7 @@ type InternalRawProps<Config extends FactoryConfig> = {
   ref: PolymorphicRef<Config["defaultTag"]>;
   size?: Config["sizes"];
   preset?: Unpack<Config["presets"]>;
-  section?: Unpack<Config["sections"]>;
+  section?: keyof NonNullable<Config["sections"]>;
   variant?: Config["variants"];
 };
 
