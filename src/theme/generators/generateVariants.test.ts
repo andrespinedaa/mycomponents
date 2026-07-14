@@ -11,91 +11,230 @@ type TestConfig = NonNullable<Theme["components"]>[string];
 
 describe("generateComponentVariants", () => {
   describe("guarda de salida temprana", () => {
-    it("retorna vac�o si no hay variants", () => {
+    it("retorna vacío si no hay variants", () => {
       const config: TestConfig = {};
       expect(generateComponentVariants("Card", config, defaultTheme)).toBe("");
     });
 
-    it("retorna vac�o si variants es objeto vac�o", () => {
+    it("retorna vacío si variants es objeto vacío", () => {
       const config: TestConfig = { variants: {} };
       expect(generateComponentVariants("Card", config, defaultTheme)).toBe("");
     });
 
-    it("omite estados con tokens vac�os", () => {
+    it("omite variante con objeto vacío — no genera regla para ella", () => {
       const config: TestConfig = {
-        variants: { Default: { base: {}, hover: { bg: "neutral.100" } } },
+        variants: { Filled: {} },
       };
       const result = generateComponentVariants("Card", config, defaultTheme);
-      // base vac�o ? no genera bloque sin sufijo de estado
-      expect(result).not.toContain(`[data-variant="Default"]{`);
-      expect(result).toContain(`[data-variant="Default"]:hover{`);
+      expect(result).toBe("");
+    });
+
+    it("omite estado con tokens vacíos — no genera regla para ese estado", () => {
+      const config: TestConfig = {
+        variants: { hover: { bg: "neutral.100" } } as any,
+      };
+      const result = generateComponentVariants("Card", config, defaultTheme);
+      // no hay flat tokens → no genera `[data-slot="Card"]{`
+      expect(result).not.toContain(`[data-slot="Card"]{`);
+      expect(result).toContain(`[data-slot="Card"]:hover{`);
     });
   });
 
-  describe("selectores por estado", () => {
-    it("genera selector sin sufijo para estado base", () => {
+  describe("tokens planos en la raíz de variants (base sin variante)", () => {
+    it("genera [data-slot='X'] sin [data-variant]", () => {
       const config: TestConfig = {
-        variants: { Default: { base: { bg: "neutral.50" } } },
+        variants: { bg: "neutral.50" } as any,
       };
       const result = generateComponentVariants("Card", config, defaultTheme);
-      expect(result).toContain(`[data-slot="Card"][data-variant="Default"]{`);
+      expect(result).toContain(`[data-slot="Card"]{`);
+      expect(result).not.toContain(`data-variant`);
+    });
+
+    it("no genera :hover ni :focus cuando solo hay tokens planos", () => {
+      const config: TestConfig = {
+        variants: { bg: "neutral.50" } as any,
+      };
+      const result = generateComponentVariants("Card", config, defaultTheme);
       expect(result).not.toContain(":hover");
       expect(result).not.toContain(":focus");
     });
+  });
 
-    it("genera selector con :hover para estado hover", () => {
+  describe("estados en la raíz de variants", () => {
+    it("hover → [data-slot='X']:hover", () => {
       const config: TestConfig = {
-        variants: { Default: { hover: { bg: "neutral.100" } } },
+        variants: { hover: { bg: "neutral.100" } } as any,
       };
       const result = generateComponentVariants("Card", config, defaultTheme);
-      expect(result).toContain(`[data-slot="Card"][data-variant="Default"]:hover{`);
+      expect(result).toContain(`[data-slot="Card"]:hover{`);
     });
 
-    it("genera selector con :focus-visible para estado focus", () => {
+    it("focus → [data-slot='X']:focus-visible", () => {
       const config: TestConfig = {
-        variants: { Default: { focus: { bg: "neutral.100" } } },
+        variants: { focus: { bg: "neutral.100" } } as any,
       };
       const result = generateComponentVariants("Card", config, defaultTheme);
-      expect(result).toContain(`[data-slot="Card"][data-variant="Default"]:focus-visible{`);
+      expect(result).toContain(`[data-slot="Card"]:focus-visible{`);
     });
 
-    it("genera selector con :active para estado active", () => {
+    it("focusWithin → [data-slot='X']:focus-within", () => {
       const config: TestConfig = {
-        variants: { Default: { active: { bg: "neutral.200" } } },
+        variants: { focusWithin: { borderColor: "primary.500" } } as any,
       };
       const result = generateComponentVariants("Card", config, defaultTheme);
-      expect(result).toContain(`[data-slot="Card"][data-variant="Default"]:active{`);
+      expect(result).toContain(`[data-slot="Card"]:focus-within{`);
     });
 
-    it("genera selector con [data-disabled] para estado disabled", () => {
+    it("active → [data-slot='X']:active", () => {
       const config: TestConfig = {
-        variants: { Default: { disabled: { bg: "neutral.200" } } },
+        variants: { active: { bg: "neutral.200" } } as any,
       };
       const result = generateComponentVariants("Card", config, defaultTheme);
-      expect(result).toContain(`[data-slot="Card"][data-variant="Default"][data-disabled]{`);
+      expect(result).toContain(`[data-slot="Card"]:active{`);
     });
 
-    it("genera selector con [data-loading] para estado loading", () => {
+    it("disabled → [data-slot='X'][data-disabled]", () => {
       const config: TestConfig = {
-        variants: { Default: { loading: { bg: "neutral.100" } } },
+        variants: { disabled: { bg: "neutral.200" } } as any,
       };
       const result = generateComponentVariants("Card", config, defaultTheme);
-      expect(result).toContain(`[data-slot="Card"][data-variant="Default"][data-loading]{`);
+      expect(result).toContain(`[data-slot="Card"][data-disabled]{`);
     });
 
-    it("genera selector con [data-selected] para estado selected", () => {
+    it("invalid → [data-slot='X'][data-invalid]", () => {
       const config: TestConfig = {
-        variants: { Default: { selected: { bg: "primary.100" } } },
+        variants: { invalid: { borderColor: "danger.500" } } as any,
       };
       const result = generateComponentVariants("Card", config, defaultTheme);
-      expect(result).toContain(`[data-slot="Card"][data-variant="Default"][data-selected]{`);
+      expect(result).toContain(`[data-slot="Card"][data-invalid]{`);
+    });
+
+    it("loading → [data-slot='X'][data-loading]", () => {
+      const config: TestConfig = {
+        variants: { loading: { bg: "neutral.100" } } as any,
+      };
+      const result = generateComponentVariants("Card", config, defaultTheme);
+      expect(result).toContain(`[data-slot="Card"][data-loading]{`);
+    });
+
+    it("selected → [data-slot='X'][data-selected]", () => {
+      const config: TestConfig = {
+        variants: { selected: { bg: "primary.100" } } as any,
+      };
+      const result = generateComponentVariants("Card", config, defaultTheme);
+      expect(result).toContain(`[data-slot="Card"][data-selected]{`);
+    });
+
+    it("before → [data-slot='X']::before", () => {
+      const config: TestConfig = {
+        variants: { before: { content: '""' } } as any,
+      };
+      const result = generateComponentVariants("Card", config, defaultTheme);
+      expect(result).toContain(`[data-slot="Card"]::before{`);
+    });
+
+    it("placeholder → [data-slot='X']::placeholder", () => {
+      const config: TestConfig = {
+        variants: { placeholder: { color: "neutral.400" } } as any,
+      };
+      const result = generateComponentVariants("Card", config, defaultTheme);
+      expect(result).toContain(`[data-slot="Card"]::placeholder{`);
     });
   });
 
-  describe("resoluci�n de tokens", () => {
-    it("resuelve token de color a CSS var", () => {
+  describe("variantes nombradas", () => {
+    it("variante genera [data-slot='X'][data-variant='Y']", () => {
       const config: TestConfig = {
-        variants: { Default: { base: { bg: "neutral.50" } } },
+        variants: {
+          Filled: { bg: "primary.500", color: "neutral.50" },
+        },
+      };
+      const result = generateComponentVariants("Card", config, defaultTheme);
+      expect(result).toContain(`[data-slot="Card"][data-variant="Filled"]{`);
+    });
+
+    it("estado dentro de variante genera selector combinado", () => {
+      const config: TestConfig = {
+        variants: {
+          Filled: {
+            bg: "primary.500",
+            hover: { bg: "primary.600" },
+          },
+        },
+      };
+      const result = generateComponentVariants("Card", config, defaultTheme);
+      expect(result).toContain(`[data-slot="Card"][data-variant="Filled"]{`);
+      expect(result).toContain(`[data-slot="Card"][data-variant="Filled"]:hover{`);
+    });
+
+    it("genera bloques independientes para múltiples variantes nombradas", () => {
+      const config: TestConfig = {
+        variants: {
+          Filled:   { bg: "primary.50" },
+          Outlined: { border: "1px solid" },
+        },
+      };
+      const result = generateComponentVariants("Card", config, defaultTheme);
+      expect(result).toContain(`[data-variant="Filled"]`);
+      expect(result).toContain(`[data-variant="Outlined"]`);
+    });
+
+    it("flat base + variante nombrada coexisten correctamente", () => {
+      const config: TestConfig = {
+        variants: {
+          bg: "neutral.50",
+          hover: { boxShadow: "0 4px 6px rgba(0,0,0,0.08)" },
+          Outlined: {
+            boxShadow: "none",
+            hover: { borderColor: "primary.400" },
+          },
+        } as any,
+      };
+      const result = generateComponentVariants("Card", config, defaultTheme);
+      expect(result).toContain(`[data-slot="Card"]{`);
+      expect(result).toContain(`[data-slot="Card"]:hover{`);
+      expect(result).toContain(`[data-slot="Card"][data-variant="Outlined"]{`);
+      expect(result).toContain(`[data-slot="Card"][data-variant="Outlined"]:hover{`);
+    });
+  });
+
+  describe("nesting de estados (2 niveles — SCSS-like)", () => {
+    it("estado anidado dentro de estado genera selector combinado", () => {
+      const config: TestConfig = {
+        variants: {
+          focusWithin: {
+            borderColor: "primary.500",
+            disabled: { borderColor: "neutral.300" } as any,
+          },
+        } as any,
+      };
+      const result = generateComponentVariants("Card", config, defaultTheme);
+      expect(result).toContain(`[data-slot="Card"]:focus-within{`);
+      expect(result).toContain(`[data-slot="Card"]:focus-within[data-disabled]{`);
+    });
+
+    it("estado anidado dentro de variante genera selector de 3 partes", () => {
+      const config: TestConfig = {
+        variants: {
+          Filled: {
+            bg: "primary.500",
+            hover: {
+              bg: "primary.600",
+              disabled: { bg: "primary.300" } as any,
+            },
+          },
+        },
+      };
+      const result = generateComponentVariants("Card", config, defaultTheme);
+      expect(result).toContain(`[data-slot="Card"][data-variant="Filled"]:hover{`);
+      expect(result).toContain(`[data-slot="Card"][data-variant="Filled"]:hover[data-disabled]{`);
+    });
+  });
+
+  describe("resolución de tokens", () => {
+    it("resuelve token de color a CSS var (flat base)", () => {
+      const config: TestConfig = {
+        variants: { bg: "neutral.50" } as any,
       };
       const result = generateComponentVariants("Card", config, defaultTheme);
       expect(result).toContain(`--card-background:var(--${p}-color-neutral-50);`);
@@ -103,7 +242,7 @@ describe("generateComponentVariants", () => {
 
     it("resuelve token de spacing a CSS var", () => {
       const config: TestConfig = {
-        variants: { Default: { base: { p: "md" } } },
+        variants: { p: "md" } as any,
       };
       const result = generateComponentVariants("Card", config, defaultTheme);
       expect(result).toContain(`--card-padding:var(--${p}-spacing-md);`);
@@ -111,7 +250,7 @@ describe("generateComponentVariants", () => {
 
     it("resuelve token de radius a CSS var", () => {
       const config: TestConfig = {
-        variants: { Default: { base: { rounded: "lg" } } },
+        variants: { rounded: "lg" } as any,
       };
       const result = generateComponentVariants("Card", config, defaultTheme);
       expect(result).toContain(`--card-border-radius:var(--${p}-radius-lg);`);
@@ -119,55 +258,27 @@ describe("generateComponentVariants", () => {
 
     it("pasa valor raw sin transformar", () => {
       const config: TestConfig = {
-        variants: { Default: { base: { border: "1px solid" } } },
+        variants: { border: "1px solid" } as any,
       };
       const result = generateComponentVariants("Card", config, defaultTheme);
       expect(result).toContain(`--card-border:1px solid;`);
     });
 
-    it("resuelve token de color para estado hover", () => {
+    it("resuelve token de color para estado hover dentro de variante", () => {
       const config: TestConfig = {
-        variants: { Default: { hover: { borderColor: "primary.400" } } },
+        variants: {
+          Outlined: { hover: { borderColor: "primary.400" } },
+        },
       };
       const result = generateComponentVariants("Card", config, defaultTheme);
       expect(result).toContain(`--card-border-color:var(--${p}-color-primary-400);`);
     });
   });
 
-  describe("m�ltiples variantes y estados", () => {
-    it("genera bloques independientes para m�ltiples variantes", () => {
-      const config: TestConfig = {
-        variants: {
-          Default: { base: { bg: "neutral.50" } },
-          Filled: { base: { bg: "primary.50" } },
-        },
-      };
-      const result = generateComponentVariants("Card", config, defaultTheme);
-      expect(result).toContain(`[data-variant="Default"]`);
-      expect(result).toContain(`[data-variant="Filled"]`);
-    });
-
-    it("genera bloques independientes para m�ltiples estados de una variante", () => {
-      const config: TestConfig = {
-        variants: {
-          Default: {
-            base: { bg: "neutral.50" },
-            hover: { bg: "neutral.100" },
-            disabled: { bg: "neutral.200" },
-          },
-        },
-      };
-      const result = generateComponentVariants("Card", config, defaultTheme);
-      expect(result).toContain(`[data-variant="Default"]{`);
-      expect(result).toContain(`[data-variant="Default"]:hover{`);
-      expect(result).toContain(`[data-variant="Default"][data-disabled]{`);
-    });
-  });
-
   describe("prefix derivado de componentName", () => {
     it("deriva el prefix de camelToKebab(componentName)", () => {
       const config: TestConfig = {
-        variants: { Default: { base: { bg: "primary.500" } } },
+        variants: { bg: "primary.500" } as any,
       };
       const result = generateComponentVariants("Button", config, defaultTheme);
       expect(result).toContain(`--button-background:`);
@@ -175,7 +286,7 @@ describe("generateComponentVariants", () => {
 
     it("convierte camelCase a kebab-case correctamente", () => {
       const config: TestConfig = {
-        variants: { Default: { base: { bg: "primary.500" } } },
+        variants: { bg: "primary.500" } as any,
       };
       const result = generateComponentVariants("myButton", config, defaultTheme);
       expect(result).toContain(`--my-button-background:`);
@@ -185,50 +296,46 @@ describe("generateComponentVariants", () => {
 
 // --- DSL $prop en variants ----------------------------------------------------
 
-describe("generateComponentVariants � DSL $prop", () => {
-  it("$prop standalone en variant base resuelve var del padre", () => {
+describe("generateComponentVariants — DSL $prop", () => {
+  it("$prop en flat base resuelve var del padre", () => {
     const config: TestConfig = {
       parentName: "Card",
       componentName: "Section",
-      variants: { Default: { base: { color: "$color" } } },
+      variants: { color: "$color" } as any,
     };
     const result = generateComponentVariants("Section", config, defaultTheme);
     expect(result).toContain(`--card-section-color:var(--card-color);`);
   });
 
-  it("$prop inline en variant resuelve dentro del valor", () => {
+  it("$prop inline en variante nombrada resuelve dentro del valor", () => {
     const config: TestConfig = {
       parentName: "Card",
       componentName: "Section",
-      variants: { Filled: { base: { outline: "2px solid $borderColor" } } },
+      variants: { Filled: { outline: "2px solid $borderColor" } },
     };
     const result = generateComponentVariants("Section", config, defaultTheme);
     expect(result).toContain(`--card-section-outline:2px solid var(--card-border-color);`);
   });
 
-  it("$prop en estado hover de una variant", () => {
+  it("$prop en estado hover a nivel raíz", () => {
     const config: TestConfig = {
       parentName: "Card",
       componentName: "Section",
-      variants: { Default: { hover: { bg: "$background" } } },
+      variants: { hover: { bg: "$background" } } as any,
     };
     const result = generateComponentVariants("Section", config, defaultTheme);
     expect(result).toContain(`:hover`);
     expect(result).toContain(`--card-section-background:var(--card-background);`);
   });
 
-  it("$prop coexiste con tokens normales en la misma variant", () => {
+  it("$prop coexiste con tokens normales en flat base", () => {
     const config: TestConfig = {
       parentName: "Card",
       componentName: "Section",
       variants: {
-        Default: {
-          base: {
-            bg: "neutral.50",      // token normal
-            color: "$color",       // $prop
-          },
-        },
-      },
+        bg: "neutral.50",
+        color: "$color",
+      } as any,
     };
     const result = generateComponentVariants("Section", config, defaultTheme);
     expect(result).toContain(`--card-section-background:var(--${p}-color-neutral-50);`);
@@ -237,7 +344,7 @@ describe("generateComponentVariants � DSL $prop", () => {
 
   it("sin parentName, $prop apunta al propio prefix (auto-referencia)", () => {
     const config: TestConfig = {
-      variants: { Default: { base: { color: "$color" } } },
+      variants: { color: "$color" } as any,
     };
     const result = generateComponentVariants("Card", config, defaultTheme);
     expect(result).toContain(`--card-color:var(--card-color);`);

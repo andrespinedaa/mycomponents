@@ -1,4 +1,4 @@
-﻿import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { defaultTheme } from "../../themes/default-theme";
 import type { Theme } from "../core/theme.types";
 import { generateComponents } from "./generateComponents";
@@ -26,32 +26,31 @@ describe("generateComponents", () => {
   });
 
   describe("salida por sección", () => {
-    it("incluye CSS de bases en la salida", () => {
+    it("incluye CSS de bases en la salida — selector con ,unset", () => {
       const theme: Theme = {
         ...defaultTheme,
         components: {
           Card: {
-            variants: { Default: { base: { bg: "neutral.50" } } },
+            variants: { bg: "neutral.50" },
           },
         } as unknown as Theme["components"],
       };
       const result = generateComponents(theme);
-      // Bases → selector sin calificador adicional + var CSS con ,unset
       expect(result).toContain(`[data-slot="Card"]{`);
       expect(result).toContain(`var(--card-background,unset)`);
     });
 
-    it("incluye CSS de variants en la salida", () => {
+    it("incluye CSS de variante nombrada en la salida", () => {
       const theme: Theme = {
         ...defaultTheme,
         components: {
           Card: {
-            variants: { Default: { base: { bg: "neutral.50" } } },
+            variants: { Filled: { bg: "neutral.50" } },
           },
         } as unknown as Theme["components"],
       };
       const result = generateComponents(theme);
-      expect(result).toContain(`[data-variant="Default"]`);
+      expect(result).toContain(`[data-variant="Filled"]`);
       expect(result).toContain(`var(--${p}-color-neutral-50)`);
     });
 
@@ -81,7 +80,6 @@ describe("generateComponents", () => {
           },
         } as unknown as Theme["components"],
       };
-      // CardSection tiene parentName → se salta en top-level; Card no está en el tema → no hay recursión
       expect(generateComponents(theme)).toBe("");
     });
 
@@ -90,7 +88,7 @@ describe("generateComponents", () => {
         ...defaultTheme,
         components: {
           Card: {
-            slots: {
+            statics: {
               Section: {
                 componentName: "Section",
                 parentName: "Card",
@@ -112,16 +110,19 @@ describe("generateComponents", () => {
         ...defaultTheme,
         components: {
           Card: {
-            variants: { Default: { base: { bg: "neutral.50" } } },
+            variants: {
+              bg: "neutral.50",
+              Filled: { bg: "primary.50" },
+            },
             sizes: { md: { p: "md" } },
           },
         } as unknown as Theme["components"],
       };
       const result = generateComponents(theme);
 
-      const basesIdx = result.indexOf(`[data-slot="Card"]{`);
+      const basesIdx   = result.indexOf(`var(--card-background,unset)`);
       const variantsIdx = result.indexOf(`[data-variant=`);
-      const sizesIdx = result.indexOf(`[data-size=`);
+      const sizesIdx   = result.indexOf(`[data-size=`);
 
       expect(basesIdx).toBeGreaterThanOrEqual(0);
       expect(variantsIdx).toBeGreaterThan(basesIdx);
@@ -135,10 +136,10 @@ describe("generateComponents", () => {
         ...defaultTheme,
         components: {
           Card: {
-            variants: { Default: { base: { bg: "neutral.50" } } },
+            variants: { bg: "neutral.50" },
           },
           Badge: {
-            variants: { Filled: { base: { bg: "primary.500" } } },
+            variants: { Filled: { bg: "primary.500" } },
           },
         } as unknown as Theme["components"],
       };
@@ -172,7 +173,7 @@ describe("generateComponents", () => {
         components: {
           Empty: {},
           Card: {
-            variants: { Default: { base: { bg: "neutral.50" } } },
+            variants: { bg: "neutral.50" },
           },
         } as unknown as Theme["components"],
       };

@@ -3,11 +3,9 @@ import { LayoutProvider } from "../../context/LayoutContext";
 import {
   ComponentFactory,
   type ComponentConfig,
-  type EmptyStatics,
   type FactoryRender,
 } from "../../factory";
 import { useResolveLayout } from "../../hooks";
-import type { ScaleRange, SystemVariants } from "../../theme";
 import { Box } from "../Primitives/Box";
 
 export interface DotBadgeOwnProps {
@@ -15,20 +13,16 @@ export interface DotBadgeOwnProps {
 }
 
 export type DotBadgeConfig = ComponentConfig<{
-  presets: string;
   defaultProps: {};
   defaultTag: "span";
-  variants: "Default";
-  statics: EmptyStatics;
   componentName: "DotBadge";
   ownProps: DotBadgeOwnProps;
   sizes: "xs" | "sm" | "md" | "lg";
 }>;
 
 export const DotBadge = ComponentFactory<DotBadgeConfig>({
-  componentName: "DotBadge",
   defaultTag: "span",
-  defaultProps: {},
+  componentName: "DotBadge",
   render: function DotBadgeRender({ dotColor, ref, ...rest }) {
     return (
       <Box
@@ -51,11 +45,9 @@ export type BadgeConfig = ComponentConfig<{
   componentName: "Badge";
   defaultTag: "span";
   ownProps: BadgeOwnProps;
-  statics: EmptyStatics;
   defaultProps: { size: "md"; display: "inline-flex"; align: "center"; rounded: "full" };
-  sizes: ScaleRange<"xs" | "sm" | "md" | "lg">;
-  presets: string;
-  variants: SystemVariants<"Default">;
+  sizes: "xs" | "sm" | "md" | "lg";
+  variants: "Filled" | "Subtle" | "Outlined";
 }>;
 
 export const Badge = ComponentFactory<BadgeConfig>({
@@ -66,7 +58,6 @@ export const Badge = ComponentFactory<BadgeConfig>({
     display: "inline-flex",
     align: "center",
     rounded: "full",
-    variant: "Default",
   },
   render: function BadgeRender({
     ref,

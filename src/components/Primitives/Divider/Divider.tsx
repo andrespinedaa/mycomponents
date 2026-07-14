@@ -1,10 +1,9 @@
 import {
   ComponentFactory,
   type ComponentConfig,
-  type EmptyStatics,
   type OrientationProp,
 } from "../../../factory";
-import type { CSSLength, ColorValue, ComponentVariants, Scales } from "../../../theme";
+import type { CSSLength, ColorValue, Scales } from "../../../theme";
 import { useLayoutContext } from "../../../context/LayoutContext";
 import { Box, Flex, Text } from "..";
 
@@ -20,7 +19,6 @@ export type DividerConfig = ComponentConfig<{
   componentName: "Divider";
   defaultTag: "div";
   ownProps: DividerOwnProps;
-  statics: EmptyStatics;
   defaultProps: {
     orientation: "horizontal";
     position: "center";
@@ -29,7 +27,6 @@ export type DividerConfig = ComponentConfig<{
   };
   sizes: Scales;
   presets: "label";
-  variants: ComponentVariants;
 }>;
 
 export const Divider = ComponentFactory<DividerConfig>({
@@ -37,7 +34,7 @@ export const Divider = ComponentFactory<DividerConfig>({
   componentName: "Divider",
   defaultProps: { orientation: "horizontal", position: "center", thickness: "1px", size: "md" },
   render: function DividerRender({
-    preset,
+    set: _set,
     ref,
     color,
     label,

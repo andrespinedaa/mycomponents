@@ -1,5 +1,5 @@
 import type { InputHTMLAttributes } from "react";
-import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../factory";
+import { ComponentFactory, type ComponentConfig } from "../../factory";
 import { Box, Flex, Text } from "../Primitives";
 
 type SafeInputHTMLAttributes = Omit<InputHTMLAttributes<HTMLInputElement>, "size">;
@@ -16,17 +16,15 @@ export type InputConfig = ComponentConfig<{
   componentName: "Input";
   defaultTag: "div";
   ownProps: InputOwnProps & SafeInputHTMLAttributes;
-  statics: EmptyStatics;
-  defaultProps: { size: "md"; variant: "Default" };
+  defaultProps: { size: "md" };
   sizes: "sm" | "md" | "lg";
-  presets: string;
-  variants: "Default" | "Filled" | "Unstyled";
+  variants: "Filled";
 }>;
 
 export const Input = ComponentFactory<InputConfig>({
   componentName: "Input",
   defaultTag: "div",
-  defaultProps: { size: "md", variant: "Default" },
+  defaultProps: { size: "md" },
   render: function InputRender({
     ref,
     id,

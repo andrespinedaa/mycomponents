@@ -16,7 +16,8 @@ export const Default: Story = {
 };
 
 // ─── AllVariants — variantes × tamaños ───────────────────────────────────────
-const variants = ["Default", "Filled", "Unstyled"] as const;
+const variants = [undefined, "Filled"] as const;
+const variantLabels = ["Base", "Filled"];
 const sizes = ["sm", "md", "lg"] as const;
 
 export const AllVariants: Story = {
@@ -27,11 +28,11 @@ export const AllVariants: Story = {
         {sizes.map((size) => (
           <span key={size} style={{ fontSize: "0.75rem", color: "#888", textAlign: "center" }}>{size}</span>
         ))}
-        {variants.map((variant) => (
+        {variants.map((variant, i) => (
           <>
-            <span key={`label-${variant}`} style={{ fontSize: "0.75rem", fontWeight: 600 }}>{variant}</span>
+            <span key={`label-${variantLabels[i]}`} style={{ fontSize: "0.75rem", fontWeight: 600 }}>{variantLabels[i]}</span>
             {sizes.map((size) => (
-              <Input key={`${variant}-${size}`} variant={variant} size={size} placeholder="Placeholder" />
+              <Input key={`${variantLabels[i]}-${size}`} variant={variant} size={size} placeholder="Placeholder" />
             ))}
           </>
         ))}
@@ -40,29 +41,29 @@ export const AllVariants: Story = {
   ),
 };
 
-// ─── DefaultStates ───────────────────────────────────────────────────────────
-export const DefaultStates: Story = {
+// ─── BaseStates — estilos base (sin variante) ────────────────────────────────
+export const BaseStates: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem", width: 360 }}>
       <div>
         <p style={{ marginBottom: "0.25rem", fontSize: "0.75rem", color: "#888" }}>Normal</p>
-        <Input variant="Default" placeholder="Placeholder" />
+        <Input placeholder="Placeholder" />
       </div>
       <div>
         <p style={{ marginBottom: "0.25rem", fontSize: "0.75rem", color: "#888" }}>Con label + hint</p>
-        <Input variant="Default" label="Correo electrónico" hint="Usaremos este correo para contactarte." placeholder="tu@email.com" />
+        <Input label="Correo electrónico" hint="Usaremos este correo para contactarte." placeholder="tu@email.com" />
       </div>
       <div>
         <p style={{ marginBottom: "0.25rem", fontSize: "0.75rem", color: "#888" }}>Inválido</p>
-        <Input variant="Default" label="Correo electrónico" error="El correo no es válido." placeholder="tu@email.com" defaultValue="correo-malo" />
+        <Input label="Correo electrónico" error="El correo no es válido." placeholder="tu@email.com" defaultValue="correo-malo" />
       </div>
       <div>
         <p style={{ marginBottom: "0.25rem", fontSize: "0.75rem", color: "#888" }}>Deshabilitado</p>
-        <Input variant="Default" label="Correo electrónico" placeholder="tu@email.com" disabled />
+        <Input label="Correo electrónico" placeholder="tu@email.com" disabled />
       </div>
       <div>
         <p style={{ marginBottom: "0.25rem", fontSize: "0.75rem", color: "#888" }}>Requerido</p>
-        <Input variant="Default" label="Nombre" placeholder="Tu nombre" required />
+        <Input label="Nombre" placeholder="Tu nombre" required />
       </div>
     </div>
   ),
@@ -98,11 +99,11 @@ export const UnstyledStates: Story = {
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem", width: 360 }}>
       <div>
         <p style={{ marginBottom: "0.25rem", fontSize: "0.75rem", color: "#888" }}>Normal</p>
-        <Input variant="Unstyled" placeholder="Sin estilos" />
+        <Input unstyled placeholder="Sin estilos" />
       </div>
       <div>
         <p style={{ marginBottom: "0.25rem", fontSize: "0.75rem", color: "#888" }}>Con label + hint</p>
-        <Input variant="Unstyled" label="Campo libre" hint="Sin bordes ni fondo." placeholder="Escribe..." />
+        <Input unstyled label="Campo libre" hint="Sin bordes ni fondo." placeholder="Escribe..." />
       </div>
     </div>
   ),

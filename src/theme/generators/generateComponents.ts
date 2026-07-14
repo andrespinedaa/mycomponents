@@ -15,8 +15,8 @@ function generateComponent(
     generateComponentSizes(name, config, theme) +
     generateComponentPresets(name, config, theme);
 
-  if (config?.slots) {
-    for (const [slotKey, slotConfig] of Object.entries(config.slots)) {
+  if (config?.statics) {
+    for (const [slotKey, slotConfig] of Object.entries(config.statics)) {
       if (slotConfig) css += generateComponent(slotKey, slotConfig as NonNullable<Theme["components"]>[string], theme);
     }
   }
@@ -27,7 +27,7 @@ function generateComponent(
 export function generateComponents(theme: Theme): string {
   if (!theme.components) return "";
   return Object.entries(theme.components)
-    .filter(([, config]) => !config?.parentName) // slots are generated via parent recursion
+    .filter(([, config]) => !config?.parentName) // statics are generated via parent recursion
     .map(([name, config]) => generateComponent(name, config, theme))
     .join("");
 }

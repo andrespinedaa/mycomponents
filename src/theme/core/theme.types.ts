@@ -19,7 +19,7 @@ export type BreakpointKey = "base" | keyof ThemeBreakpoints;
 export type PartialBreakPointKey<T> = Partial<Record<BreakpointKey, T>>;
 export type ShadowScale = ScaleRange<"sm" | "md" | "lg" | "xl">;
 export type ControlHeightScale = ScaleRange<"sm" | "md" | "lg">;
-export type BreakPointsScale = ScaleRange<"sm" | "md" | "lg" | "xl">;
+export type BreakPointsScale = ScaleRange<"xs" | "sm" | "md" | "lg" | "xl">;
 export type FontSizeScale = ScaleRange<SpacingScale | "3xl" | "4xl">;
 export type RadiiScale = ScaleRange<"none" | "sm" | "md" | "lg" | "full">;
 export type SpacingScale = ScaleRange<"xs" | "sm" | "md" | "lg" | "xl" | "2xl">;
@@ -29,16 +29,23 @@ export type Scales = "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" |
 // prettier-ignore
 export type ComponentVariants =
   | "Filled" | "Outlined" | "Elevated"
-  | "Ghost" | "Subtle" | "Transparent"
-  | "Link" | "Tonal" | "Soft" | "Default"
-  | "Unstyled";
+  | "Ghost" | "Subtle"
+  | "Link" | "Tonal" | "Soft";
 
 // ─── States ──────────────────────────────────────────────────────────
 // prettier-ignore
 export type ComponentStates =
-  | "base" | "hover" | "focus" | "focusWithin" | "active"
-  | "disabled" | "loading" | "selected"
-  | "checked" | "invalid";
+  // Interaction
+  | "hover" | "focus" | "focusVisible" | "focusWithin" | "active"
+  // Form
+  | "disabled" | "checked" | "indeterminate" | "required"
+  | "invalid" | "valid" | "readOnly" | "placeholder" | "autofill"
+  // System data-attributes
+  | "loading" | "selected"
+  // Pseudo-elements
+  | "before" | "after" | "selection" | "marker"
+  // Structural
+  | "firstChild" | "lastChild" | "empty";
 
 // ─── Merge ──────────────────────────────────────────────────────────
 /** Fusiona `Base` con `Custom` — las keys de `Custom` sobreescriben las de `Base`. */

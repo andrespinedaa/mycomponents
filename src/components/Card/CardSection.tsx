@@ -1,6 +1,5 @@
-import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../factory";
+import { ComponentFactory, type ComponentConfig } from "../../factory";
 import { useResolveLayout } from "../../hooks";
-import type { StylePropsTokens } from "../../theme";
 import { Flex } from "../Primitives";
 
 export type CardSectionSets = "cover" | "alignTop" | "gradient";
@@ -12,31 +11,35 @@ export type CardSections = "header" | "body" | "footer" | "media";
 
 export interface CardSectionOwnProps {}
 
-type SectionEntry<Sets extends string> = StylePropsTokens & Partial<Record<Sets, StylePropsTokens>>;
-
 export type CardSectionConfig = ComponentConfig<{
   componentName: "CardSection";
   defaultTag: "div";
   ownProps: CardSectionOwnProps;
-  statics: EmptyStatics;
   sections: {
-    media:  SectionEntry<CardSectionMediaSets>;
-    header: SectionEntry<CardSectionHeaderSets>;
-    footer: SectionEntry<CardSectionFooterSets>;
-    body:   SectionEntry<CardSectionBodySets>;
+    media: CardSectionMediaSets;
+    header: CardSectionHeaderSets;
+    footer: CardSectionFooterSets;
+    body: CardSectionBodySets;
   };
-  defaultProps: { section: "body"; size: "md"; variant: "Default" };
-  sizes: "sm" | "md" | "lg" | "xl";
+  defaultProps: { section: "body"; variant: "Filled" };
+  sizes: "xs" | "sm" | "md" | "lg" | "xl";
   presets: CardSectionSets;
-  variants: "Default";
+  variants: "Filled" | "Elevated" | "Outlined";
 }>;
 
 export const CardSection = ComponentFactory<CardSectionConfig>({
   defaultTag: "div",
   componentName: "CardSection",
-  defaultProps: { section: "body", size: "md", variant: "Default" },
-  render: function CardSectionRender({ ref, size: sizeProp, variant: variantProp, section, preset, ...rest }) {
-    const { size, variant } = useResolveLayout({ size: sizeProp, variant: variantProp });
-    return <Flex ref={ref} mod={{ size, variant, section, preset }} {...rest} />;
+  defaultProps: { section: "body", variant: "Filled" },
+  render: function CardSectionRender({
+    ref,
+    set,
+    section,
+    size: _size,
+    variant: _variant,
+    ...rest
+  }) {
+    const { size, variant } = useResolveLayout({ size: _size, variant: _variant });
+    return <Flex ref={ref} {...rest} mod={{ size, variant, section, set }} />;
   },
 });

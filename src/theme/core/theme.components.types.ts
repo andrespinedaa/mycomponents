@@ -19,7 +19,8 @@ import type {
 } from "../../components/Primitives";
 import type { FactoryConfig, RequiredDefaultProps } from "../../factory/core";
 import type { StylePropsTokens } from "../generators/system-css.types";
-import type { ComponentStates, ComponentVariants } from "./theme.types";
+import type { ComponentStates, ComponentVariants, ThemeBreakpoints } from "./theme.types";
+import type { Partialized } from "../../types";
 
 export type ComponentConfigs = {
   /* Primitives */
@@ -40,22 +41,57 @@ export type ComponentConfigs = {
   Button: ButtonConfig;
 };
 
-export type VariantStates = Partial<Record<ComponentStates, StylePropsTokens>>;
+// ─── StyledBlock — bloque estilizado con soporte de estados anidados (SCSS-like) ───
+type StateNode = StylePropsTokens & Partialized<ComponentStates, StylePropsTokens>;
+export type StyledBlock = StylePropsTokens & Partialized<ComponentStates, StateNode>;
 
-type PartialPresets<Config extends FactoryConfig> = Partial<
-  Record<NonNullable<Config["presets"]>, StylePropsTokens>
+// ─── Fields ─────────────────────────────────────────────────────────────────────────────────
+// ─── Variant Field ─────────────────────────────────────────────────────────────────────────────────
+type VariantsField = StyledBlock & Partialized<ComponentVariants, StyledBlock>;
+
+// ─── Size Field ─────────────────────────────────────────────────────────────────────────────────
+type SizeField<Config extends FactoryConfig> = Record<
+  keyof ThemeBreakpoints & Config["sizes"],
+  StylePropsTokens
+> &
+  Partialized<Exclude<Config["sizes"], keyof ThemeBreakpoints>, StylePropsTokens>;
+
+// ─── Stactics Field ─────────────────────────────────────────────────────────────────────────────────
+type StaticsField<Config extends FactoryConfig> = Record<
+  keyof NonNullable<Config["statics"]>,
+  ThemeComponentConfig<FactoryConfig>
 >;
 
+// ─── Presets Field ─────────────────────────────────────────────────────────────────────────────────
+type PresetsField<Config extends FactoryConfig> = Partialized<
+  NonNullable<Config["presets"]>,
+  StylePropsTokens
+>;
+
+// ─── Sections Field ─────────────────────────────────────────────────────────────────────────────────
+export type SlotEntry<Presets extends string = string> = StyledBlock & {
+  presets?: Partialized<Presets, StyledBlock>;
+};
+type SectionsField<Config extends FactoryConfig> = StyledBlock & {
+  slots?: {
+    [K in keyof NonNullable<Config["sections"]>]?: SlotEntry<
+      NonNullable<Config["sections"]>[K] & string
+    >;
+  };
+};
+
 export type ThemeComponentOptions<Config extends FactoryConfig> = {
+  /* Propiedades ComponentFactory */
   parentName?: string;
   componentName?: string;
   defaultTag?: ElementType;
-  presets?: PartialPresets<Config>;
-  sections?: Partial<NonNullable<Config["sections"]>>;
+  statics?: StaticsField<Config>;
   defaultProps?: RequiredDefaultProps<Config>;
-  sizes?: Partial<Record<Config["sizes"], StylePropsTokens>>;
-  variants?: Partial<Record<ComponentVariants, VariantStates>>;
-  slots?: Record<keyof Config["statics"], ThemeComponentConfig<FactoryConfig>>;
+  /* Propiedades Styles */
+  variants?: VariantsField;
+  sizes?: SizeField<Config>;
+  presets?: PresetsField<Config>;
+  sections?: SectionsField<Config>;
 };
 
 export type ThemeComponents = {

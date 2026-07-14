@@ -3,11 +3,11 @@ import userEvent from "@testing-library/user-event";
 import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { Box } from "../components/Primitives/Box/Box";
-import { ThemeProvider, type SystemVariants } from "../theme";
 import { useTheme } from "../hooks";
+import { ThemeProvider } from "../theme";
 import { defaultTheme } from "../themes/default-theme";
 import { ComponentFactory } from "./ComponentFactory";
-import type { ComponentConfig, EmptyStatics } from "./core/factories.types";
+import type { ComponentConfig } from "./core/factories.types";
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>
@@ -18,34 +18,30 @@ type TestConfig = ComponentConfig<{
   componentName: "Test";
   defaultTag: "button";
   ownProps: {
-    variant?: SystemVariants<"Default" | "Outlined">;
     label?: string;
   };
   sizes: "sm" | "md" | "lg";
-  statics: EmptyStatics;
   defaultProps: {
-    variant: "Default";
+    variant: "Outlined";
   };
   presets: string;
-  slots: string
+  variants: "Outlined";
 }>;
 
 type NoRenderConfig = ComponentConfig<{
   componentName: "NoRender";
   defaultTag: "section";
   ownProps: {};
-  statics: EmptyStatics;
   defaultProps: {};
   sizes: never;
-  presets: string,
-  slots: string
+  presets: string;
 }>;
 
 // ─── Componentes de prueba ────────────────────────────────────
 const TestComponent = ComponentFactory<TestConfig>({
   defaultTag: "button",
   componentName: "Test",
-  defaultProps: { variant: "Default" },
+  defaultProps: { variant: "Outlined" },
   render: ({ variant, children, ref, ...rest }) => (
     <Box as="button" ref={ref} mod={{ variant }} {...rest}>
       {children}
@@ -80,7 +76,7 @@ describe("ComponentFactory", () => {
 
     it("aplica defaultProps cuando no se pasan OwnProps", () => {
       render(<TestComponent>btn</TestComponent>, { wrapper });
-      expect(screen.getByText("btn")).toHaveAttribute("data-variant", "Default");
+      expect(screen.getByText("btn")).toHaveAttribute("data-variant", "Outlined");
     });
 
     it("pasa HTMLAttributes al elemento", () => {
@@ -160,21 +156,29 @@ describe("ComponentFactory", () => {
     });
 
     it("mod genera data attributes en el fallback", () => {
-      const { container } = render(<NoRenderComponent mod={{ state: "active" }}>contenido</NoRenderComponent>, {
-        wrapper,
-      });
+      const { container } = render(
+        <NoRenderComponent mod={{ state: "active" }}>contenido</NoRenderComponent>,
+        {
+          wrapper,
+        },
+      );
       expect(container.firstChild).toHaveAttribute("data-state", "active");
     });
 
     it("styleProps se resuelven como inline style", () => {
-      const { container } = render(<NoRenderComponent p="20px">contenido</NoRenderComponent>, { wrapper });
+      const { container } = render(<NoRenderComponent p="20px">contenido</NoRenderComponent>, {
+        wrapper,
+      });
       expect(container.firstChild).toHaveStyle({ padding: "20px" });
     });
 
     it("style crudo se aplica en el fallback", () => {
-      const { container } = render(<NoRenderComponent style={{ opacity: "0.5" }}>contenido</NoRenderComponent>, {
-        wrapper,
-      });
+      const { container } = render(
+        <NoRenderComponent style={{ opacity: "0.5" }}>contenido</NoRenderComponent>,
+        {
+          wrapper,
+        },
+      );
       expect(container.firstChild).toHaveStyle({ opacity: "0.5" });
     });
 
@@ -189,14 +193,19 @@ describe("ComponentFactory", () => {
     });
 
     it("responsive styleProp genera data-responsive en el fallback", () => {
-      const { container } = render(<NoRenderComponent p={{ base: "8px", md: "16px" }}>contenido</NoRenderComponent>, {
-        wrapper,
-      });
+      const { container } = render(
+        <NoRenderComponent p={{ base: "8px", md: "16px" }}>contenido</NoRenderComponent>,
+        {
+          wrapper,
+        },
+      );
       expect(container.firstChild).toHaveAttribute("data-responsive", "true");
     });
 
     it("styleProp estático no genera data-responsive", () => {
-      const { container } = render(<NoRenderComponent p="8px">contenido</NoRenderComponent>, { wrapper });
+      const { container } = render(<NoRenderComponent p="8px">contenido</NoRenderComponent>, {
+        wrapper,
+      });
       expect(container.firstChild).not.toHaveAttribute("data-responsive", "true");
     });
   });
@@ -233,7 +242,10 @@ describe("ComponentFactory", () => {
     });
 
     it("dataSlot sobreescribe componentName", () => {
-      const { container } = render(<NoRenderComponent dataSlot="custom">contenido</NoRenderComponent>, { wrapper });
+      const { container } = render(
+        <NoRenderComponent dataSlot="custom">contenido</NoRenderComponent>,
+        { wrapper },
+      );
       expect(container.firstChild).toHaveAttribute("data-slot", "custom");
     });
 
@@ -242,7 +254,6 @@ describe("ComponentFactory", () => {
         componentName: "";
         defaultTag: "div";
         ownProps: {};
-        statics: EmptyStatics;
         defaultProps: {};
         sizes: never;
         presets: string;

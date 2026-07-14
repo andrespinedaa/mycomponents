@@ -11,19 +11,13 @@ export const BadgeThemeComponent: BadgeThemeConfig = {
     lg: { px: "10px", py: "4px", fontSize: "13px" },
   },
   variants: {
-    Filled: {
-      base: { bg: "primary.500", color: "neutral.50" },
-    },
-    Subtle: {
-      base: { bg: "primary.100", color: "primary.700" },
-    },
+    Filled:   { bg: "primary.500", color: "neutral.50" },
+    Subtle:   { bg: "primary.100", color: "primary.700" },
     Outlined: {
-      base: {
-        bg: "transparent",
-        color: "primary.600",
-        border: "1px solid",
-        borderColor: "primary.400",
-      },
+      bg: "transparent",
+      color: "primary.600",
+      border: "1px solid",
+      borderColor: "primary.400",
     },
   },
 };

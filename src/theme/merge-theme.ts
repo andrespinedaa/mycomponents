@@ -35,23 +35,65 @@ export function mergeRecord<T extends Record<string, string>>(
   return { ...base, ...override } as T;
 }
 
+// Deep-merges two VariantsField objects: flat tokens and variant/state sub-objects each merged one level.
+function mergeVariants(
+  base: Record<string, unknown> | undefined,
+  override: Record<string, unknown> | undefined,
+): Record<string, unknown> | undefined {
+  if (!override) return base;
+  if (!base) return override;
+  const result: Record<string, unknown> = { ...base };
+  for (const [key, value] of Object.entries(override)) {
+    if (value != null && typeof value === "object" && typeof base[key] === "object" && base[key] != null) {
+      result[key] = { ...(base[key] as object), ...(value as object) };
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
+
+function mergeSlotEntry(
+  base: Record<string, unknown>,
+  override: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = { ...base };
+  for (const [key, value] of Object.entries(override)) {
+    if (key === "presets" && value != null && typeof value === "object" && typeof base[key] === "object" && base[key] != null) {
+      result[key] = { ...(base[key] as object), ...(value as object) };
+    } else if (value != null && typeof value === "object" && typeof base[key] === "object" && base[key] != null) {
+      result[key] = { ...(base[key] as object), ...(value as object) };
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
+
 function mergeSections(
-  base: Record<string, Record<string, unknown>> | undefined,
-  override: Record<string, Record<string, unknown>> | undefined,
-): Record<string, Record<string, unknown>> {
-  if (!override) return base ?? {};
-  const result = { ...base };
-  for (const [sectionName, sectionEntry] of Object.entries(override)) {
-    const baseSection = base?.[sectionName] ?? {};
-    const { presets: basePresets, ...baseTokens } = baseSection as { presets?: Record<string, unknown> };
-    const { presets: overridePresets, ...overrideTokens } = sectionEntry as { presets?: Record<string, unknown> };
-    result[sectionName] = {
-      ...baseTokens,
-      ...overrideTokens,
-      ...(basePresets || overridePresets
-        ? { presets: { ...(basePresets ?? {}), ...(overridePresets ?? {}) } }
-        : {}),
-    };
+  base: Record<string, unknown> | undefined,
+  override: Record<string, unknown> | undefined,
+): Record<string, unknown> | undefined {
+  if (!override) return base;
+  if (!base) return override;
+
+  const result: Record<string, unknown> = { ...base };
+
+  for (const [key, value] of Object.entries(override)) {
+    if (key === "slots") {
+      const baseSlots = (base["slots"] ?? {}) as Record<string, unknown>;
+      const overrideSlots = value as Record<string, unknown>;
+      const mergedSlots: Record<string, unknown> = { ...baseSlots };
+      for (const [slotName, slotOverride] of Object.entries(overrideSlots)) {
+        const baseSlot = (baseSlots[slotName] ?? {}) as Record<string, unknown>;
+        mergedSlots[slotName] = mergeSlotEntry(baseSlot, slotOverride as Record<string, unknown>);
+      }
+      result["slots"] = mergedSlots;
+    } else if (value != null && typeof value === "object" && typeof base[key] === "object" && base[key] != null) {
+      result[key] = { ...(base[key] as object), ...(value as object) };
+    } else {
+      result[key] = value;
+    }
   }
   return result;
 }
@@ -72,7 +114,7 @@ export function mergeComponents(
       ...baseEntry,
       ...overrideEntry,
       defaultProps: { ...(baseEntry?.defaultProps ?? {}), ...(overrideEntry.defaultProps ?? {}) },
-      variants:     { ...(baseEntry?.variants ?? {}),     ...(overrideEntry.variants ?? {}) },
+      variants:     mergeVariants(baseEntry?.variants, overrideEntry.variants),
       sizes:        { ...(baseEntry?.sizes ?? {}),         ...(overrideEntry.sizes ?? {}) },
       presets:      { ...(baseEntry?.presets ?? {}),       ...(overrideEntry.presets ?? {}) },
       sections: mergeSections(baseEntry?.sections, overrideEntry.sections),

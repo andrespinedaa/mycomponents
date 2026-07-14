@@ -2,7 +2,6 @@ import {
   ComponentFactory,
   type ApplyProp,
   type ComponentConfig,
-  type EmptyStatics,
 } from "../../../factory";
 import type { ComponentVariants, Scales } from "../../../theme";
 import { Box } from "../Box";
@@ -17,12 +16,10 @@ export type TextConfig = ComponentConfig<{
   componentName: "Text";
   defaultTag: "p";
   ownProps: TextOwnProps;
-  statics: EmptyStatics;
   defaultProps: {
     size: "md";
   };
   sizes: Scales;
-  presets: string;
   variants: ComponentVariants;
 }>;
 

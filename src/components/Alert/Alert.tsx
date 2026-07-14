@@ -1,4 +1,4 @@
-import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../factory";
+import { ComponentFactory, type ComponentConfig } from "../../factory";
 import { Box, Flex, Text } from "../Primitives";
 
 export type AlertSeverity = "info" | "success" | "warning" | "danger";
@@ -15,18 +15,16 @@ export type AlertConfig = ComponentConfig<{
   componentName: "Alert";
   defaultTag: "div";
   ownProps: AlertOwnProps;
-  statics: EmptyStatics;
   defaultProps: {
     severity: "info";
-    variant: "Default";
+    variant: "Filled";
     size: "md";
     gap: "sm";
     rounded: "md";
     border: "1px solid";
   };
-  presets: string;
   sizes: "sm" | "md" | "lg";
-  variants: "Subtle" | "Filled" | "Outlined" | "Default";
+  variants: "Subtle" | "Filled" | "Outlined";
 }>;
 
 export const Alert = ComponentFactory<AlertConfig>({
@@ -34,7 +32,7 @@ export const Alert = ComponentFactory<AlertConfig>({
   defaultTag: "div",
   defaultProps: {
     severity: "info",
-    variant: "Default",
+    variant: "Filled",
     size: "md",
     gap: "sm",
     rounded: "md",

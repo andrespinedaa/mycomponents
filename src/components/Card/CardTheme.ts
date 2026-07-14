@@ -6,51 +6,38 @@ export type CardTheme = ThemeComponentConfig<CardConfig>;
 
 export const CardThemeComponent: CardTheme = {
   sizes: {
-    sm: { p: "md", w: "240px", gap: "sm" },
-    md: { p: "lg", w: "240px", gap: "md" },
-    lg: { p: "xl", w: "280px", gap: "lg" },
-    xl: { p: "2xl", w: "320px", gap: "20px" },
+    xs: { w: "120px", h: "240px" },
+    sm: { w: "220px", h: "340px" },
+    md: { w: "300px", h: "440px" },
+    lg: { w: "320px", h: "440px" },
+    xl: { w: "480px", h: "600px" },
   },
   variants: {
-    Default: {
-      base: {
-        bg: "neutral.50",
-        rounded: "lg",
-        border: "1px solid",
-        borderColor: "neutral.200",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-      },
-      hover: { boxShadow: "0 4px 6px rgba(0,0,0,0.08)" },
-    },
+    bg: "neutral.50",
+    rounded: "20px",
+    overflow: "hidden",
+    border: "none",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.08)",
+    cursor: "pointer",
+    hover: { boxShadow: "0 4px 12px rgba(0,0,0,0.08), 0 16px 40px rgba(0,0,0,0.12)" },
+
     Outlined: {
-      base: {
-        bg: "neutral.50",
-        rounded: "lg",
-        border: "1px solid",
-        borderColor: "neutral.200",
-        boxShadow: "none",
-      },
-      hover: { borderColor: "primary.400" },
+      boxShadow: "none",
+      border: "1px solid",
+      borderColor: "neutral.200",
+      hover: { borderColor: "primary.400", boxShadow: "none" },
     },
     Filled: {
-      base: {
-        bg: "primary.50",
-        rounded: "lg",
-        border: "none",
-        boxShadow: "none",
-      },
+      bg: "primary.50",
+      boxShadow: "none",
     },
     Elevated: {
-      base: {
-        bg: "neutral.50",
-        rounded: "lg",
-        border: "none",
-        boxShadow: "0 4px 6px rgba(0,0,0,0.08)",
-      },
-      hover: { boxShadow: "0 10px 15px rgba(0,0,0,0.1)" },
+      boxShadow: "0 4px 16px rgba(0,0,0,0.08), 0 20px 48px rgba(0,0,0,0.12)",
+      hover: { boxShadow: "0 8px 24px rgba(0,0,0,0.10), 0 28px 64px rgba(0,0,0,0.16)" },
     },
   },
-  slots: {
-    Section: CardSectionThemeComponent
+  statics: {
+    Section: CardSectionThemeComponent,
   },
+  presets: {},
 };

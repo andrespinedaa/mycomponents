@@ -1,4 +1,4 @@
-﻿import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import type { Theme } from "../core/theme.types";
 import { generateComponentBases } from "./generateBases";
 
@@ -13,9 +13,9 @@ describe("generateComponentBases", () => {
       expect(generateComponentBases("Card", config)).toBe("");
     });
 
-    it("retorna vacío si variants existe pero todos los estados tienen tokens vacíos", () => {
+    it("retorna vacío si variants existe pero no tiene tokens en ningún nivel", () => {
       const config: TestConfig = {
-        variants: { Default: { base: {} } },
+        variants: { Filled: {} },
       };
       expect(generateComponentBases("Card", config)).toBe("");
     });
@@ -32,9 +32,9 @@ describe("generateComponentBases", () => {
   });
 
   describe("prefix derivado de componentName", () => {
-    it("deriva el prefix de camelToKebab(componentName)", () => {
+    it("deriva el prefix de camelToKebab(componentName) — flat token en variants", () => {
       const config: TestConfig = {
-        variants: { Default: { base: { bg: "neutral.50" } } },
+        variants: { bg: "neutral.50" } as any,
       };
       const result = generateComponentBases("Card", config);
       expect(result).toContain("var(--card-background,unset)");
@@ -42,7 +42,7 @@ describe("generateComponentBases", () => {
 
     it("convierte camelCase a kebab-case correctamente", () => {
       const config: TestConfig = {
-        variants: { Default: { base: { bg: "neutral.50" } } },
+        variants: { bg: "neutral.50" } as any,
       };
       const result = generateComponentBases("myCard", config);
       expect(result).toContain("var(--my-card-background,unset)");
@@ -50,9 +50,27 @@ describe("generateComponentBases", () => {
   });
 
   describe("selector y CSS generado", () => {
-    it("genera el selector [data-slot] con la prop CSS correcta", () => {
+    it("genera el selector [data-slot] con la prop CSS correcta — flat token", () => {
       const config: TestConfig = {
-        variants: { Default: { base: { bg: "neutral.50" } } },
+        variants: { bg: "neutral.50" } as any,
+      };
+      expect(generateComponentBases("Card", config)).toBe(
+        `[data-slot="Card"]{background:var(--card-background,unset);}`,
+      );
+    });
+
+    it("genera el selector [data-slot] con token en variante nombrada", () => {
+      const config: TestConfig = {
+        variants: { Filled: { bg: "primary.50" } },
+      };
+      expect(generateComponentBases("Card", config)).toBe(
+        `[data-slot="Card"]{background:var(--card-background,unset);}`,
+      );
+    });
+
+    it("genera el selector [data-slot] con token en estado dentro de variante", () => {
+      const config: TestConfig = {
+        variants: { Filled: { hover: { bg: "primary.100" } } },
       };
       expect(generateComponentBases("Card", config)).toBe(
         `[data-slot="Card"]{background:var(--card-background,unset);}`,
@@ -61,14 +79,14 @@ describe("generateComponentBases", () => {
 
     it("resuelve alias a CSS prop correctamente — rounded → border-radius", () => {
       const config: TestConfig = {
-        variants: { Default: { base: { rounded: "lg" } } },
+        variants: { rounded: "lg" } as any,
       };
       expect(generateComponentBases("Card", config)).toBe(
         `[data-slot="Card"]{border-radius:var(--card-border-radius,unset);}`,
       );
     });
 
-    it("resuelve alias a CSS prop correctamente — p → padding", () => {
+    it("resuelve alias a CSS prop correctamente — p → padding (desde sizes)", () => {
       const config: TestConfig = {
         sizes: { md: { p: "md" } },
       };
@@ -97,7 +115,7 @@ describe("generateComponentBases", () => {
 
     it("genera múltiples props en un solo selector", () => {
       const config: TestConfig = {
-        variants: { Default: { base: { bg: "neutral.50", rounded: "lg" } } },
+        variants: { bg: "neutral.50", rounded: "lg" } as any,
       };
       const result = generateComponentBases("Card", config);
       expect(result).toContain("background:var(--card-background,unset);");
@@ -107,9 +125,9 @@ describe("generateComponentBases", () => {
   });
 
   describe("deduplicación", () => {
-    it("deduplica keys que aparecen en variants y sizes — bg aparece una sola vez", () => {
+    it("deduplica keys que aparecen en flat base y sizes — bg aparece una sola vez", () => {
       const config: TestConfig = {
-        variants: { Default: { base: { bg: "neutral.50" } } },
+        variants: { bg: "neutral.50" } as any,
         sizes: { md: { bg: "primary.500" } },
       };
       const result = generateComponentBases("Card", config);
@@ -120,7 +138,7 @@ describe("generateComponentBases", () => {
 
     it("deduplica keys que aparecen en variants, sizes y presets", () => {
       const config: TestConfig = {
-        variants: { Default: { base: { w: "100%" } } },
+        variants: { w: "100%" } as any,
         sizes: { md: { w: "100%" } },
         presets: { horizontal: { w: "100%" } },
       };
@@ -129,16 +147,28 @@ describe("generateComponentBases", () => {
       expect(widthCount).toBe(1);
     });
 
-    it("acumula keys únicas de variantes múltiples", () => {
+    it("acumula keys únicas de flat base y variante nombrada", () => {
       const config: TestConfig = {
         variants: {
-          Default: { base: { bg: "neutral.50" } },
-          Filled: { base: { rounded: "lg" } },
-        },
+          bg: "neutral.50",
+          Filled: { rounded: "lg" },
+        } as any,
       };
       const result = generateComponentBases("Card", config);
       expect(result).toContain("background:var(--card-background,unset);");
       expect(result).toContain("border-radius:var(--card-border-radius,unset);");
+    });
+
+    it("acumula keys de estados en raíz y dentro de variantes", () => {
+      const config: TestConfig = {
+        variants: {
+          hover: { boxShadow: "0 4px 6px rgba(0,0,0,0.08)" },
+          Outlined: { hover: { borderColor: "primary.400" } },
+        } as any,
+      };
+      const result = generateComponentBases("Card", config);
+      expect(result).toContain("box-shadow:var(--card-box-shadow,unset);");
+      expect(result).toContain("border-color:var(--card-border-color,unset);");
     });
   });
 });

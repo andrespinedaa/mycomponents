@@ -33,45 +33,50 @@ export type BaseProps = {
 
 export type SystemProps = StyleProps & BaseProps;
 export type FactoryStatics = Record<string, React.ComponentType<any>>;
-export type EmptyStatics = Record<string, never>;
 
 export type FactoryConfig = {
   sizes: Scales;
   ownProps: object;
   presets?: string;
-  sections?: Record<string, object>;
   defaultProps: object;
   componentName: string;
-  statics: FactoryStatics;
+  statics?: FactoryStatics;
   defaultTag: ElementType;
-  variants: ComponentVariants;
+  variants?: ComponentVariants;
+  sections?: Record<string, string>;
 };
+
+type SectionSets<Config extends FactoryConfig> =
+  NonNullable<Config["sections"]>[keyof NonNullable<Config["sections"]>];
 
 // ─── Props que necesitan Config ──────────────────────────────────────────────────────────
 export type SizeProp<Config extends FactoryConfig> = {
   size?: Config["sizes"];
 };
 
-export type PresetProp<Config extends FactoryConfig> = {
-  preset?: Config["presets"];
+export type SectionProp<Config extends FactoryConfig> = {
+  section?: Unpack<keyof Config["sections"]>;
 };
 
-export type SectionProp<Config extends FactoryConfig> = {
-  section?: Unpack<Config["sections"]>;
+export type SetProp<Config extends FactoryConfig> = {
+  set?: Unpack<Config["presets"] | SectionSets<Config>>;
 };
+
 
 export type VariantProp<Config extends FactoryConfig> = {
-  variant?: Config["variants"];
+  variant?: Unpack<Config["variants"]>;
 };
 
 // Props que renderRoot recibe — element-agnosticas para poder spreadearse en cualquier elemento.
-export type RenderRootPayload<Config extends FactoryConfig> =
-  Omit<React.HTMLAttributes<HTMLElement>, "translate"> &
+export type RenderRootPayload<Config extends FactoryConfig> = Omit<
+  React.HTMLAttributes<HTMLElement>,
+  "translate"
+> &
   ModProps &
   Config["ownProps"] &
   SizeProp<Config> &
-  PresetProp<Config> &
   SectionProp<Config> &
+  SetProp<Config> &
   VariantProp<Config> & {
     ref?: React.Ref<any>;
     vars?: VarsProp;
@@ -82,8 +87,8 @@ export type RenderRootProp<Config extends FactoryConfig> = {
 };
 
 export type ConfigProps<Config extends FactoryConfig> = SizeProp<Config> &
-  PresetProp<Config> &
   SectionProp<Config> &
+  SetProp<Config> &
   VariantProp<Config> &
   RenderRootProp<Config>;
 
@@ -92,15 +97,17 @@ export type ComponentConfig<Config extends FactoryConfig> = Config;
 type Unpack<T> = T extends string
   ? T
   : T extends Record<string, object>
-    ? keyof T
-    : undefined;
+  ? string extends keyof T
+    ? string
+    : keyof T
+  : undefined;
 
 type InternalRawProps<Config extends FactoryConfig> = {
   ref: PolymorphicRef<Config["defaultTag"]>;
   size?: Config["sizes"];
-  preset?: Unpack<Config["presets"]>;
-  section?: Unpack<Config["sections"]>;
-  variant?: Config["variants"];
+  section?: Unpack<keyof Config["sections"]>;
+  set?: Unpack<Config["presets"] | SectionSets<Config>>;
+  variant?: Unpack<Config["variants"]>;
 };
 
 export type FactoryInternalProps<Config extends FactoryConfig> = DefaultProps<

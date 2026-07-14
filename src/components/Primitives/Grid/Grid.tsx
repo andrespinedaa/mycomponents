@@ -1,4 +1,4 @@
-import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../../factory";
+import { ComponentFactory, type ComponentConfig } from "../../../factory";
 import type { ComponentVariants, Scales } from "../../../theme";
 import { Box } from "../Box";
 
@@ -16,10 +16,8 @@ export type GridItemConfig = ComponentConfig<{
   componentName: "GridItem";
   defaultTag: "div";
   ownProps: GridItemOwnProps;
-  statics: EmptyStatics;
   defaultProps: {};
   sizes: Scales;
-  presets: string;
   variants: ComponentVariants;
 }>;
 
@@ -78,7 +76,6 @@ export type GridBoxConfig = ComponentConfig<{
   statics: { Item: typeof GridItem };
   defaultProps: {};
   sizes: Scales;
-  presets: string;
   variants: ComponentVariants;
 }>;
 

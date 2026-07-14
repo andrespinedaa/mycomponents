@@ -1,7 +1,6 @@
 import {
   ComponentFactory,
   type ComponentConfig,
-  type EmptyStatics,
 } from "../../../factory";
 import type { ComponentVariants, Scales } from "../../../theme/core/theme.types";
 
@@ -11,10 +10,8 @@ export type StackConfig = ComponentConfig<{
   componentName: "Stack";
   defaultTag: "div";
   ownProps: StackOwnProps;
-  statics: EmptyStatics;
   defaultProps: { gap: "md" };
   sizes: Scales;
-  presets: string;
   variants: ComponentVariants;
 }>;
 

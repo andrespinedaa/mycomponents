@@ -2,6 +2,70 @@ import { camelToKebab } from "../../utils/string";
 import type { Theme } from "../core/theme.types";
 import { buildSlotSelector, resolveGeneratorNames } from "./css-gen-utils";
 import { getCssProp, resolveVarName } from "./css-gen-utils";
+import { STATE_SELECTORS } from "./generateVariants";
+
+function isStateKey(key: string): boolean {
+  return key in STATE_SELECTORS;
+}
+
+// Collects all leaf CSS token keys from a StyledBlock (flat + states + variants).
+// Recurses into state nodes and variant blocks; skips section presets (non-state objects
+// within section entries are handled separately in collectSectionKeys).
+function collectStyledBlockKeys(block: Record<string, unknown>, usedKeys: Set<string>): void {
+  for (const [key, value] of Object.entries(block)) {
+    if (value == null) continue;
+    if (typeof value !== "object") {
+      usedKeys.add(key);
+    } else if (isStateKey(key)) {
+      // state node — recurse (handles nested states at 2nd level too)
+      collectStyledBlockKeys(value as Record<string, unknown>, usedKeys);
+    } else {
+      // variant block — recurse
+      collectStyledBlockKeys(value as Record<string, unknown>, usedKeys);
+    }
+  }
+}
+
+// Collects keys from a SectionsConfig: root flat+states + slots (each with flat+states+presets).
+function collectSectionsConfig(sections: Record<string, unknown>, usedKeys: Set<string>): void {
+  for (const [key, value] of Object.entries(sections)) {
+    if (key === "slots") {
+      if (!value || typeof value !== "object") continue;
+      for (const slotVal of Object.values(value as Record<string, unknown>)) {
+        if (!slotVal || typeof slotVal !== "object") continue;
+        collectSlotEntry(slotVal as Record<string, unknown>, usedKeys);
+      }
+      continue;
+    }
+    if (value == null) continue;
+    if (typeof value !== "object") {
+      usedKeys.add(key);
+    } else if (isStateKey(key)) {
+      collectStyledBlockKeys(value as Record<string, unknown>, usedKeys);
+    }
+  }
+}
+
+// Collects keys from a SlotEntry: flat+states + presets (each a StyledBlock).
+function collectSlotEntry(slot: Record<string, unknown>, usedKeys: Set<string>): void {
+  for (const [key, value] of Object.entries(slot)) {
+    if (key === "presets") {
+      if (!value || typeof value !== "object") continue;
+      for (const presetVal of Object.values(value as Record<string, unknown>)) {
+        if (presetVal && typeof presetVal === "object") {
+          collectStyledBlockKeys(presetVal as Record<string, unknown>, usedKeys);
+        }
+      }
+      continue;
+    }
+    if (value == null) continue;
+    if (typeof value !== "object") {
+      usedKeys.add(key);
+    } else if (isStateKey(key)) {
+      collectStyledBlockKeys(value as Record<string, unknown>, usedKeys);
+    }
+  }
+}
 
 export function generateComponentBases(
   componentName: string,
@@ -12,12 +76,8 @@ export function generateComponentBases(
 
   const usedKeys = new Set<string>();
 
-  for (const stateConfig of Object.values(config.variants ?? {})) {
-    if (!stateConfig) continue;
-    for (const tokens of Object.values(stateConfig)) {
-      if (!tokens) continue;
-      for (const key of Object.keys(tokens)) usedKeys.add(key);
-    }
+  if (config.variants) {
+    collectStyledBlockKeys(config.variants as Record<string, unknown>, usedKeys);
   }
 
   for (const tokens of Object.values(config.sizes ?? {})) {
@@ -30,17 +90,8 @@ export function generateComponentBases(
     for (const key of Object.keys(tokens)) usedKeys.add(key);
   }
 
-  for (const sectionEntry of Object.values(config.sections ?? {})) {
-    if (!sectionEntry) continue;
-    for (const [key, value] of Object.entries(sectionEntry as Record<string, unknown>)) {
-      if (value && typeof value === "object") {
-        // section preset entry — collect its tokens
-        for (const k of Object.keys(value as object)) usedKeys.add(k);
-      } else {
-        // base style prop for this section
-        usedKeys.add(key);
-      }
-    }
+  if (config.sections) {
+    collectSectionsConfig(config.sections as Record<string, unknown>, usedKeys);
   }
 
   if (usedKeys.size === 0) return "";

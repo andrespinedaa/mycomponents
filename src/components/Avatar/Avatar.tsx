@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ComponentFactory, type ComponentConfig, type EmptyStatics } from "../../factory";
+import { ComponentFactory, type ComponentConfig } from "../../factory";
 import { useResolveLayout } from "../../hooks";
 import { Box } from "../Primitives/Box";
 import { Flex } from "../Primitives/Flex/Flex";
@@ -15,7 +15,6 @@ export type AvatarConfig = ComponentConfig<{
   componentName: "Avatar";
   defaultTag: "div";
   ownProps: AvatarOwnProps;
-  statics: EmptyStatics;
   defaultProps: {
     shape: "circle";
     size: "md";
@@ -23,10 +22,10 @@ export type AvatarConfig = ComponentConfig<{
     overflow: "hidden";
     flexShrink: 0;
     userSelect: "none";
+    variant: "Filled";
   };
   sizes: "xs" | "sm" | "md" | "lg" | "xl";
-  presets: string;
-  variants: "Default";
+  variants: "Filled";
 }>;
 
 function getInitials(name: string): string {
@@ -36,8 +35,8 @@ function getInitials(name: string): string {
 }
 
 export const Avatar = ComponentFactory<AvatarConfig>({
-  componentName: "Avatar",
   defaultTag: "div",
+  componentName: "Avatar",
   defaultProps: {
     size: "md",
     role: "img",
@@ -46,6 +45,7 @@ export const Avatar = ComponentFactory<AvatarConfig>({
     overflow: "hidden",
     userSelect: "none",
     display: "inline-flex",
+    variant: "Filled",
   },
   render: function AvatarRender({
     src,

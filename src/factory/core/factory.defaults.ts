@@ -1,12 +1,10 @@
-import type { ModProps } from "../../system/get-mod";
 import type { PolymorphicPropsConfig } from "../../types/polimorphic.types";
 import type { FactoryConfig } from "./factories.types";
 
 export type ResolvedFactoryProps<Config extends FactoryConfig> = Omit<
   PolymorphicPropsConfig<Config>,
-  "mod" | "dataSlot" | "size" | "preset" | "section" | "variant" | "style" | "renderRoot"
-> &
-  ModProps;
+  "mod" | "size" | "section" | "set" | "variant" | "style" | "renderRoot"
+>;
 
 export type DefaultableProps<Config extends FactoryConfig> = Partial<
   Omit<PolymorphicPropsConfig<Config>, keyof Config["ownProps"]> & Config["ownProps"]
@@ -23,7 +21,7 @@ export type RequiredDefaultProps<Config extends FactoryConfig> = Required<
   Partial<Omit<DefaultableProps<Config>, DefaultsPropKeys<Config>>>;
 
 export type DefaultProps<Props, Defaults> = Omit<Props, keyof Defaults> &
-  Required<Pick<Props, keyof Defaults & keyof Props>>;
+  { [K in keyof Props as K extends keyof Defaults ? K : never]-?: Exclude<Props[K], undefined> };
 
 export type FactoryDefaultPropsConfig<Config extends FactoryConfig> = DefaultProps<
   ResolvedFactoryProps<Config>,

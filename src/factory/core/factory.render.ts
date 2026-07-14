@@ -48,4 +48,4 @@ export type FactoryComponentReturn<Config extends FactoryConfig> = {
       React.RefAttributes<ElementRefType<E>>,
   ): React.ReactElement | null;
 } & FactoryFunctionProperties &
-  Config["statics"];
+  (undefined extends Config["statics"] ? {} : NonNullable<Config["statics"]>);
