@@ -40,15 +40,15 @@ export const Alert = ComponentFactory<AlertConfig>({
     role: "alert",
   },
   render: function AlertRender({
-    severity,
+    ref,
+    icon,
+    size,
     title,
     variant,
-    size,
-    closable,
     onClose,
-    icon,
+    severity,
+    closable,
     children,
-    ref,
     ...rest
   }) {
     return (

@@ -19,6 +19,7 @@ export const CardSectionThemeComponent: CardSectionTheme = {
 
     slots: {
       header: {
+        gap: "sm",
         presets: {
           bottom: {
             align: "end",

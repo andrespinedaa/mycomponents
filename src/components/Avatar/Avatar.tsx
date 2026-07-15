@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ComponentFactory, type ComponentConfig } from "../../factory";
-import { useResolveLayout } from "../../hooks";
 import { Box } from "../Primitives/Box";
 import { Flex } from "../Primitives/Flex/Flex";
 
@@ -52,13 +51,12 @@ export const Avatar = ComponentFactory<AvatarConfig>({
     alt,
     ref,
     name,
+    size,
     shape,
+    variant,
     children,
-    size: sizeProp,
-    variant: variantProp,
     ...rest
   }) {
-    const { size, variant } = useResolveLayout({ size: sizeProp, variant: variantProp });
     const [imgError, setImgError] = useState(false);
 
     if (src && !imgError) {

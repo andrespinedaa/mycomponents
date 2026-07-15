@@ -99,7 +99,8 @@ describe("generateComponents", () => {
         } as unknown as Theme["components"],
       };
       const result = generateComponents(theme);
-      expect(result).toContain(`[data-slot="CardSection"][data-slot-parent="Card"]`);
+      expect(result).toContain(`[data-slot="CardSection"]`);
+      expect(result).not.toContain(`data-slot-parent`);
       expect(result).toContain(`--card-section-padding`);
     });
   });

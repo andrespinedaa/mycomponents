@@ -13,15 +13,12 @@ const badgeInfo = [{ data: "ice grey" }, { data: "3.2s" }, { data: "Manual" }];
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Box
-        minH="100vh"
-        p="40px"
-      >
+      <Box minH="100vh" p="40px">
         <Card variant="Elevated" orientation="horizontal">
           <Card.Section section="media" set="cover">
             <Image src={bgImage} set="cover" />
           </Card.Section>
-          <Card.Section section="header" as="header" set="bottom" gap={"sm"}>
+          <Card.Section section="header" as="header" set="bottom">
             {badgeInfo.map((b) => {
               return (
                 <Badge>

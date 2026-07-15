@@ -2,6 +2,7 @@ import { useMemo, type ElementType } from "react";
 import type {
   ComponentFactoryOptions,
   FactoryComponentReturn,
+  FactoryComputedProps,
   FactoryConfig,
   FactoryRenderProps,
   RenderRootPayload,
@@ -42,11 +43,11 @@ export function ComponentFactory<Config extends FactoryConfig>({
       renderRoot,
       orientation,
       vars: varsRaw,
-      dataSlotParent,
       "data-slot": inheritedSlot,
       layoutCtx: _inheritedLayoutCtx,
       ...restProps
-    } = mergedProps;
+    } = mergedProps as typeof mergedProps &
+      Partial<Pick<FactoryComputedProps<Config>, "layoutCtx">>;
 
     const {
       set: resolvedSet,
@@ -65,7 +66,12 @@ export function ComponentFactory<Config extends FactoryConfig>({
     }
 
     const layoutCtx = useMemo(
-      () => ({ size: resolvedSize, variant: resolvedVariant, set: resolvedSet, orientation: resolvedOrientation }),
+      () => ({
+        size: resolvedSize,
+        variant: resolvedVariant,
+        set: resolvedSet,
+        orientation: resolvedOrientation,
+      }),
       [resolvedSize, resolvedVariant, resolvedSet, resolvedOrientation],
     );
 
@@ -88,9 +94,8 @@ export function ComponentFactory<Config extends FactoryConfig>({
         { set: resolvedSet },
         { size: resolvedSize },
         { variant: resolvedVariant },
-        { orientation: resolvedOrientation },
-        { "slot-parent": parentName ?? dataSlotParent },
         { responsive: hasResponsive },
+        { orientation: resolvedOrientation },
       ]);
       return <Element ref={ref} style={styles} {...elementProps} {...elementModProps} />;
     }
@@ -104,10 +109,9 @@ export function ComponentFactory<Config extends FactoryConfig>({
         size: resolvedSize,
         dataSlot: dataName,
         variant: resolvedVariant,
-        dataSlotParent: parentName,
         orientation: resolvedOrientation,
         ...restProps,
-      } as unknown as RenderRootPayload<Config>);
+      } as RenderRootPayload<Config>);
     }
 
     return render!({
@@ -118,7 +122,6 @@ export function ComponentFactory<Config extends FactoryConfig>({
       size: resolvedSize,
       dataSlot: dataName,
       variant: resolvedVariant,
-      dataSlotParent: parentName,
       orientation: resolvedOrientation,
       ...restProps,
     } as unknown as FactoryRenderProps<Config>);

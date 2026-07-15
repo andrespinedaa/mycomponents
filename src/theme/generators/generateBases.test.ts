@@ -96,13 +96,14 @@ describe("generateComponentBases", () => {
       );
     });
 
-    it("slot component con parentName genera selector con data-slot-parent", () => {
+    it("slot component con parentName genera selector simple sin data-slot-parent", () => {
       const config: TestConfig = {
         parentName: "Card",
         presets: { header: { borderBottom: "1px solid" } },
       };
       const result = generateComponentBases("Section", config);
-      expect(result).toContain(`[data-slot="Section"][data-slot-parent="Card"]`);
+      expect(result).toContain(`[data-slot="Section"]`);
+      expect(result).not.toContain(`data-slot-parent`);
     });
 
     it("presets planos sí contribuyen al base reset", () => {

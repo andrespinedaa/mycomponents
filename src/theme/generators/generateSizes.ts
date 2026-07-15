@@ -16,7 +16,7 @@ export function generateComponentSizes(
     const body = generateTokensCSS(tokens as Record<string, unknown>, prefix, theme, parentPrefix);
     if (!body) continue;
 
-    const base = buildSlotSelector(resolvedName, config.parentName);
+    const base = buildSlotSelector(resolvedName);
     css += `${base}[data-size="${sizeKey}"]{${body}}`;
 
     for (const bp of Object.keys(theme.breakpoints) as (keyof ThemeBreakpoints)[]) {

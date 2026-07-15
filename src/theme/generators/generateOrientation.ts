@@ -38,7 +38,7 @@ export function generateComponentOrientation(
 ): string {
   if (!config?.orientation) return "";
   const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(componentName, config);
-  const base = buildSlotSelector(resolvedName, config.parentName);
+  const base = buildSlotSelector(resolvedName);
   let css = "";
 
   for (const [orientationKey, tokens] of Object.entries(config.orientation) as Array<

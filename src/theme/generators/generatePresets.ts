@@ -32,7 +32,7 @@ export function generateComponentPresets(
   theme: Theme,
 ): string {
   const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(componentName, config);
-  const base = buildSlotSelector(resolvedName, config.parentName);
+  const base = buildSlotSelector(resolvedName);
   let css = "";
 
   // ── flat presets: [data-set="X"] ────────────────────────────────────────────

@@ -95,7 +95,7 @@ export function generateComponentBases(
 
   if (usedKeys.size === 0) return "";
 
-  const selector = buildSlotSelector(resolvedName, config.parentName);
+  const selector = buildSlotSelector(resolvedName);
   let css = `${selector}{`;
   for (const key of usedKeys) {
     css += `${camelToKebab(getCssProp(key))}:var(${resolveVarName(key, prefix)},unset);`;

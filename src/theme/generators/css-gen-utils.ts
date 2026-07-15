@@ -18,9 +18,8 @@ export function resolveGeneratorNames(
   return { resolvedName, prefix, parentPrefix };
 }
 
-export function buildSlotSelector(resolvedName: string, parentName?: string): string {
-  const self = `[data-slot="${resolvedName}"]`;
-  return parentName ? `${self}[data-slot-parent="${parentName}"]` : self;
+export function buildSlotSelector(resolvedName: string): string {
+  return `[data-slot="${resolvedName}"]`;
 }
 
 export function resolveVarName(key: string, prefix: string): string {

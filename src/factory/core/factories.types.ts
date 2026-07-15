@@ -14,7 +14,6 @@ import type {
 import type { PolymorphicRef } from "../../types/polimorphic.types";
 import type { DefaultProps, FactoryDefaultPropsConfig } from "./factory.defaults";
 import type { FactoryFunctionOptions } from "./factory.render";
-import type { Unpack } from "../../types";
 
 export type VarsProp = Record<string, string>;
 export type ModProp = Record<string, unknown> | string;
@@ -27,7 +26,6 @@ export type BaseProps = {
   vars?: VarsProp;
   unstyled?: boolean;
   dataSlot?: string;
-  dataSlotParent?: string;
   mod?: ModProp | ModProp[];
   className?: string;
   style?: StyleProp;
@@ -54,13 +52,7 @@ export type FactoryConfig = {
 type SectionSets<Config extends FactoryConfig> =
   NonNullable<Config["sections"]>[keyof NonNullable<Config["sections"]>];
 
-
-export type ComponentConfig<Config extends FactoryConfig> = Config;
-
-// ════════════════════════════════════════════════════════════════════════════════════════
-// ─── PÚBLICAS ── el consumidor SÍ puede escribirlas en JSX (<Card size="md" ... />) ───────
-// ════════════════════════════════════════════════════════════════════════════════════════
-
+// ─── Props que necesitan Config ──────────────────────────────────────────────────────────
 export type SizeProp<Config extends FactoryConfig> = {
   size?: Config["sizes"];
 };
@@ -97,27 +89,26 @@ export type RenderRootProp<Config extends FactoryConfig> = {
   renderRoot?: (props: RenderRootPayload<Config>) => React.ReactNode;
 };
 
-// Superficie pública Config-dependiente — lo que PolymorphicPropsConfig expone al consumidor
-// (sumado a PolymorphicComponentProps/SystemProps, que son públicas pero no dependen de Config).
 export type ConfigProps<Config extends FactoryConfig> = SizeProp<Config> &
   SectionProp<Config> &
   SetProp<Config> &
   VariantProp<Config> &
   RenderRootProp<Config>;
 
-// ════════════════════════════════════════════════════════════════════════════════════════
-// ─── NO PÚBLICAS ── viajan dentro del objeto de props, el consumidor NUNCA debe escribirlas ─
-// ════════════════════════════════════════════════════════════════════════════════════════
+export type ComponentConfig<Config extends FactoryConfig> = Config;
+
+type Unpack<T> = T extends string
+  ? T
+  : T extends Record<string, object>
+  ? string extends keyof T
+    ? string
+    : keyof T
+  : undefined;
 
 export type FactoryComputedProps<Config extends FactoryConfig> = {
   ref: PolymorphicRef<Config["defaultTag"]>;
   layoutCtx: LayoutContextValue;
 };
-
-
-export type NonPublicProps<Config extends FactoryConfig> = Partial<
-  Pick<FactoryComputedProps<Config>, "layoutCtx">
->;
 
 export type FactoryResolvableProps<Config extends FactoryConfig> = {
   size?: Config["sizes"];

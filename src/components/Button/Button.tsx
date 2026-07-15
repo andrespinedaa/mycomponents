@@ -1,5 +1,4 @@
 import { ComponentFactory, type ComponentConfig } from "../../factory";
-import { useResolveLayout } from "../../hooks";
 import { Box } from "../Primitives/Box";
 
 export interface ButtonOwnProps {}
@@ -17,8 +16,7 @@ export const Button = ComponentFactory<ButtonConfig>({
   componentName: "Button",
   defaultTag: "button",
   defaultProps: { size: "md", variant: "Filled" },
-  render: function ButtonRender({ size: sizeProp, variant: variantProp, ref, ...rest }) {
-    const { size, variant } = useResolveLayout({ size: sizeProp, variant: variantProp });
+  render: function ButtonRender({ size, variant, ref, layoutCtx: _, ...rest }) {
     return <Box ref={ref} mod={{ size, variant }} {...rest} />;
   },
 });

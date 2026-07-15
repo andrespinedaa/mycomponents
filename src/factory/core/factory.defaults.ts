@@ -1,10 +1,6 @@
 import type { PolymorphicPropsConfig } from "../../types/polimorphic.types";
 import type { FactoryConfig, FactoryResolvableProps } from "./factories.types";
 
-// "mod" | "style" | "renderRoot": nunca llegan a render() (se consumen antes o no aplican a un
-// render custom). keyof FactoryResolvableProps<Config>: single source of verdad — size/section/set/variant
-// se omiten aquí porque su versión resuelta (con defaults + contexto aplicados) llega vía FactoryInternalProps,
-// no vía el valor crudo que el consumidor pasó.
 export type ResolvedFactoryProps<Config extends FactoryConfig> = Omit<
   PolymorphicPropsConfig<Config>,
   "mod" | "style" | "renderRoot" | keyof FactoryResolvableProps<Config>

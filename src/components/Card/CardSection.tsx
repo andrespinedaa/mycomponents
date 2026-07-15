@@ -1,6 +1,6 @@
 import { LayoutProvider } from "../../context/LayoutContext";
 import { ComponentFactory, type ComponentConfig } from "../../factory";
-import { Flex } from "../Primitives";
+import { Box } from "../Primitives";
 
 export type CardSectionSets = "cover" | "alignTop" | "gradient";
 export type CardSectionMediaSets = "alignTop" | "alignBottom" | "cover";
@@ -34,7 +34,7 @@ export const CardSection = ComponentFactory<CardSectionConfig>({
   render: function CardSectionRender({ ref, layoutCtx, set, size, section, variant, ...rest }) {
     return (
       <LayoutProvider value={layoutCtx}>
-        <Flex ref={ref} mod={{ size, variant, section, set }} {...rest} />
+        <Box ref={ref} mod={{ size, variant, section, set }} {...rest} />
       </LayoutProvider>
     );
   },

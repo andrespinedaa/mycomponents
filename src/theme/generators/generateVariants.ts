@@ -117,7 +117,7 @@ export function generateComponentVariants(
 ): string {
   if (!config?.variants) return "";
   const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(componentName, config);
-  const baseSelector = buildSlotSelector(resolvedName, config.parentName);
+  const baseSelector = buildSlotSelector(resolvedName);
   let css = "";
 
   const { flat, states, variants } = partitionBlock(config.variants as Record<string, unknown>);
