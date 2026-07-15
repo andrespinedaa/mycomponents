@@ -19,7 +19,7 @@ function App() {
       >
         <Card variant="Elevated" orientation="horizontal">
           <Card.Section section="media" set="cover">
-            <Image src={bgImage} />
+            <Image src={bgImage} set="cover" />
           </Card.Section>
           <Card.Section section="header" as="header" set="bottom" gap={"sm"}>
             {badgeInfo.map((b) => {

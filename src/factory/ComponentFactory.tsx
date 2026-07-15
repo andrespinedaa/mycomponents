@@ -2,6 +2,7 @@ import { useMemo, type ElementType } from "react";
 import type {
   ComponentFactoryOptions,
   FactoryComponentReturn,
+  FactoryComputedProps,
   FactoryConfig,
   FactoryRenderProps,
   RenderRootPayload,
@@ -34,6 +35,9 @@ export function ComponentFactory<Config extends FactoryConfig>({
       ...props,
     };
 
+    // layoutCtx nunca es un prop público (ver PolymorphicPropsConfig) — solo se filtra a runtime
+    // si un ancestro sin `render` propio lo dejó pasar en un ...rest. Se descarta aquí, en el único
+    // punto de entrada, para que ningún componente dependa de acordarse de destructurarlo.
     const {
       set,
       size,
@@ -46,7 +50,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
       dataSlotParent,
       "data-slot": inheritedSlot,
       ...restProps
-    } = mergedProps as typeof mergedProps & { layoutCtx?: unknown };
+    } = mergedProps as typeof mergedProps & Partial<Pick<FactoryComputedProps<Config>, "layoutCtx">>;
 
     const {
       set: resolvedSet,
@@ -107,9 +111,15 @@ export function ComponentFactory<Config extends FactoryConfig>({
         dataSlotParent: parentName,
         orientation: resolvedOrientation,
         ...restProps,
-      } as unknown as RenderRootPayload<Config>);
+      } as RenderRootPayload<Config>);
     }
 
+    // as unknown as — necesario, no negligente: FactoryRenderProps<Config> depende de
+    // Config["defaultProps"] vía un mapped type condicional (DefaultProps<...>). Dentro de esta
+    // función genérica, Config todavía es abstracto, así que TS no puede resolver qué keys son
+    // requeridas y rechaza el cast directo ("neither type sufficiently overlaps"). La garantía de
+    // tipos para cada componente concreto (Card, Badge, etc.) SÍ se verifica correctamente del lado
+    // del consumidor — ver FactoryComponentReturn — este límite es solo de la implementación genérica.
     return render!({
       ref,
       vars,

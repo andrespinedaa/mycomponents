@@ -106,19 +106,24 @@ type Unpack<T> = T extends string
     : keyof T
   : undefined;
 
-type InternalRawProps<Config extends FactoryConfig> = {
+// Computadas por el factory (typedRef, useMemo) — siempre presentes, nunca defaulteables por el
+// autor del componente. Pasarlas por DefaultProps sería un no-op: ya nacen requeridas.
+export type FactoryComputedProps<Config extends FactoryConfig> = {
   ref: PolymorphicRef<Config["defaultTag"]>;
+  layoutCtx: LayoutContextValue;
+};
+
+// Resueltas por defaultProps + useResolveLayout (own ?? layoutContext ?? responsive) — opcionales
+// salvo que el componente declare un default, en cuyo caso DefaultProps las vuelve requeridas.
+export type FactoryResolvableProps<Config extends FactoryConfig> = {
   size?: Config["sizes"];
   variant?: Config["variants"];
   section?: Unpack<keyof Config["sections"]>;
   set?: Unpack<Config["presets"] | SectionSets<Config>>;
-  layoutCtx: LayoutContextValue;
 };
 
-export type FactoryInternalProps<Config extends FactoryConfig> = DefaultProps<
-  InternalRawProps<Config>,
-  NonNullable<Config["defaultProps"]>
->;
+export type FactoryInternalProps<Config extends FactoryConfig> = FactoryComputedProps<Config> &
+  DefaultProps<FactoryResolvableProps<Config>, NonNullable<Config["defaultProps"]>>;
 
 export type FactoryRenderProps<Config extends FactoryConfig> = FactoryDefaultPropsConfig<Config> &
   FactoryInternalProps<Config>;

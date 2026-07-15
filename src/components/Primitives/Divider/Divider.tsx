@@ -4,7 +4,6 @@ import {
   type OrientationProp,
 } from "../../../factory";
 import type { CSSLength, ColorValue } from "../../../theme";
-import { useLayoutContext } from "../../../context/LayoutContext";
 import { Box, Flex, Text } from "..";
 
 export interface DividerOwnProps {
@@ -40,15 +39,11 @@ export const Divider = ComponentFactory<DividerConfig>({
     label,
     position,
     thickness,
-    size: sizeProp,
-    variant: variantProp,
-    orientation: orientationProp,
+    size,
+    variant,
+    orientation,
     ...rest
   }) {
-    const layout = useLayoutContext();
-    const size = layout.size ?? sizeProp;
-    const variant = layout.variant ?? variantProp;
-    const orientation = layout.orientation ?? orientationProp;
     const thicknessVar = { "--divider-thickness": thickness };
 
     if (label) {

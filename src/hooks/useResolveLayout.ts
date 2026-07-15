@@ -33,9 +33,13 @@ export function useResolveLayout(own: LayoutContextValue, theme: Theme): Resolve
   const sizeResponsive = useMemo(() => resolveBreakpointSize(theme, viewportW), [theme, viewportW]);
   const layout = useLayoutContext();
 
+  // set/variant NO heredan del contexto — son selectores de estilo propios del componente, no
+  // "ambiente" compartido. Un componente anidado por casualidad (ej. Badge dentro de Card) no debe
+  // heredar el variant/set de un ancestro con un vocabulario de estilos completamente distinto.
+  // size/orientation sí son ambientales (viewport, dirección de layout) y se propagan a propósito.
   return {
-    set: own.set ?? layout.set,
-    variant: own.variant ?? layout.variant,
+    set: own.set,
+    variant: own.variant,
     size: own.size ?? layout.size ?? sizeResponsive,
     orientation: own.orientation ?? layout.orientation
   };
