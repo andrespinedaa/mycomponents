@@ -2,7 +2,6 @@ import { useMemo, type ElementType } from "react";
 import type {
   ComponentFactoryOptions,
   FactoryComponentReturn,
-  FactoryComputedProps,
   FactoryConfig,
   FactoryRenderProps,
   RenderRootPayload,
@@ -46,8 +45,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
       "data-slot": inheritedSlot,
       layoutCtx: _inheritedLayoutCtx,
       ...restProps
-    } = mergedProps as typeof mergedProps &
-      Partial<Pick<FactoryComputedProps<Config>, "layoutCtx">>;
+    } = mergedProps;
 
     const {
       set: resolvedSet,
