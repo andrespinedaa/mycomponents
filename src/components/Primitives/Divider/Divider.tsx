@@ -3,7 +3,7 @@ import {
   type ComponentConfig,
   type OrientationProp,
 } from "../../../factory";
-import type { CSSLength, ColorValue, Scales } from "../../../theme";
+import type { CSSLength, ColorValue } from "../../../theme";
 import { useLayoutContext } from "../../../context/LayoutContext";
 import { Box, Flex, Text } from "..";
 
@@ -25,7 +25,7 @@ export type DividerConfig = ComponentConfig<{
     thickness: "1px";
     size: "md";
   };
-  sizes: Scales;
+  sizes: "xs" | "sm" | "md" | "lg" | "xl";
   presets: "label";
 }>;
 

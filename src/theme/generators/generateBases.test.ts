@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import type { Theme } from "../core/theme.types";
 import { generateComponentBases } from "./generateBases";
 
-type TestConfig = NonNullable<Theme["components"]>[string];
+// Partial — estos fixtures aíslan un solo generador a la vez, sin necesidad de `sizes`.
+type TestConfig = Partial<NonNullable<Theme["components"]>[string]>;
 
 // ─── generateComponentBases ──────────────────────────────────────────────────
 

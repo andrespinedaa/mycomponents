@@ -3,9 +3,14 @@ import { STYLE_PROPS_DATA } from "./system-css.data";
 import type { Theme } from "../core/theme.types";
 import { resolveTokenValue } from "./generateVariants";
 
+// Runtime-permisivo: los generadores reciben cualquier subconjunto de ThemeComponentOptions
+// (siempre hay null-guards por campo), aunque el contrato de autoría (ThemeComponentConfig)
+// exija `sizes`. Evita que fixtures de test que aíslan un solo generador deban declarar sizes.
+export type GeneratorConfig = Partial<NonNullable<Theme["components"]>[string]>;
+
 export function resolveGeneratorNames(
   componentName: string,
-  config: NonNullable<Theme["components"]>[string],
+  config: GeneratorConfig,
 ): { resolvedName: string; prefix: string; parentPrefix: string | undefined } {
   const resolvedName = config?.componentName ?? componentName;
   const parentPrefix = config?.parentName ? camelToKebab(config.parentName) : undefined;

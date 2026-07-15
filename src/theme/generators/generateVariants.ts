@@ -1,6 +1,6 @@
-import type { ComponentStates, StylePropsTokens, Theme } from "../";
+import type { ComponentStates, Theme } from "../";
 import { resolveValue } from "../../system/resolve-value";
-import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames } from "./css-gen-utils";
+import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames, type GeneratorConfig } from "./css-gen-utils";
 import { STYLE_PROPS_DATA } from "./system-css.data";
 
 export function resolveTokenValue(key: string, value: string, theme: Theme): string {
@@ -112,7 +112,7 @@ export function emitStateRules(
 
 export function generateComponentVariants(
   componentName: string,
-  config: NonNullable<Theme["components"]>[string],
+  config: GeneratorConfig,
   theme: Theme,
 ): string {
   if (!config?.variants) return "";

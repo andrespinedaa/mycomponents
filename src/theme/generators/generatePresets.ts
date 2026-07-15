@@ -1,5 +1,5 @@
 import type { ComponentStates, Theme } from "../core/theme.types";
-import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames } from "./css-gen-utils";
+import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames, type GeneratorConfig } from "./css-gen-utils";
 import { emitStateRules, isStateKey } from "./generateVariants";
 
 // Partitions an object into: flat CSS tokens, state entries, and named structural keys (skipped).
@@ -28,7 +28,7 @@ function partitionEntry(
 
 export function generateComponentPresets(
   componentName: string,
-  config: NonNullable<Theme["components"]>[string],
+  config: GeneratorConfig,
   theme: Theme,
 ): string {
   const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(componentName, config);

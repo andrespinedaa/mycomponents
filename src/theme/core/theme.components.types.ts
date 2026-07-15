@@ -15,7 +15,7 @@ import type {
   StackConfig,
   TextConfig,
 } from "../../components";
-import type { FactoryConfig, RequiredDefaultProps } from "../../factory/core";
+import type { FactoryConfig, OrientationProp, RequiredDefaultProps } from "../../factory/core";
 import type { Partialized } from "../../types";
 import type { StylePropsTokens } from "../generators/system-css.types";
 import type { ComponentStates, ComponentVariants } from "./theme.types";
@@ -62,6 +62,11 @@ type PresetsField<Config extends FactoryConfig> = Partialized<
   StylePropsTokens
 >;
 
+// ─── Orientation Field ─────────────────────────────────────────────────────────────────────────────────
+// Genera [data-orientation="X"]. Tokens con DSL $prop se resuelven por-size contra `sizes`
+// (ver generateOrientation.ts) — no como var() en runtime, para evitar ciclos de custom properties.
+type OrientationField = Partialized<OrientationProp, StylePropsTokens>;
+
 // ─── Sections Field ─────────────────────────────────────────────────────────────────────────────────
 export type SlotEntry<Presets extends string = string> = StyledBlock & {
   presets?: Partialized<Presets, StyledBlock>;
@@ -83,9 +88,10 @@ export type ThemeComponentOptions<Config extends FactoryConfig> = {
   defaultProps?: RequiredDefaultProps<Config>;
   /* Style's Properties */
   variants?: VariantsField;
-  sizes?: SizeField<Config>;
+  sizes: SizeField<Config>;
   presets?: PresetsField<Config>;
   sections?: SectionsField<Config>;
+  orientation?: OrientationField;
 };
 
 export type ThemeComponents = {

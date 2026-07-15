@@ -1,9 +1,9 @@
 import type { Theme, ThemeBreakpoints } from "../core/theme.types";
-import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames } from "./css-gen-utils";
+import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames, type GeneratorConfig } from "./css-gen-utils";
 
 export function generateComponentSizes(
   componentName: string,
-  config: NonNullable<Theme["components"]>[string],
+  config: GeneratorConfig,
   theme: Theme,
 ): string {
   if (!config?.sizes) return "";

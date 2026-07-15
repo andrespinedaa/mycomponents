@@ -15,12 +15,11 @@ function App() {
     <ThemeProvider theme={theme}>
       <Box
         minH="100vh"
-        style={{ background: "var(--mycomponents-color-neutral-400, #94a3b8)" }}
         p="40px"
       >
-        <Card variant="Elevated">
+        <Card variant="Elevated" orientation="horizontal">
           <Card.Section section="media" set="cover">
-            <Image src={bgImage}/>
+            <Image src={bgImage} />
           </Card.Section>
           <Card.Section section="header" as="header" set="bottom" gap={"sm"}>
             {badgeInfo.map((b) => {

@@ -1,26 +1,29 @@
 import type { Theme } from "../core/theme.types";
+import type { GeneratorConfig } from "./css-gen-utils";
 import { generateComponentBases } from "./generateBases";
+import { generateComponentOrientation } from "./generateOrientation";
 import { generateComponentPresets } from "./generatePresets";
 import { generateComponentVariants } from "./generateVariants";
 import { generateComponentSizes } from "./generateSizes";
 
 function generateComponent(
   name: string,
-  config: NonNullable<Theme["components"]>[string],
+  config: GeneratorConfig,
   theme: Theme,
 ): string {
   let css =
     generateComponentBases(name, config) +
     generateComponentVariants(name, config, theme) +
     generateComponentSizes(name, config, theme) +
-    generateComponentPresets(name, config, theme);
+    generateComponentPresets(name, config, theme) +
+    generateComponentOrientation(name, config, theme);
 
   if (config?.statics) {
     for (const [slotKey, slotConfig] of Object.entries(config.statics)) {
       if (!slotConfig) continue;
       const canonicalEntry = Object.entries(theme.components ?? {}).find(([, cfg]) => cfg === slotConfig);
       const canonicalName = canonicalEntry?.[0] ?? slotKey;
-      css += generateComponent(canonicalName, slotConfig as NonNullable<Theme["components"]>[string], theme);
+      css += generateComponent(canonicalName, slotConfig as GeneratorConfig, theme);
     }
   }
 

@@ -6,7 +6,7 @@ export type CardTheme = ThemeComponentConfig<CardConfig>;
 
 export const CardThemeComponent: CardTheme = {
   sizes: {
-    xs: { w: "120px", h: "240px" },
+    xs: { w: "240px", h: "340px" },
     sm: { w: "220px", h: "340px" },
     md: { w: "300px", h: "440px" },
     lg: { w: "320px", h: "440px" },
@@ -40,5 +40,11 @@ export const CardThemeComponent: CardTheme = {
   statics: {
     Section: CardSectionThemeComponent,
   },
-  presets: {},
+  orientation: {
+    horizontal: {
+      flexDir: "row",
+      h: "$w",
+      w: "$h",
+    },
+  },
 };

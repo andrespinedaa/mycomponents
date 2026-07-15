@@ -6,9 +6,11 @@ export type InputThemeConfig = ThemeComponentConfig<InputConfig>;
 export const InputThemeComponent: InputThemeConfig = {
   defaultProps: { size: "md" },
   sizes: {
+    xs: { h: "28px", fontSize: "xs", px: "xs" },
     sm: { h: "32px", fontSize: "sm", px: "xs" },
     md: { h: "40px", fontSize: "md", px: "sm" },
     lg: { h: "48px", fontSize: "lg", px: "md" },
+    xl: { h: "56px", fontSize: "xl", px: "md" },
   },
   variants: {
     // Flat base (estilo por defecto — sin variant attr)

@@ -1,5 +1,5 @@
 import { ComponentFactory, type ComponentConfig } from "../../../factory";
-import type { ComponentVariants, Scales } from "../../../theme";
+import type { ComponentVariants } from "../../../theme";
 
 export interface ImageProps {}
 
@@ -9,7 +9,7 @@ export type ImgConfig = ComponentConfig<{
   ownProps: ImageProps;
   defaultProps: {};
   presets: "cover";
-  sizes: Scales;
+  sizes: "xs" | "sm" | "md" | "lg" | "xl";
   variants: ComponentVariants;
 }>;
 

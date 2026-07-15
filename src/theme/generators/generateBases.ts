@@ -1,6 +1,5 @@
 import { camelToKebab } from "../../utils/string";
-import type { Theme } from "../core/theme.types";
-import { buildSlotSelector, resolveGeneratorNames } from "./css-gen-utils";
+import { buildSlotSelector, resolveGeneratorNames, type GeneratorConfig } from "./css-gen-utils";
 import { getCssProp, resolveVarName } from "./css-gen-utils";
 import { STATE_SELECTORS } from "./generateVariants";
 
@@ -69,7 +68,7 @@ function collectSlotEntry(slot: Record<string, unknown>, usedKeys: Set<string>):
 
 export function generateComponentBases(
   componentName: string,
-  config: NonNullable<Theme["components"]>[string],
+  config: GeneratorConfig,
 ): string {
   if (!config?.variants && !config?.sizes && !config?.presets && !config?.sections) return "";
   const { resolvedName, prefix } = resolveGeneratorNames(componentName, config);

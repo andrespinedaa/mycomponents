@@ -5,7 +5,8 @@ import { generateComponentVariants } from "./generateVariants";
 
 const p = defaultTheme.cssVarPrefix;
 
-type TestConfig = NonNullable<Theme["components"]>[string];
+// Partial — estos fixtures aíslan un solo generador a la vez, sin necesidad de `sizes`.
+type TestConfig = Partial<NonNullable<Theme["components"]>[string]>;
 
 // --- generateComponentVariants -----------------------------------------------
 

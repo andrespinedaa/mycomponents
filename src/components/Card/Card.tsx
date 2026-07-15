@@ -15,7 +15,6 @@ export type CardConfig = ComponentConfig<{
   statics: { Section: typeof CardSection };
   defaultProps: { orientation: "vertical", variant: "Filled" };
   variants: "Filled" | "Elevated" | "Outlined";
-  presets: OrientationProp;
 }>;
 
 export const Card = ComponentFactory<CardConfig>({
@@ -23,10 +22,10 @@ export const Card = ComponentFactory<CardConfig>({
   componentName: "Card",
   statics: { Section: CardSection },
   defaultProps: { orientation: "vertical", variant: "Filled" },
-  render: function CardRender({ ref, layoutCtx, set, size, variant, children, orientation, ...rest }) {
+  render: function CardRender({ ref, layoutCtx, size, variant, children, orientation, ...rest }) {
     return (
       <LayoutProvider value={layoutCtx}>
-        <Flex ref={ref} mod={[{ orientation, size, variant, set }]} {...rest}>
+        <Flex ref={ref} mod={[{ orientation, size, variant }]} {...rest}>
           {children}
         </Flex>
       </LayoutProvider>
