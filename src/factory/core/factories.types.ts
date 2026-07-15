@@ -14,6 +14,7 @@ import type {
 import type { PolymorphicRef } from "../../types/polimorphic.types";
 import type { DefaultProps, FactoryDefaultPropsConfig } from "./factory.defaults";
 import type { FactoryFunctionOptions } from "./factory.render";
+import type { Unpack } from "../../types";
 
 export type VarsProp = Record<string, string>;
 export type ModProp = Record<string, unknown> | string;
@@ -53,7 +54,13 @@ export type FactoryConfig = {
 type SectionSets<Config extends FactoryConfig> =
   NonNullable<Config["sections"]>[keyof NonNullable<Config["sections"]>];
 
-// ─── Props que necesitan Config ──────────────────────────────────────────────────────────
+
+export type ComponentConfig<Config extends FactoryConfig> = Config;
+
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── PÚBLICAS ── el consumidor SÍ puede escribirlas en JSX (<Card size="md" ... />) ───────
+// ════════════════════════════════════════════════════════════════════════════════════════
+
 export type SizeProp<Config extends FactoryConfig> = {
   size?: Config["sizes"];
 };
@@ -90,31 +97,28 @@ export type RenderRootProp<Config extends FactoryConfig> = {
   renderRoot?: (props: RenderRootPayload<Config>) => React.ReactNode;
 };
 
+// Superficie pública Config-dependiente — lo que PolymorphicPropsConfig expone al consumidor
+// (sumado a PolymorphicComponentProps/SystemProps, que son públicas pero no dependen de Config).
 export type ConfigProps<Config extends FactoryConfig> = SizeProp<Config> &
   SectionProp<Config> &
   SetProp<Config> &
   VariantProp<Config> &
   RenderRootProp<Config>;
 
-export type ComponentConfig<Config extends FactoryConfig> = Config;
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── NO PÚBLICAS ── viajan dentro del objeto de props, el consumidor NUNCA debe escribirlas ─
+// ════════════════════════════════════════════════════════════════════════════════════════
 
-type Unpack<T> = T extends string
-  ? T
-  : T extends Record<string, object>
-  ? string extends keyof T
-    ? string
-    : keyof T
-  : undefined;
-
-// Computadas por el factory (typedRef, useMemo) — siempre presentes, nunca defaulteables por el
-// autor del componente. Pasarlas por DefaultProps sería un no-op: ya nacen requeridas.
 export type FactoryComputedProps<Config extends FactoryConfig> = {
   ref: PolymorphicRef<Config["defaultTag"]>;
   layoutCtx: LayoutContextValue;
 };
 
-// Resueltas por defaultProps + useResolveLayout (own ?? layoutContext ?? responsive) — opcionales
-// salvo que el componente declare un default, en cuyo caso DefaultProps las vuelve requeridas.
+
+export type NonPublicProps<Config extends FactoryConfig> = Partial<
+  Pick<FactoryComputedProps<Config>, "layoutCtx">
+>;
+
 export type FactoryResolvableProps<Config extends FactoryConfig> = {
   size?: Config["sizes"];
   variant?: Config["variants"];
