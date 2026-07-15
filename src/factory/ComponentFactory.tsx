@@ -39,13 +39,14 @@ export function ComponentFactory<Config extends FactoryConfig>({
       size,
       variant,
       dataSlot,
+      layoutCtx: _inheritedLayoutCtx,
       renderRoot,
       orientation,
       vars: varsRaw,
       dataSlotParent,
       "data-slot": inheritedSlot,
       ...restProps
-    } = mergedProps;
+    } = mergedProps as typeof mergedProps & { layoutCtx?: unknown };
 
     const {
       set: resolvedSet,

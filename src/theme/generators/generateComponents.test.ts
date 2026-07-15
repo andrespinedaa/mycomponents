@@ -90,7 +90,7 @@ describe("generateComponents", () => {
           Card: {
             statics: {
               Section: {
-                componentName: "Section",
+                componentName: "CardSection",
                 parentName: "Card",
                 sizes: { md: { p: "md" } },
               },
@@ -99,7 +99,7 @@ describe("generateComponents", () => {
         } as unknown as Theme["components"],
       };
       const result = generateComponents(theme);
-      expect(result).toContain(`[data-slot="Section"][data-slot-parent="Card"]`);
+      expect(result).toContain(`[data-slot="CardSection"][data-slot-parent="Card"]`);
       expect(result).toContain(`--card-section-padding`);
     });
   });

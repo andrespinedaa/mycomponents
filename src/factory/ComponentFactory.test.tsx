@@ -58,6 +58,7 @@ describe("ComponentFactory", () => {
   // ─── displayName ──────────────────────────────────────────────
   describe("displayName", () => {
     it("asigna displayName desde componentName", () => {
+      render(<TestComponent>btn</TestComponent>, { wrapper });
       expect(TestComponent.displayName).toBe("Test");
     });
   });

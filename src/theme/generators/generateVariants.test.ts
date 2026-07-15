@@ -301,30 +301,30 @@ describe("generateComponentVariants — DSL $prop", () => {
   it("$prop en flat base resuelve var del padre", () => {
     const config: TestConfig = {
       parentName: "Card",
-      componentName: "Section",
+      componentName: "CardSection",
       variants: { color: "$color" } as any,
     };
-    const result = generateComponentVariants("Section", config, defaultTheme);
+    const result = generateComponentVariants("CardSection", config, defaultTheme);
     expect(result).toContain(`--card-section-color:var(--card-color);`);
   });
 
   it("$prop inline en variante nombrada resuelve dentro del valor", () => {
     const config: TestConfig = {
       parentName: "Card",
-      componentName: "Section",
+      componentName: "CardSection",
       variants: { Filled: { outline: "2px solid $borderColor" } },
     };
-    const result = generateComponentVariants("Section", config, defaultTheme);
+    const result = generateComponentVariants("CardSection", config, defaultTheme);
     expect(result).toContain(`--card-section-outline:2px solid var(--card-border-color);`);
   });
 
   it("$prop en estado hover a nivel raíz", () => {
     const config: TestConfig = {
       parentName: "Card",
-      componentName: "Section",
+      componentName: "CardSection",
       variants: { hover: { bg: "$background" } } as any,
     };
-    const result = generateComponentVariants("Section", config, defaultTheme);
+    const result = generateComponentVariants("CardSection", config, defaultTheme);
     expect(result).toContain(`:hover`);
     expect(result).toContain(`--card-section-background:var(--card-background);`);
   });
@@ -332,13 +332,13 @@ describe("generateComponentVariants — DSL $prop", () => {
   it("$prop coexiste con tokens normales en flat base", () => {
     const config: TestConfig = {
       parentName: "Card",
-      componentName: "Section",
+      componentName: "CardSection",
       variants: {
         bg: "neutral.50",
         color: "$color",
       } as any,
     };
-    const result = generateComponentVariants("Section", config, defaultTheme);
+    const result = generateComponentVariants("CardSection", config, defaultTheme);
     expect(result).toContain(`--card-section-background:var(--${p}-color-neutral-50);`);
     expect(result).toContain(`--card-section-color:var(--card-color);`);
   });

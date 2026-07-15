@@ -20,6 +20,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "typecheck": "node --max-old-space-size=8192 ./node_modules/typescript/bin/tsc -p tsconfig.app.json --noEmit",
     "test": "vitest --project unit",
     "test:storybook": "vitest --project storybook",
     "test:all": "vitest",

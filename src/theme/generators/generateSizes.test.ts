@@ -161,30 +161,30 @@ describe("generateComponentSizes � DSL $prop", () => {
   it("$prop standalone en size resuelve var del padre", () => {
     const config: TestConfig = {
       parentName: "Card",
-      componentName: "Section",
+      componentName: "CardSection",
       sizes: { md: { gap: "$gap" } },
     };
-    const result = generateComponentSizes("Section", config, defaultTheme);
+    const result = generateComponentSizes("CardSection", config, defaultTheme);
     expect(result).toContain(`--card-section-gap:var(--card-gap);`);
   });
 
   it("$prop inline en size resuelve var del padre dentro del valor", () => {
     const config: TestConfig = {
       parentName: "Card",
-      componentName: "Section",
+      componentName: "CardSection",
       sizes: { md: { rounded: "0 0 $rounded $rounded" } },
     };
-    const result = generateComponentSizes("Section", config, defaultTheme);
+    const result = generateComponentSizes("CardSection", config, defaultTheme);
     expect(result).toContain(`--card-section-border-radius:0 0 var(--card-border-radius) var(--card-border-radius);`);
   });
 
   it("$prop en size tambi�n se repite en media queries responsive", () => {
     const config: TestConfig = {
       parentName: "Card",
-      componentName: "Section",
+      componentName: "CardSection",
       sizes: { md: { gap: "$gap" } },
     };
-    const result = generateComponentSizes("Section", config, defaultTheme);
+    const result = generateComponentSizes("CardSection", config, defaultTheme);
     const mediaBlocks = result.match(/@media\([^)]+\)\{[^}]+\}/g) ?? [];
     expect(mediaBlocks.length).toBeGreaterThan(0);
     expect(mediaBlocks[0]).toContain(`var(--card-gap)`);
