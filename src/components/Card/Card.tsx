@@ -18,7 +18,6 @@ export type CardConfig = ComponentConfig<{
 }>;
 
 export const Card = ComponentFactory<CardConfig>({
-  defaultTag: "div",
   componentName: "Card",
   statics: { Section: CardSection },
   defaultProps: { orientation: "vertical", variant: "Filled" },

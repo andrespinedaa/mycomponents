@@ -16,7 +16,6 @@ export type DotBadgeConfig = ComponentConfig<{
 }>;
 
 export const DotBadge = ComponentFactory<DotBadgeConfig>({
-  defaultTag: "span",
   componentName: "DotBadge",
   render: function DotBadgeRender({ dotColor, ref, variant, size, ...rest }) {
     return (
@@ -48,7 +47,6 @@ export type BadgeConfig = ComponentConfig<{
 
 export const Badge = ComponentFactory<BadgeConfig>({
   componentName: "Badge",
-  defaultTag: "span",
   render: function BadgeRender({ ref, layoutCtx, set, size, dotIcon, children, variant, ...rest }) {
     return (
       <LayoutProvider value={layoutCtx}>

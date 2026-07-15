@@ -3,6 +3,7 @@ import type {
   ComponentFactoryOptions,
   FactoryComponentReturn,
   FactoryConfig,
+  FactoryRender,
   FactoryRenderProps,
   RenderRootPayload,
 } from ".";
@@ -15,7 +16,6 @@ import { camelToKebab, typedRef } from "../utils";
 export function ComponentFactory<Config extends FactoryConfig>({
   render,
   statics,
-  defaultTag,
   defaultProps,
   componentName,
 }: ComponentFactoryOptions<Config>): FactoryComponentReturn<Config> {
@@ -25,7 +25,9 @@ export function ComponentFactory<Config extends FactoryConfig>({
   ) {
     const { theme } = useTheme();
     const componentConfig = theme.components?.[componentName];
-    const resolvedDefaultTag = componentConfig?.defaultTag ?? defaultTag;
+    // El theme solo puede sobreescribir el tag cuando `render` es un tag nativo — no tiene
+    // sentido "sobreescribir" una función con un string.
+    const resolvedTag = typeof render === "string" ? componentConfig?.defaultTag ?? render : render;
     const resolvedComponentName = componentConfig?.componentName ?? componentName;
     const parentName = componentConfig?.parentName;
     const mergedProps = {
@@ -74,9 +76,23 @@ export function ComponentFactory<Config extends FactoryConfig>({
       [resolvedSize, resolvedVariant, resolvedSet, resolvedOrientation, resolvedComponentName],
     );
 
-    if (!render && !renderRoot) {
+    if (renderRoot) {
+      return renderRoot({
+        ref,
+        vars,
+        layoutCtx,
+        set: resolvedSet,
+        size: resolvedSize,
+        dataSlot: dataName,
+        variant: resolvedVariant,
+        orientation: resolvedOrientation,
+        ...restProps,
+      } as RenderRootPayload<Config>);
+    }
+
+    if (typeof resolvedTag === "string") {
       const { as, mod, apply, section, style: styleRaw, unstyled = false, ...rest } = restProps;
-      const Element = (as ?? resolvedDefaultTag) as ElementType;
+      const Element = (as ?? resolvedTag) as ElementType;
       const { styleProps, elementProps } = extractStyleProps(rest);
       const { styles, hasResponsive } = resolvedStyles({
         vars,
@@ -99,21 +115,10 @@ export function ComponentFactory<Config extends FactoryConfig>({
       return <Element ref={ref} style={styles} {...elementProps} {...elementModProps} />;
     }
 
-    if (renderRoot) {
-      return renderRoot({
-        ref,
-        vars,
-        layoutCtx,
-        set: resolvedSet,
-        size: resolvedSize,
-        dataSlot: dataName,
-        variant: resolvedVariant,
-        orientation: resolvedOrientation,
-        ...restProps,
-      } as RenderRootPayload<Config>);
-    }
-
-    return render!({
+    // Cast necesario — mismo límite genérico que el de más abajo (Config todavía es abstracto
+    // acá dentro): TS no puede reducir FactoryTag<Config> | FactoryRender<...> a algo invocable
+    // sin conocer Config concreto. Runtime-verificado por el `typeof === "string"` de arriba.
+    return (resolvedTag as FactoryRender<FactoryRenderProps<Config>>)({
       ref,
       vars,
       layoutCtx,

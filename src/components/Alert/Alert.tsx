@@ -29,7 +29,6 @@ export type AlertConfig = ComponentConfig<{
 
 export const Alert = ComponentFactory<AlertConfig>({
   componentName: "Alert",
-  defaultTag: "div",
   defaultProps: {
     severity: "info",
     variant: "Filled",

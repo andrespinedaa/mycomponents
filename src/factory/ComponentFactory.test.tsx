@@ -39,7 +39,6 @@ type NoRenderConfig = ComponentConfig<{
 
 // ─── Componentes de prueba ────────────────────────────────────
 const TestComponent = ComponentFactory<TestConfig>({
-  defaultTag: "button",
   componentName: "Test",
   defaultProps: { variant: "Outlined" },
   render: ({ variant, children, ref, ...rest }) => (
@@ -50,7 +49,7 @@ const TestComponent = ComponentFactory<TestConfig>({
 });
 
 const NoRenderComponent = ComponentFactory<NoRenderConfig>({
-  defaultTag: "section",
+  render: "section",
   componentName: "NoRender",
 });
 
@@ -260,7 +259,7 @@ describe("ComponentFactory", () => {
         presets: string;
         slots: string;
       }>;
-      const Anon = ComponentFactory<AnonConfig>({ componentName: "", defaultTag: "div" });
+      const Anon = ComponentFactory<AnonConfig>({ componentName: "", render: "div" });
       const { container } = render(<Anon>contenido</Anon>, { wrapper });
       expect(container.firstChild).not.toHaveAttribute("data-slot");
     });
@@ -272,7 +271,6 @@ describe("ComponentFactory", () => {
       let prefix: string | undefined;
       const ThemeComponent = ComponentFactory<NoRenderConfig>({
         componentName: "NoRender",
-        defaultTag: "section",
         render: function ThemeRender({ ref, children, ...rest }) {
           const { theme } = useTheme();
           prefix = theme.cssVarPrefix;
@@ -300,7 +298,6 @@ describe("ComponentFactory", () => {
   // ─── statics ──────────────────────────────────────────────────
   describe("statics", () => {
     const SubComponent = ComponentFactory<TestConfig>({
-      defaultTag: "button",
       componentName: "Test",
       render: ({ children, ref }) => <Box ref={ref as any}>{children}</Box>,
     });
@@ -317,7 +314,6 @@ describe("ComponentFactory", () => {
     }>;
 
     const WithStatics = ComponentFactory<WithStaticsConfig>({
-      defaultTag: "div",
       componentName: "WithStatics",
       render: ({ children, ref }) => <Box ref={ref as any}>{children}</Box>,
       statics: { Sub: SubComponent },
@@ -343,7 +339,6 @@ describe("ComponentFactory", () => {
     it("render que retorna null no lanza error", () => {
       const NullComponent = ComponentFactory<NoRenderConfig>({
         componentName: "NoRender",
-        defaultTag: "section",
         render: () => null,
       });
       expect(() => render(<NullComponent />, { wrapper })).not.toThrow();

@@ -23,7 +23,6 @@ export type GridItemConfig = ComponentConfig<{
 
 const GridItem = ComponentFactory<GridItemConfig>({
   componentName: "GridItem",
-  defaultTag: "div",
   render: function GridItemRender({
     colSpan,
     rowSpan,
@@ -81,7 +80,6 @@ export type GridBoxConfig = ComponentConfig<{
 
 export const GridBox = ComponentFactory<GridBoxConfig>({
   componentName: "GridBox",
-  defaultTag: "div",
   statics: { Item: GridItem },
   render: function GridBoxRender({ columns, rows, autoColumns, autoRows, inline, ref, ...rest }) {
     const resolveTemplate = (value?: number | string) =>

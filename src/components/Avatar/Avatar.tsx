@@ -34,7 +34,6 @@ function getInitials(name: string): string {
 }
 
 export const Avatar = ComponentFactory<AvatarConfig>({
-  defaultTag: "div",
   componentName: "Avatar",
   defaultProps: {
     size: "md",

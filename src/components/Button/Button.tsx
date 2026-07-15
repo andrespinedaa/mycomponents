@@ -14,7 +14,6 @@ export type ButtonConfig = ComponentConfig<{
 
 export const Button = ComponentFactory<ButtonConfig>({
   componentName: "Button",
-  defaultTag: "button",
   defaultProps: { size: "md", variant: "Filled" },
   render: function ButtonRender({ size, variant, ref, layoutCtx: _, ...rest }) {
     return <Box ref={ref} mod={{ size, variant }} {...rest} />;

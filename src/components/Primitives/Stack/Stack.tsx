@@ -16,7 +16,7 @@ export type StackConfig = ComponentConfig<{
 }>;
 
 export const Stack = ComponentFactory<StackConfig>({
-  defaultTag: "div",
+  render: "div",
   componentName: "Stack",
   defaultProps: { gap: "md" },
 });

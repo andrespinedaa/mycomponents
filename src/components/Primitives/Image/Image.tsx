@@ -14,6 +14,6 @@ export type ImgConfig = ComponentConfig<{
 }>;
 
 export const Image = ComponentFactory<ImgConfig>({
-  defaultTag: "img",
+  render: "img",
   componentName: "Image",
 });

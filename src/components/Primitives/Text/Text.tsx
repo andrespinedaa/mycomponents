@@ -25,7 +25,6 @@ export type TextConfig = ComponentConfig<{
 
 export const Text = ComponentFactory<TextConfig>({
   componentName: "Text",
-  defaultTag: "p",
   defaultProps: { size: "md" },
   render: function TextRender({
     size,

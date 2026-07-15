@@ -16,7 +16,6 @@ export type LayoutConfig = ComponentConfig<{
 
 export const Layout = ComponentFactory<LayoutConfig>({
   componentName: "Layout",
-  defaultTag: "div",
   render: ({ ref, layoutCtx, set, size, section, variant, orientation, ...rest }) => {
     return (
       <LayoutProvider value={layoutCtx}>

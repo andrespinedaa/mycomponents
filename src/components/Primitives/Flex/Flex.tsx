@@ -13,7 +13,7 @@ export type FlexConfig = ComponentConfig<{
 }>;
 
 export const Flex = ComponentFactory<FlexConfig>({
-  defaultTag: "div",
+  render: "div",
   componentName: "Flex",
   defaultProps: {
     display: "flex",

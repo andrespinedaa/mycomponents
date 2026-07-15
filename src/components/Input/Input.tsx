@@ -23,7 +23,6 @@ export type InputConfig = ComponentConfig<{
 
 export const Input = ComponentFactory<InputConfig>({
   componentName: "Input",
-  defaultTag: "div",
   render: function InputRender({
     ref,
     id,

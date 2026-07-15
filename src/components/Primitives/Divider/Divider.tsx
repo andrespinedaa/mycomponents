@@ -29,7 +29,6 @@ export type DividerConfig = ComponentConfig<{
 }>;
 
 export const Divider = ComponentFactory<DividerConfig>({
-  defaultTag: "div",
   componentName: "Divider",
   defaultProps: { orientation: "horizontal", position: "center", thickness: "1px", size: "md" },
   render: function DividerRender({

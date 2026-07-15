@@ -28,7 +28,6 @@ export type CardSectionConfig = ComponentConfig<{
 }>;
 
 export const CardSection = ComponentFactory<CardSectionConfig>({
-  defaultTag: "div",
   componentName: "CardSection",
   defaultProps: { section: "body" },
   render: function CardSectionRender({ ref, layoutCtx, set, size, section, variant, ...rest }) {

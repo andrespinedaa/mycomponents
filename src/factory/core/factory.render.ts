@@ -23,10 +23,22 @@ export type FactoryRender<RenderProps extends object> = (
   renderProps: RenderProps,
 ) => React.ReactNode;
 
+// `render` es polimórfico: un tag nativo (string) dispara el camino genérico (resuelve
+// estilos, arma data-attributes automáticamente); una función es control total — recibe las
+// props ya resueltas y decide qué renderizar (puede devolver un tag, o componer con otro
+// Primitive, ej. `(props) => <Layout {...props} />`).
+//
+// Solo el string de Config["defaultTag"] — NO cualquier ElementType. Un ComponentClass/
+// FunctionComponent pasado directo no es invocable como `resolvedTag(props)` (un class
+// component necesita `new X(props).render()`, no una llamada simple); si querés componer con
+// otro Primitive, envolvelo en una función: `(props) => <Layout {...props} />`.
+type FactoryTag<Config extends FactoryConfig> = Config["defaultTag"] extends string
+  ? Config["defaultTag"]
+  : never;
+
 export type FactoryFunctionOptions<Config extends FactoryConfig, RenderProps extends object> = {
   componentName: Config["componentName"];
-  defaultTag: Config["defaultTag"];
-  render?: FactoryRender<RenderProps>;
+  render: FactoryTag<Config> | FactoryRender<RenderProps>;
   statics?: Config["statics"];
   defaultProps?: RequiredDefaultProps<Config>;
 };
