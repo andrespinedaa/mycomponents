@@ -8,6 +8,7 @@ export type ImgConfig = ComponentConfig<{
   defaultTag: "img";
   ownProps: ImageProps;
   defaultProps: {};
+  presets: "cover";
   sizes: Scales;
   variants: ComponentVariants;
 }>;

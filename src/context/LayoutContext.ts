@@ -6,6 +6,7 @@ export interface LayoutContextValue {
   orientation?: OrientationProp;
   size?: Scales;
   variant?: ComponentVariants;
+  set?: string;
 }
 
 export const [LayoutProvider, useLayoutContext, LayoutContext] = useCreateProvider<LayoutContextValue>(

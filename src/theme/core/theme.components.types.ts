@@ -5,10 +5,8 @@ import type {
   BadgeConfig,
   ButtonConfig,
   CardConfig,
+  CardSectionConfig,
   InputConfig,
-} from "../../components";
-import type { CardSectionConfig } from "../../components/Card/CardSection";
-import type {
   BoxConfig,
   DividerConfig,
   FlexConfig,
@@ -16,11 +14,11 @@ import type {
   ImgConfig,
   StackConfig,
   TextConfig,
-} from "../../components/Primitives";
+} from "../../components";
 import type { FactoryConfig, RequiredDefaultProps } from "../../factory/core";
-import type { StylePropsTokens } from "../generators/system-css.types";
-import type { ComponentStates, ComponentVariants, ThemeBreakpoints } from "./theme.types";
 import type { Partialized } from "../../types";
+import type { StylePropsTokens } from "../generators/system-css.types";
+import type { ComponentStates, ComponentVariants } from "./theme.types";
 
 export type ComponentConfigs = {
   /* Primitives */
@@ -42,25 +40,21 @@ export type ComponentConfigs = {
 };
 
 // ─── StyledBlock — bloque estilizado con soporte de estados anidados (SCSS-like) ───
-type StateNode = StylePropsTokens & Partialized<ComponentStates, StylePropsTokens>;
+export type StateNode = StylePropsTokens & Partialized<ComponentStates, StylePropsTokens>;
 export type StyledBlock = StylePropsTokens & Partialized<ComponentStates, StateNode>;
 
-// ─── Fields ─────────────────────────────────────────────────────────────────────────────────
+// ─── Fields ──────
 // ─── Variant Field ─────────────────────────────────────────────────────────────────────────────────
 type VariantsField = StyledBlock & Partialized<ComponentVariants, StyledBlock>;
 
 // ─── Size Field ─────────────────────────────────────────────────────────────────────────────────
-type SizeField<Config extends FactoryConfig> = Record<
-  keyof ThemeBreakpoints & Config["sizes"],
-  StylePropsTokens
-> &
-  Partialized<Exclude<Config["sizes"], keyof ThemeBreakpoints>, StylePropsTokens>;
+type SizeField<Config extends FactoryConfig> = Record<Config["sizes"], StylePropsTokens>;
 
 // ─── Stactics Field ─────────────────────────────────────────────────────────────────────────────────
 type StaticsField<Config extends FactoryConfig> = Record<
   keyof NonNullable<Config["statics"]>,
-  ThemeComponentConfig<FactoryConfig>
->;
+  ThemeComponentConfig<any>
+>; /* Que añada el Componente primero a supported Components */
 
 // ─── Presets Field ─────────────────────────────────────────────────────────────────────────────────
 type PresetsField<Config extends FactoryConfig> = Partialized<
@@ -81,13 +75,13 @@ type SectionsField<Config extends FactoryConfig> = StyledBlock & {
 };
 
 export type ThemeComponentOptions<Config extends FactoryConfig> = {
-  /* Propiedades ComponentFactory */
+  /* ComponentFactories' Properties */
   parentName?: string;
   componentName?: string;
   defaultTag?: ElementType;
   statics?: StaticsField<Config>;
   defaultProps?: RequiredDefaultProps<Config>;
-  /* Propiedades Styles */
+  /* Style's Properties */
   variants?: VariantsField;
   sizes?: SizeField<Config>;
   presets?: PresetsField<Config>;
@@ -95,8 +89,8 @@ export type ThemeComponentOptions<Config extends FactoryConfig> = {
 };
 
 export type ThemeComponents = {
-  [K in keyof ComponentConfigs]: ThemeComponentOptions<ComponentConfigs[K]>;
-} & Record<string, ThemeComponentConfig<FactoryConfig>>;
+  [K in keyof ComponentConfigs]?: ThemeComponentOptions<ComponentConfigs[K]>;
+} & Record<string, ThemeComponentOptions<any>>;
 
 // helpers
 export type ThemeComponentConfig<Config extends FactoryConfig> = ThemeComponentOptions<Config>;

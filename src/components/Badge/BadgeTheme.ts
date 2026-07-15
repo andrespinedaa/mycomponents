@@ -5,14 +5,22 @@ export type BadgeThemeConfig = ThemeComponentConfig<BadgeConfig>;
 
 export const BadgeThemeComponent: BadgeThemeConfig = {
   sizes: {
-    xs: { px: "4px", py: "2px", fontSize: "10px" },
-    sm: { px: "6px", py: "2px", fontSize: "11px" },
-    md: { px: "8px", py: "3px", fontSize: "12px" },
-    lg: { px: "10px", py: "4px", fontSize: "13px" },
+    xs: { h: "10px", w: "15%", fontSize: "xs" },
+    sm: { h: "15px", w: "20%", fontSize: "xs" },
+    md: { h: "20px", w: "30%", fontSize: "sm" },
+    lg: { h: "25px", w: "35%", fontSize: "md" },
+    xl: { h: "30px", w: "40%",  fontSize: "lg"},
   },
   variants: {
-    Filled:   { bg: "primary.500", color: "neutral.50" },
-    Subtle:   { bg: "primary.100", color: "primary.700" },
+    fontFamily: "monospace",
+    px: "xs",
+    gap: "xs",
+    display: "flex",
+    align: "center",
+    bg: "neutral.100",
+    color: "neutral.900",
+    rounded: "sm",
+    Subtle: { bg: "primary.100", color: "primary.700" },
     Outlined: {
       bg: "transparent",
       color: "primary.600",

@@ -1,15 +1,10 @@
-import { useMemo } from "react";
 import { LayoutProvider } from "../../context/LayoutContext";
-import {
-  ComponentFactory,
-  type ComponentConfig,
-  type FactoryRender,
-} from "../../factory";
-import { useResolveLayout } from "../../hooks";
+import { ComponentFactory, type ComponentConfig, type FactoryRender } from "../../factory";
+import type { StyleProps } from "../../theme";
 import { Box } from "../Primitives/Box";
 
 export interface DotBadgeOwnProps {
-  dotColor?: string;
+  dotColor?: StyleProps["bg"];
 }
 
 export type DotBadgeConfig = ComponentConfig<{
@@ -17,17 +12,18 @@ export type DotBadgeConfig = ComponentConfig<{
   defaultTag: "span";
   componentName: "DotBadge";
   ownProps: DotBadgeOwnProps;
-  sizes: "xs" | "sm" | "md" | "lg";
+  sizes: "xs" | "sm" | "md" | "lg" | "xl";
 }>;
 
 export const DotBadge = ComponentFactory<DotBadgeConfig>({
   defaultTag: "span",
   componentName: "DotBadge",
-  render: function DotBadgeRender({ dotColor, ref, ...rest }) {
+  render: function DotBadgeRender({ dotColor, ref, variant, size, ...rest }) {
     return (
       <Box
-        as="span"
         ref={ref}
+        mod={{ variant, size }}
+        bg={dotColor}
         vars={dotColor ? { "--dot-color": dotColor } : undefined}
         {...rest}
       />
@@ -45,34 +41,18 @@ export type BadgeConfig = ComponentConfig<{
   componentName: "Badge";
   defaultTag: "span";
   ownProps: BadgeOwnProps;
-  defaultProps: { size: "md"; display: "inline-flex"; align: "center"; rounded: "full" };
-  sizes: "xs" | "sm" | "md" | "lg";
+  defaultProps: {};
+  sizes: "xs" | "sm" | "md" | "lg" | "xl";
   variants: "Filled" | "Subtle" | "Outlined";
 }>;
 
 export const Badge = ComponentFactory<BadgeConfig>({
   componentName: "Badge",
   defaultTag: "span",
-  defaultProps: {
-    size: "md",
-    display: "inline-flex",
-    align: "center",
-    rounded: "full",
-  },
-  render: function BadgeRender({
-    ref,
-    dotIcon,
-    children,
-    size: sizeProp,
-    variant: variantProp,
-    ...rest
-  }) {
-    const { size, variant } = useResolveLayout({ size: sizeProp, variant: variantProp });
-    const ctx = useMemo(() => ({ size, variant }), [size, variant]);
-
+  render: function BadgeRender({ ref, layoutCtx, set, size, dotIcon, children, variant, ...rest }) {
     return (
-      <LayoutProvider value={ctx}>
-        <Box as="span" ref={ref} gap="xs" fontWeight={600} mod={{ size, variant }} {...rest}>
+      <LayoutProvider value={layoutCtx}>
+        <Box ref={ref} mod={{ size, variant, set }} {...rest}>
           {children}
         </Box>
       </LayoutProvider>

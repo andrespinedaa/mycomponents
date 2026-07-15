@@ -1,4 +1,4 @@
-import type { ElementType } from "react";
+import { useMemo, type ElementType } from "react";
 import type {
   ComponentFactoryOptions,
   FactoryComponentReturn,
@@ -6,7 +6,7 @@ import type {
   FactoryRenderProps,
   RenderRootPayload,
 } from ".";
-import { useTheme } from "../hooks";
+import { useTheme, useResolveLayout } from "../hooks";
 import { extractStyleProps, getMod, resolvedStyles, resolveStyle } from "../system";
 import { resolveVarsDSL } from "../theme/generators/css-gen-utils";
 import type { PolymorphicPropsConfig } from "../types/polimorphic.types";
@@ -35,34 +35,43 @@ export function ComponentFactory<Config extends FactoryConfig>({
     };
 
     const {
-      as,
-      mod,
       set,
       size,
-      apply,
-      section,
       variant,
       dataSlot,
       renderRoot,
+      orientation,
       vars: varsRaw,
-      style: styleRaw,
-      unstyled = false,
+      dataSlotParent,
       "data-slot": inheritedSlot,
       ...restProps
     } = mergedProps;
 
+    const {
+      set: resolvedSet,
+      size: resolvedSize,
+      variant: resolvedVariant,
+      orientation: resolvedOrientation,
+    } = useResolveLayout({ size, variant, set, orientation }, theme);
     const vars = resolveVarsDSL(varsRaw, camelToKebab(resolvedComponentName));
     const dataName = dataSlot || inheritedSlot || resolvedComponentName || undefined;
 
-    Component.displayName = parentName
+    const resolvedDisplayName = parentName
       ? `${parentName}.${resolvedComponentName}`
       : resolvedComponentName;
+    if (Component.displayName !== resolvedDisplayName) {
+      Component.displayName = resolvedDisplayName;
+    }
 
-    if (statics) Object.assign(Component, statics);
+    const layoutCtx = useMemo(
+      () => ({ size: resolvedSize, variant: resolvedVariant, set: resolvedSet, orientation: resolvedOrientation }),
+      [resolvedSize, resolvedVariant, resolvedSet, resolvedOrientation],
+    );
 
     if (!render && !renderRoot) {
+      const { as, mod, apply, section, style: styleRaw, unstyled = false, ...rest } = restProps;
       const Element = (as ?? resolvedDefaultTag) as ElementType;
-      const { styleProps, elementProps } = extractStyleProps(restProps);
+      const { styleProps, elementProps } = extractStyleProps(rest);
       const { styles, hasResponsive } = resolvedStyles({
         vars,
         apply,
@@ -73,54 +82,47 @@ export function ComponentFactory<Config extends FactoryConfig>({
       });
       const elementModProps = getMod([
         mod,
-        { set },
-        { size },
         { section },
-        { variant },
         { slot: dataName },
-        { "slot-parent": parentName },
+        { set: resolvedSet },
+        { size: resolvedSize },
+        { variant: resolvedVariant },
+        { orientation: resolvedOrientation },
+        { "slot-parent": parentName ?? dataSlotParent },
         { responsive: hasResponsive },
       ]);
       return <Element ref={ref} style={styles} {...elementProps} {...elementModProps} />;
     }
 
     if (renderRoot) {
-      const modProps = getMod([
-        mod,
-        { set },
-        { size },
-        { section },
-        { variant },
-        { slot: dataName },
-        { "slot-parent": parentName },
-      ]);
       return renderRoot({
-        set,
         ref,
-        size,
         vars,
-        variant,
-        section,
-        style: styleRaw,
-        ...modProps,
+        layoutCtx,
+        set: resolvedSet,
+        size: resolvedSize,
+        dataSlot: dataName,
+        variant: resolvedVariant,
+        dataSlotParent: parentName,
+        orientation: resolvedOrientation,
         ...restProps,
       } as unknown as RenderRootPayload<Config>);
     }
 
     return render!({
-      set,
       ref,
-      size,
       vars,
-      section,
-      variant,
-      style: styleRaw,
+      layoutCtx,
+      set: resolvedSet,
+      size: resolvedSize,
       dataSlot: dataName,
+      variant: resolvedVariant,
+      dataSlotParent: parentName,
+      orientation: resolvedOrientation,
       ...restProps,
     } as unknown as FactoryRenderProps<Config>);
   });
 
-  Component.displayName = componentName;
   if (statics) {
     Object.assign(Component, statics);
   }

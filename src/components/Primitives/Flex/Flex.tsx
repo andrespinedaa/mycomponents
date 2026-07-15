@@ -1,7 +1,4 @@
-import {
-  ComponentFactory,
-  type ComponentConfig,
-} from "../../../factory";
+import { ComponentFactory, type ComponentConfig } from "../../../factory";
 import type { ComponentVariants, Scales } from "../../../theme";
 
 export interface FlexOwnProps {}
@@ -18,4 +15,7 @@ export type FlexConfig = ComponentConfig<{
 export const Flex = ComponentFactory<FlexConfig>({
   defaultTag: "div",
   componentName: "Flex",
+  defaultProps: {
+    display: "flex",
+  },
 });

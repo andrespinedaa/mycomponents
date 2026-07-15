@@ -1,5 +1,55 @@
 import type { Macros } from "./theme.macros.types";
 
+export const FLEX_DISPLAYS = ["flex", "inlineFlex"] as const;
+
+export const GRID_DISPLAYS = ["grid", "inlineGrid"] as const;
+
+export const JUSTIFY_CONTENTS = [
+  "Normal",
+  "Stretch",
+  "Center",
+  "Start",
+  "End",
+  "FlexStart",
+  "FlexEnd",
+  "Left",
+  "Right",
+  "SpaceBetween",
+  "SpaceAround",
+  "SpaceEvenly",
+  "SafeCenter",
+  "UnsafeCenter",
+] as const;
+
+export const JUSTIFY_ITEMS = [
+  "Start",
+  "End",
+  "Center",
+  "Stretch",
+  "Legacy",
+  "Left",
+  "Right",
+  "SelfStart",
+  "SelfEnd",
+] as const;
+
+export const ALIGNS = [
+  "Normal",
+  "Stretch",
+  "Center",
+  "Start",
+  "End",
+  "FlexStart",
+  "FlexEnd",
+  "SelfStart",
+  "SelfEnd",
+  "Baseline",
+  "FirstBaseline",
+  "LastBaseline",
+  "SafeCenter",
+  "UnsafeCenter",
+] as const;
+
 export const defaultThemeMacros = {
   // Layout comunes
   "@flexCenter": {
@@ -91,13 +141,6 @@ export const defaultThemeMacros = {
     font: "inherit",
   },
 
-  // Imágenes
-  "@imgCover": {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
-
   "@srOnly": {
     position: "absolute",
     width: "1px",
@@ -110,53 +153,3 @@ export const defaultThemeMacros = {
     border: 0,
   },
 } satisfies Macros;
-
-export const FLEX_DISPLAYS = ["flex", "inlineFlex"] as const;
-
-export const GRID_DISPLAYS = ["grid", "inlineGrid"] as const;
-
-export const JUSTIFY_CONTENTS = [
-  "Normal",
-  "Stretch",
-  "Center",
-  "Start",
-  "End",
-  "FlexStart",
-  "FlexEnd",
-  "Left",
-  "Right",
-  "SpaceBetween",
-  "SpaceAround",
-  "SpaceEvenly",
-  "SafeCenter",
-  "UnsafeCenter",
-] as const;
-
-export const JUSTIFY_ITEMS = [
-  "Start",
-  "End",
-  "Center",
-  "Stretch",
-  "Legacy",
-  "Left",
-  "Right",
-  "SelfStart",
-  "SelfEnd",
-] as const;
-
-export const ALIGNS = [
-  "Normal",
-  "Stretch",
-  "Center",
-  "Start",
-  "End",
-  "FlexStart",
-  "FlexEnd",
-  "SelfStart",
-  "SelfEnd",
-  "Baseline",
-  "FirstBaseline",
-  "LastBaseline",
-  "SafeCenter",
-  "UnsafeCenter",
-] as const;

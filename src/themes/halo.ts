@@ -132,11 +132,11 @@ export const haloTheme: Theme = {
 
   // ─── Font sizes (ampliada) ────────────────────────────────────────────────
   fontSizes: {
-    xs:   "12px",
-    sm:   "13px",
-    md:   "15px",
-    lg:   "17px",
-    xl:   "20px",
+    xs:   "10px",
+    sm:   "11px",
+    md:   "12px",
+    lg:   "13px",
+    xl:   "17px",
     "2xl":"25px",
     "3xl":"32px",
     "4xl":"44px",

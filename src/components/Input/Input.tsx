@@ -16,15 +16,14 @@ export type InputConfig = ComponentConfig<{
   componentName: "Input";
   defaultTag: "div";
   ownProps: InputOwnProps & SafeInputHTMLAttributes;
-  defaultProps: { size: "md" };
-  sizes: "sm" | "md" | "lg";
+  defaultProps: {};
+  sizes: "xs" | "sm" | "md" | "lg" | "xl";
   variants: "Filled";
 }>;
 
 export const Input = ComponentFactory<InputConfig>({
   componentName: "Input",
   defaultTag: "div",
-  defaultProps: { size: "md" },
   render: function InputRender({
     ref,
     id,
@@ -47,7 +46,6 @@ export const Input = ComponentFactory<InputConfig>({
     size,
     variant,
     "data-slot": _slot,
-    "data-mod": _mod,
     ...rest
   }) {
     const inputId = id ?? (label ? `input-${label.toLowerCase().replace(/\s+/g, "-")}` : undefined);
@@ -56,13 +54,7 @@ export const Input = ComponentFactory<InputConfig>({
     return (
       <Box ref={ref} display="flex" flexDir="column" {...rest}>
         {label && (
-          <Text
-            as="label"
-            htmlFor={inputId}
-            size="sm"
-            weight={500}
-            mb="xs"
-          >
+          <Text as="label" htmlFor={inputId} size="sm" weight={500} mb="xs">
             {label}
             {required && (
               <Text as="span" color="danger.500" ml="2px">
@@ -103,9 +95,7 @@ export const Input = ComponentFactory<InputConfig>({
             onFocus={onFocus}
             onBlur={onBlur}
             aria-invalid={hasError || undefined}
-            aria-describedby={
-              error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined
-            }
+            aria-describedby={error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined}
             apply="@inputReset"
             flexGrow={1}
           />

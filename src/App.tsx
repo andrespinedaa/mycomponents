@@ -1,52 +1,14 @@
 import { Card } from "./components/Card/Card";
-import { Badge } from "./components/Badge/Badge";
+import { Badge, DotBadge } from "./components/Badge/Badge";
 import { Text } from "./components/Primitives/Text/Text";
-import { Flex } from "./components/Primitives/Flex/Flex";
 import { ThemeProvider } from "./theme";
 import { createTheme } from "./theme/createTheme";
 import { graphiteTheme, haloTheme } from "./themes";
-import { Box } from "./components";
+import { Box, Image } from "./components";
+import bgImage from "./components/Card/background 2.jpg";
 
 const theme = createTheme(haloTheme);
-
-const cards = [
-  {
-    variant: "Filled" as const,
-    badge: "Filled",
-    badgeVariant: "Subtle" as const,
-    title: "Getting started",
-    desc: "Everything you need to build your first component.",
-    meta: "5 min read",
-    emoji: "📄",
-  },
-  {
-    variant: "Outlined" as const,
-    badge: "Outlined",
-    badgeVariant: "Outlined" as const,
-    title: "Design tokens",
-    desc: "Colors, spacing and typography driven by the theme.",
-    meta: "8 min read",
-    emoji: "🎨",
-  },
-  {
-    variant: "Filled" as const,
-    badge: "Filled",
-    badgeVariant: "Filled" as const,
-    title: "Component factory",
-    desc: "One API for every component — polymorphic and typed.",
-    meta: "12 min read",
-    emoji: "⚡",
-  },
-  {
-    variant: "Elevated" as const,
-    badge: "Elevated",
-    badgeVariant: "Subtle" as const,
-    title: "Theme system",
-    desc: "Switch between Graphite, Halo and Terra in one line.",
-    meta: "6 min read",
-    emoji: "🚀",
-  },
-];
+const badgeInfo = [{ data: "ice grey" }, { data: "3.2s" }, { data: "Manual" }];
 
 function App() {
   return (
@@ -56,10 +18,30 @@ function App() {
         style={{ background: "var(--mycomponents-color-neutral-400, #94a3b8)" }}
         p="40px"
       >
-
-      <Card >
-        <Card.Section section="body"/>
-      </Card>
+        <Card variant="Elevated">
+          <Card.Section section="media" set="cover">
+            <Image src={bgImage}/>
+          </Card.Section>
+          <Card.Section section="header" as="header" set="bottom" gap={"sm"}>
+            {badgeInfo.map((b) => {
+              return (
+                <Badge>
+                  <DotBadge dotColor="success.300" />
+                  {b.data}
+                </Badge>
+              );
+            })}
+          </Card.Section>
+          <Card.Section section="body">
+            <Text as="h2" color="neutral.100" fontSize={"3xl"} m={"0"}>
+              Porsche 911
+            </Text>
+            <Text as="h2" color="neutral.100" fontSize={"3xl"} m={"0"}>
+              GT3 RS
+            </Text>
+            <Text color="neutral.100">Timeless, iconic, and unapologetically analog…</Text>
+          </Card.Section>
+        </Card>
       </Box>
     </ThemeProvider>
   );

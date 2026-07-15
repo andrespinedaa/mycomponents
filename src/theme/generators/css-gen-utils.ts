@@ -9,7 +9,7 @@ export function resolveGeneratorNames(
 ): { resolvedName: string; prefix: string; parentPrefix: string | undefined } {
   const resolvedName = config?.componentName ?? componentName;
   const parentPrefix = config?.parentName ? camelToKebab(config.parentName) : undefined;
-  const prefix = parentPrefix ? `${parentPrefix}-${camelToKebab(resolvedName)}` : camelToKebab(resolvedName);
+  const prefix = camelToKebab(resolvedName);
   return { resolvedName, prefix, parentPrefix };
 }
 

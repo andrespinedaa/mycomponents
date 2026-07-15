@@ -23,7 +23,7 @@ export type AlertConfig = ComponentConfig<{
     rounded: "md";
     border: "1px solid";
   };
-  sizes: "sm" | "md" | "lg";
+  sizes: "xs" | "sm" | "md" | "lg" | "xl" ;
   variants: "Subtle" | "Filled" | "Outlined";
 }>;
 

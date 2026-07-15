@@ -1,4 +1,5 @@
 import type { ElementType } from "react";
+import type { LayoutContextValue } from "../../context/LayoutContext";
 import type { ModProps } from "../../system/get-mod";
 import type {
   BuiltInMacros,
@@ -7,6 +8,7 @@ import type {
   StyleProps,
   SystemCSS,
   Theme,
+  ThemeBreakpoints,
   ThemeMacros,
 } from "../../theme";
 import type { PolymorphicRef } from "../../types/polimorphic.types";
@@ -24,18 +26,20 @@ export type BaseProps = {
   vars?: VarsProp;
   unstyled?: boolean;
   dataSlot?: string;
+  dataSlotParent?: string;
   mod?: ModProp | ModProp[];
   className?: string;
   style?: StyleProp;
   children?: React.ReactNode;
   apply?: ApplyProp | ApplyProp[];
+  orientation?: OrientationProp;
 };
 
 export type SystemProps = StyleProps & BaseProps;
 export type FactoryStatics = Record<string, React.ComponentType<any>>;
 
 export type FactoryConfig = {
-  sizes: Scales;
+  sizes: keyof ThemeBreakpoints | Scales;
   ownProps: object;
   presets?: string;
   defaultProps: object;
@@ -62,9 +66,8 @@ export type SetProp<Config extends FactoryConfig> = {
   set?: Unpack<Config["presets"] | SectionSets<Config>>;
 };
 
-
 export type VariantProp<Config extends FactoryConfig> = {
-  variant?: Unpack<Config["variants"]>;
+  variant?: Config["variants"];
 };
 
 // Props que renderRoot recibe — element-agnosticas para poder spreadearse en cualquier elemento.
@@ -80,6 +83,7 @@ export type RenderRootPayload<Config extends FactoryConfig> = Omit<
   VariantProp<Config> & {
     ref?: React.Ref<any>;
     vars?: VarsProp;
+    layoutCtx: LayoutContextValue;
   };
 
 export type RenderRootProp<Config extends FactoryConfig> = {
@@ -105,9 +109,10 @@ type Unpack<T> = T extends string
 type InternalRawProps<Config extends FactoryConfig> = {
   ref: PolymorphicRef<Config["defaultTag"]>;
   size?: Config["sizes"];
+  variant?: Config["variants"];
   section?: Unpack<keyof Config["sections"]>;
   set?: Unpack<Config["presets"] | SectionSets<Config>>;
-  variant?: Unpack<Config["variants"]>;
+  layoutCtx: LayoutContextValue;
 };
 
 export type FactoryInternalProps<Config extends FactoryConfig> = DefaultProps<

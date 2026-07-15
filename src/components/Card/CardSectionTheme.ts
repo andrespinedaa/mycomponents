@@ -6,22 +6,50 @@ export type CardSectionTheme = ThemeComponentConfig<CardSectionConfig>;
 export const CardSectionThemeComponent: CardSectionTheme = {
   parentName: "Card",
   sizes: {
-    xs: {p: "sm"},
+    xs: { p: "sm" },
     sm: { p: "sm" },
     md: { p: "md" },
     lg: { p: "lg" },
     xl: { p: "xl" },
   },
   sections: {
+    zIndex: "1",
+    position: "relative",
+    display: "flex",
+
     slots: {
-      header: { borderBottom: "1px solid $borderColor" },
-      body: { flex: "1" },
-      footer: { borderTop: "1px solid $borderColor" },
+      header: {
+        presets: {
+          bottom: {
+            align: "end",
+            flex: "2",
+          },
+          top: {
+            align: "start",
+            flex: "1",
+          },
+        },
+      },
+      body: {
+        flexDir: "column",
+        align: "start",
+        fontFamily: "monospace",
+      },
       media: {
+        flex: "1",
+        rounded: "md",
         overflow: "hidden",
         backgroundRepeat: "no-repeat",
         presets: {
-          cover: { backgroundSize: "cover", backgroundPosition: "center" },
+          cover: {
+            p: "0",
+            inset: "0",
+            zIndex: "0",
+            rounded: "0",
+            position: "absolute",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          },
           alignTop: { backgroundPosition: "center top" },
           alignBottom: { backgroundPosition: "center bottom" },
         },

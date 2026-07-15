@@ -1,4 +1,9 @@
-import { STYLE_PROPS_OVERRIDES, type CSSPropertyName, type PropCategory, type StylePropDef } from "./system-css.types";
+import {
+  STYLE_PROPS_OVERRIDES,
+  type CSSPropertyName,
+  type PropCategory,
+  type StylePropDef,
+} from "./system-css.types";
 
 // ─── CSS_PASSTHROUGH — props sin alias, sin tokens, sin responsive ────────────
 // prettier-ignore
@@ -11,6 +16,7 @@ const CSS_PASSTHROUGH = [
   "border", "borderTop", "borderRight", "borderBottom", "borderLeft",
   "cursor", "pointerEvents", "userSelect", "transition", "boxShadow", "justifyContent",
   "gridColumn", "gridRow", "gridArea", "gridAutoColumns", "gridAutoRows", "gridAutoFlow",
+  "objectFit", "objectPosition",
 ] as const;
 
 // ─── CSS_PROP_TO_CATEGORY — lookup runtime para resolveStyle ─────────────────
@@ -27,7 +33,9 @@ export const STYLE_PROPS_DATA: Record<string, StylePropDef> = {
     STYLE_PROPS_OVERRIDES.map((override) => [
       override.alias,
       {
-        properties: (Array.isArray(override.cssProp) ? [...override.cssProp] : [override.cssProp]) as CSSPropertyName[],
+        properties: (Array.isArray(override.cssProp)
+          ? [...override.cssProp]
+          : [override.cssProp]) as CSSPropertyName[],
         category: override.category,
         responsive: override.responsive ?? false,
       } satisfies StylePropDef,
