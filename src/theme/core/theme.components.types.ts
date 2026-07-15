@@ -56,10 +56,21 @@ type StaticsField<Config extends FactoryConfig> = Record<
   ThemeComponentConfig<any>
 >; /* Que añada el Componente primero a supported Components */
 
+// ─── Preset Entry ─────────────────────────────────────────────────────────────────────────────────
+// Un preset es un StyledBlock (aplica siempre) + overrides opcionales por orientation (aplican
+// además, cuando [data-orientation] coincide — mayor especificidad, gana sobre el flat compartido).
+// Valores literales — sin DSL $prop, a diferencia de OrientationField (que sí referencia `sizes`).
+// Mismo tipo para presets de nivel componente y de nivel slot — un componente hijo (ej. CardSection)
+// puede declarar un preset con el mismo nombre que uno del padre (ej. "background") para heredarlo
+// vía la cascada de compound component (ver useResolveLayout.ts).
+export type PresetEntry = StyledBlock & {
+  orientation?: Partial<Record<OrientationProp, StyledBlock>>;
+};
+
 // ─── Presets Field ─────────────────────────────────────────────────────────────────────────────────
 type PresetsField<Config extends FactoryConfig> = Partialized<
   NonNullable<Config["presets"]>,
-  StylePropsTokens
+  PresetEntry
 >;
 
 // ─── Orientation Field ─────────────────────────────────────────────────────────────────────────────────
@@ -69,7 +80,7 @@ type OrientationField = Partialized<OrientationProp, StylePropsTokens>;
 
 // ─── Sections Field ─────────────────────────────────────────────────────────────────────────────────
 export type SlotEntry<Presets extends string = string> = StyledBlock & {
-  presets?: Partialized<Presets, StyledBlock>;
+  presets?: Partialized<Presets, PresetEntry>;
 };
 type SectionsField<Config extends FactoryConfig> = StyledBlock & {
   slots?: {

@@ -26,6 +26,52 @@ function partitionEntry(
   return { flat, states };
 }
 
+// Overrides por orientation dentro de un preset → [selector][data-orientation="X"] { ... }
+// Cada bloque de orientation es un StyledBlock completo (flat + estados), igual que el preset base.
+function emitPresetOrientation(
+  selector: string,
+  orientationMap: Record<string, unknown> | undefined,
+  prefix: string,
+  theme: Theme,
+  parentPrefix: string | undefined,
+): string {
+  if (!orientationMap) return "";
+  let css = "";
+  for (const [orientationKey, block] of Object.entries(orientationMap)) {
+    if (!block || typeof block !== "object") continue;
+    const orientationSelector = `${selector}[data-orientation="${orientationKey}"]`;
+    const { flat, states } = partitionEntry(block as Record<string, unknown>);
+    const body = generateTokensCSS(flat, prefix, theme, parentPrefix);
+    if (body) css += `${orientationSelector}{${body}}`;
+    css += emitStateRules(orientationSelector, states, prefix, theme, parentPrefix);
+  }
+  return css;
+}
+
+// Un preset completo (PresetEntry: StyledBlock + orientation opcional) → selector base + estados +
+// overrides por orientation. Compartido por presets de nivel componente y de nivel slot.
+function emitPreset(
+  selector: string,
+  tokens: Record<string, unknown>,
+  prefix: string,
+  theme: Theme,
+  parentPrefix: string | undefined,
+): string {
+  const { flat, states } = partitionEntry(tokens, ["orientation"]);
+  let css = "";
+  const body = generateTokensCSS(flat, prefix, theme, parentPrefix);
+  if (body) css += `${selector}{${body}}`;
+  css += emitStateRules(selector, states, prefix, theme, parentPrefix);
+  css += emitPresetOrientation(
+    selector,
+    tokens["orientation"] as Record<string, unknown> | undefined,
+    prefix,
+    theme,
+    parentPrefix,
+  );
+  return css;
+}
+
 export function generateComponentPresets(
   componentName: string,
   config: GeneratorConfig,
@@ -35,13 +81,17 @@ export function generateComponentPresets(
   const base = buildSlotSelector(resolvedName);
   let css = "";
 
-  // ── flat presets: [data-set="X"] ────────────────────────────────────────────
+  // ── presets de nivel componente: [data-slot="X"][data-set="Y"] ────────────────────
   if (config.presets) {
     for (const [presetName, tokens] of Object.entries(config.presets)) {
       if (!tokens || Object.keys(tokens).length === 0) continue;
-      const body = generateTokensCSS(tokens as Record<string, unknown>, prefix, theme, parentPrefix);
-      if (!body) continue;
-      css += `${base}[data-set="${presetName}"]{${body}}`;
+      css += emitPreset(
+        `${base}[data-set="${presetName}"]`,
+        tokens as Record<string, unknown>,
+        prefix,
+        theme,
+        parentPrefix,
+      );
     }
   }
 
@@ -69,18 +119,18 @@ export function generateComponentPresets(
         if (slotBody) css += `${slotSelector}{${slotBody}}`;
         css += emitStateRules(slotSelector, slotStates, prefix, theme, parentPrefix);
 
-        // ③ Sets del slot → [data-slot="X"][data-section="Y"][data-set="Z"]
+        // ③ Presets del slot → [data-slot="X"][data-section="Y"][data-set="Z"]
         const presetsMap = slotObj["presets"] as Record<string, unknown> | undefined;
         if (presetsMap) {
           for (const [presetName, presetVal] of Object.entries(presetsMap)) {
             if (!presetVal || typeof presetVal !== "object") continue;
-            const presetSelector = `${slotSelector}[data-set="${presetName}"]`;
-            const { flat: pFlat, states: pStates } = partitionEntry(
+            css += emitPreset(
+              `${slotSelector}[data-set="${presetName}"]`,
               presetVal as Record<string, unknown>,
+              prefix,
+              theme,
+              parentPrefix,
             );
-            const presetBody = generateTokensCSS(pFlat, prefix, theme, parentPrefix);
-            if (presetBody) css += `${presetSelector}{${presetBody}}`;
-            css += emitStateRules(presetSelector, pStates, prefix, theme, parentPrefix);
           }
         }
       }

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLayoutContext, type LayoutContextValue } from "../context/LayoutContext";
 import type { OrientationProp } from "../factory";
+import type { GeneratorConfig } from "../theme/generators/css-gen-utils";
 import type { Theme, Scales, ComponentVariants } from "../theme";
 
 export type ResolvedLayout = {
@@ -21,7 +22,48 @@ function resolveBreakpointSize(theme: Theme, viewportW: number): Scales | undefi
   return (sorted.filter((bp) => viewportW >= bp.px).at(-1) ?? sorted[0]).name;
 }
 
-export function useResolveLayout(own: LayoutContextValue, theme: Theme): ResolvedLayout {
+// Nombres de preset propios de este componente — de su `presets` de nivel raíz y de los
+// `presets` de TODOS sus slots (sin importar cuál `section` esté activa ahora mismo). Usado
+// para el gate por nombre de la cascada de `set` — ver resolveInheritedSet.
+function collectOwnPresetNames(config: GeneratorConfig | undefined): Set<string> {
+  const names = new Set<string>();
+  if (config?.presets) {
+    for (const key of Object.keys(config.presets)) names.add(key);
+  }
+  const slots = (
+    config?.sections as { slots?: Record<string, { presets?: Record<string, unknown> }> } | undefined
+  )?.slots;
+  if (slots) {
+    for (const slot of Object.values(slots)) {
+      if (slot?.presets) for (const key of Object.keys(slot.presets)) names.add(key);
+    }
+  }
+  return names;
+}
+
+// `set` hereda del contexto SOLO si se cumplen dos condiciones a la vez:
+// 1. Family — quien proveyó el layer de contexto activo es el padre que este componente declaró
+//    (`componentConfig.parentName`). Nunca un ancestro cualquiera — así Badge, que no declara
+//    parentName, nunca puede heredar nada sin importar dónde se anide.
+// 2. Nombre — este componente (o alguno de sus slots) también declara un preset con ese mismo
+//    nombre. Así "background" en Card solo llega a CardSection si CardSection TAMBIÉN tiene un
+//    preset "background" — nunca por coincidencia accidental de string.
+function resolveInheritedSet(
+  layout: LayoutContextValue,
+  componentConfig: GeneratorConfig | undefined,
+  ownPresetNames: Set<string>,
+): string | undefined {
+  const isFromDeclaredParent =
+    Boolean(componentConfig?.parentName) && layout.componentName === componentConfig?.parentName;
+  if (!isFromDeclaredParent || layout.set == null) return undefined;
+  return ownPresetNames.has(layout.set) ? layout.set : undefined;
+}
+
+export function useResolveLayout(
+  own: LayoutContextValue,
+  theme: Theme,
+  componentConfig?: GeneratorConfig,
+): ResolvedLayout {
   const [viewportW, setViewportW] = useState(() => window?.innerWidth ?? 0);
 
   useEffect(() => {
@@ -32,15 +74,16 @@ export function useResolveLayout(own: LayoutContextValue, theme: Theme): Resolve
 
   const sizeResponsive = useMemo(() => resolveBreakpointSize(theme, viewportW), [theme, viewportW]);
   const layout = useLayoutContext();
+  const ownPresetNames = useMemo(() => collectOwnPresetNames(componentConfig), [componentConfig]);
 
-  // set/variant NO heredan del contexto — son selectores de estilo propios del componente, no
-  // "ambiente" compartido. Un componente anidado por casualidad (ej. Badge dentro de Card) no debe
-  // heredar el variant/set de un ancestro con un vocabulario de estilos completamente distinto.
-  // size/orientation sí son ambientales (viewport, dirección de layout) y se propagan a propósito.
+  // variant NO hereda del contexto — es un selector de estilo propio del componente, no "ambiente"
+  // compartido, y a diferencia de `set` no tiene un mecanismo de gate por nombre (todavía).
+  // size/orientation sí son ambientales (viewport, dirección de layout) y se propagan siempre.
+  // set hereda solo bajo el gate de compound component — ver resolveInheritedSet.
   return {
-    set: own.set,
+    set: own.set ?? resolveInheritedSet(layout, componentConfig, ownPresetNames),
     variant: own.variant,
     size: own.size ?? layout.size ?? sizeResponsive,
-    orientation: own.orientation ?? layout.orientation
+    orientation: own.orientation ?? layout.orientation,
   };
 }

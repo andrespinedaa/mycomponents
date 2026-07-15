@@ -52,7 +52,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
       size: resolvedSize,
       variant: resolvedVariant,
       orientation: resolvedOrientation,
-    } = useResolveLayout({ size, variant, set, orientation }, theme);
+    } = useResolveLayout({ size, variant, set, orientation }, theme, componentConfig);
     const vars = resolveVarsDSL(varsRaw, camelToKebab(resolvedComponentName));
     const dataName = dataSlot || inheritedSlot || resolvedComponentName || undefined;
 
@@ -69,8 +69,9 @@ export function ComponentFactory<Config extends FactoryConfig>({
         variant: resolvedVariant,
         set: resolvedSet,
         orientation: resolvedOrientation,
+        componentName: resolvedComponentName,
       }),
-      [resolvedSize, resolvedVariant, resolvedSet, resolvedOrientation],
+      [resolvedSize, resolvedVariant, resolvedSet, resolvedOrientation, resolvedComponentName],
     );
 
     if (!render && !renderRoot) {
