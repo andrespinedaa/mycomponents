@@ -11,11 +11,14 @@ export type ResolvedLayout = {
 };
 
 function resolveBreakpointSize(theme: Theme, viewportW: number): Scales | undefined {
-  return Object.entries(theme.breakpoints)
+  const sorted = Object.entries(theme.breakpoints)
     .map(([name, val]) => ({ name: name as Scales, px: parseInt(val) }))
-    .sort((a, b) => a.px - b.px)
-    .filter((bp) => viewportW >= bp.px)
-    .at(-1)?.name;
+    .sort((a, b) => a.px - b.px);
+
+  if (sorted.length === 0) return undefined;
+
+  // Viewport menor al breakpoint más chico → floor al más chico, nunca undefined
+  return (sorted.filter((bp) => viewportW >= bp.px).at(-1) ?? sorted[0]).name;
 }
 
 export function useResolveLayout(own: LayoutContextValue, theme: Theme): ResolvedLayout {
