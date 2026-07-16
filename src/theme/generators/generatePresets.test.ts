@@ -84,18 +84,16 @@ describe("generateComponentPresets", () => {
     it("genera [data-slot][data-section][data-set][data-orientation]", () => {
       const config: TestConfig = {
         parentName: "Card",
-        sections: {
-          slots: {
-            media: {
-              presets: {
-                background: {
-                  objectFit: "cover",
-                  orientation: {
-                    vertical: { aspectRatio: "3/4" },
-                    horizontal: { aspectRatio: "16/9" },
-                  },
-                } as any,
-              },
+        slots: {
+          media: {
+            presets: {
+              background: {
+                objectFit: "cover",
+                orientation: {
+                  vertical: { aspectRatio: "3/4" },
+                  horizontal: { aspectRatio: "16/9" },
+                },
+              } as any,
             },
           },
         } as any,

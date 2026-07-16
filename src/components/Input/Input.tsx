@@ -1,6 +1,6 @@
 import type { InputHTMLAttributes } from "react";
 import { ComponentFactory, type ComponentConfig } from "../../factory";
-import { Box, Flex, Text } from "../Primitives";
+import { Box, Text } from "../Primitives";
 
 type SafeInputHTMLAttributes = Omit<InputHTMLAttributes<HTMLInputElement>, "size">;
 
@@ -26,6 +26,7 @@ export const Input = ComponentFactory<InputConfig>({
   render: function InputRender({
     ref,
     id,
+    set,
     type,
     name,
     hint,
@@ -39,6 +40,7 @@ export const Input = ComponentFactory<InputConfig>({
     onChange,
     readOnly,
     placeholder,
+    orientation,
     leftSection,
     rightSection,
     defaultValue,
@@ -51,7 +53,7 @@ export const Input = ComponentFactory<InputConfig>({
     const hasError = Boolean(error);
 
     return (
-      <Box ref={ref} display="flex" flexDir="column" {...rest}>
+      <Box ref={ref} flexDir="column" {...rest}>
         {label && (
           <Text as="label" htmlFor={inputId} size="sm" weight={500} mb="xs">
             {label}
@@ -64,19 +66,12 @@ export const Input = ComponentFactory<InputConfig>({
         )}
 
         <Box
-          data-slot="Input"
-          data-variant={variant}
-          data-size={size}
-          data-disabled={disabled || undefined}
-          data-invalid={hasError || undefined}
-          display="flex"
-          align="center"
-          position="relative"
+          mod={[{ variant, size, set, orientation, disabled: disabled, invalid: hasError }]}
         >
           {leftSection && (
-            <Flex apply="@flexCenter" flexShrink={1} px="xs">
+            <Box apply="@flexCenter" flexShrink={1} px="xs">
               {leftSection}
-            </Flex>
+            </Box>
           )}
 
           <Box
@@ -100,9 +95,9 @@ export const Input = ComponentFactory<InputConfig>({
           />
 
           {rightSection && (
-            <Flex apply="@flexCenter" flexShrink={1} px="xs">
+            <Box apply="@flexCenter" flexShrink={1} px="xs">
               {rightSection}
-            </Flex>
+            </Box>
           )}
         </Box>
 

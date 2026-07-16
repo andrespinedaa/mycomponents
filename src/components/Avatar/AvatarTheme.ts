@@ -11,4 +11,11 @@ export const AvatarThemeComponent: AvatarThemeConfig = {
     lg: { w: "lg", h: "lg", fontSize: "lg" },
     xl: { w: "xl", h: "xl", fontSize: "xl" },
   },
+
+  variants: {
+    flexShrink: 0,
+    overflow: "hidden",
+    userSelect: "none",
+    display: "inline-flex",
+  }
 };

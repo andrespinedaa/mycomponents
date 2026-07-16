@@ -112,8 +112,8 @@ export const Orientation: Story = {
   ),
 };
 
-// ─── Sections ─────────────────────────────────────────────────────────────────
-export const Sections: Story = {
+// ─── Slots ─────────────────────────────────────────────────────────────────
+export const Slots: Story = {
   render: () => (
     <Card variant="Default" size="md" w="360px">
       <Card.Section section="header" p="md" bg="#f9fafb" borderBottom="1px solid #e5e7eb">

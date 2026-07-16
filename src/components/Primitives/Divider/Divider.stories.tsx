@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Stack } from "../Stack/Stack";
 import { Text } from "../Text/Text";
 import { Divider } from "./Divider";
+import { Box } from "../Box";
 
 const meta = {
   title: "Primitives/Divider",
@@ -37,11 +37,11 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {},
   render: (args) => (
-    <Stack gap="sm" w="400px">
+    <Box gap="sm" w="400px">
       <Text>Sección A</Text>
       <Divider {...args} />
       <Text>Sección B</Text>
-    </Stack>
+    </Box>
   ),
 };
 
@@ -49,12 +49,12 @@ export const Default: Story = {
 
 export const Thickness: Story = {
   render: () => (
-    <Stack gap="lg" w="400px">
+    <Box gap="lg" w="400px">
       <Divider thickness="1px" />
       <Divider thickness="2px" />
       <Divider thickness="4px" />
       <Divider thickness="8px" />
-    </Stack>
+    </Box>
   ),
 };
 
@@ -62,12 +62,12 @@ export const Thickness: Story = {
 
 export const Color: Story = {
   render: () => (
-    <Stack gap="lg" w="400px">
+    <Box gap="lg" w="400px">
       <Divider color="primary.300" />
       <Divider color="primary.500" />
       <Divider color="primary.700" />
       <Divider color="neutral.300" thickness="2px" />
-    </Stack>
+    </Box>
   ),
 };
 
@@ -76,11 +76,11 @@ export const Color: Story = {
 export const WithLabel: Story = {
   args: { label: "o continúa con" },
   render: (args) => (
-    <Stack gap="lg" w="400px">
+    <Box gap="lg" w="400px">
       <Divider {...args} />
       <Divider label="Sección" color="primary.400" thickness="2px" />
       <Divider label="2024" />
-    </Stack>
+    </Box>
   ),
 };
 
@@ -107,10 +107,10 @@ export const Playground: Story = {
     label: "",
   },
   render: (args) => (
-    <Stack gap="sm" w="400px">
+    <Box gap="sm" w="400px">
       <Text>Arriba del separador</Text>
       <Divider {...args} />
       <Text>Abajo del separador</Text>
-    </Stack>
+    </Box>
   ),
 };

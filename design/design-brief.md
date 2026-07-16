@@ -7,7 +7,7 @@
 
 MyComponents es una librería de componentes React con un sistema de tokens CSS basado en custom properties con el prefijo `--mycomponents-`. Los tokens se inyectan en `:root` y los componentes los consumen via variables propias. El sistema soporta dark/light mode via `data-color-scheme` en el elemento raíz.
 
-**Componentes existentes:** Button, Badge, Alert, Avatar, Input, Card (+ Header, Body, Footer, Section, Image), Divider, Text, Box, Flex, Grid.
+**Componentes existentes:** Button, Badge, Alert, Avatar, Input, Card (+ Header, Body, Footer, Section, Image), Divider, Text, Box, Grid.
 
 **Variables de tema que ya existen en código:**
 - Escala de colores: primary, secondary, neutral, success, warning, danger, info (matices 50→950)

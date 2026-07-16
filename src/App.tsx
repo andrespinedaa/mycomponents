@@ -14,14 +14,14 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Box minH="100vh" p="40px">
-        <Card variant="Elevated" orientation="horizontal">
+        <Card variant="Elevated" >
           <Card.Section section="media" set="cover">
             <Image src={bgImage} set="cover" />
           </Card.Section>
           <Card.Section section="header" as="header" set="bottom">
-            {badgeInfo.map((b) => {
+            {badgeInfo.map((b, i) => {
               return (
-                <Badge>
+                <Badge key={i}>
                   <DotBadge dotColor="success.300" />
                   {b.data}
                 </Badge>

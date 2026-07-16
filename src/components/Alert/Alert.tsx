@@ -1,5 +1,5 @@
 import { ComponentFactory, type ComponentConfig } from "../../factory";
-import { Box, Flex, Text } from "../Primitives";
+import { Box, Text } from "../Primitives";
 
 export type AlertSeverity = "info" | "success" | "warning" | "danger";
 
@@ -17,28 +17,16 @@ export type AlertConfig = ComponentConfig<{
   ownProps: AlertOwnProps;
   defaultProps: {
     severity: "info";
-    variant: "Filled";
-    size: "md";
-    gap: "sm";
-    rounded: "md";
-    border: "1px solid";
   };
-  sizes: "xs" | "sm" | "md" | "lg" | "xl" ;
+  sizes: "xs" | "sm" | "md" | "lg" | "xl";
   variants: "Subtle" | "Filled" | "Outlined";
 }>;
 
 export const Alert = ComponentFactory<AlertConfig>({
   componentName: "Alert",
-  defaultProps: {
-    severity: "info",
-    variant: "Filled",
-    size: "md",
-    gap: "sm",
-    rounded: "md",
-    border: "1px solid",
-    role: "alert",
-  },
+  defaultProps: { severity: "info", role: "alert" },
   render: function AlertRender({
+    set,
     ref,
     icon,
     size,
@@ -51,7 +39,7 @@ export const Alert = ComponentFactory<AlertConfig>({
     ...rest
   }) {
     return (
-      <Flex ref={ref} mod={{ size, variant }} {...rest}>
+      <Box ref={ref} mod={{ size, variant, set }} {...rest}>
         <Box as="span" flexShrink={0} aria-hidden>
           {icon}
         </Box>
@@ -74,7 +62,7 @@ export const Alert = ComponentFactory<AlertConfig>({
             ✕
           </Box>
         )}
-      </Flex>
+      </Box>
     );
   },
 });

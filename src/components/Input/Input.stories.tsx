@@ -109,8 +109,8 @@ export const UnstyledStates: Story = {
   ),
 };
 
-// ─── WithSections ─────────────────────────────────────────────────────────────
-export const WithSections: Story = {
+// ─── WithSlots ─────────────────────────────────────────────────────────────
+export const WithSlots: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem", width: 360 }}>
       <div>

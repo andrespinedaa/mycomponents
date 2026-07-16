@@ -25,23 +25,11 @@ function collectStyledBlockKeys(block: Record<string, unknown>, usedKeys: Set<st
   }
 }
 
-// Collects keys from a SectionsConfig: root flat+states + slots (each with flat+states+presets).
-function collectSectionsConfig(sections: Record<string, unknown>, usedKeys: Set<string>): void {
-  for (const [key, value] of Object.entries(sections)) {
-    if (key === "slots") {
-      if (!value || typeof value !== "object") continue;
-      for (const slotVal of Object.values(value as Record<string, unknown>)) {
-        if (!slotVal || typeof slotVal !== "object") continue;
-        collectSlotEntry(slotVal as Record<string, unknown>, usedKeys);
-      }
-      continue;
-    }
-    if (value == null) continue;
-    if (typeof value !== "object") {
-      usedKeys.add(key);
-    } else if (isStateKey(key)) {
-      collectStyledBlockKeys(value as Record<string, unknown>, usedKeys);
-    }
+// Collects keys from a SlotsConfig — mapa directo de nombre de slot → SlotEntry (flat+states+presets).
+function collectSlotsConfig(slots: Record<string, unknown>, usedKeys: Set<string>): void {
+  for (const slotVal of Object.values(slots)) {
+    if (!slotVal || typeof slotVal !== "object") continue;
+    collectSlotEntry(slotVal as Record<string, unknown>, usedKeys);
   }
 }
 
@@ -70,7 +58,7 @@ export function generateComponentBases(
   componentName: string,
   config: GeneratorConfig,
 ): string {
-  if (!config?.variants && !config?.sizes && !config?.presets && !config?.sections) return "";
+  if (!config?.variants && !config?.sizes && !config?.presets && !config?.slots) return "";
   const { resolvedName, prefix } = resolveGeneratorNames(componentName, config);
 
   const usedKeys = new Set<string>();
@@ -89,8 +77,8 @@ export function generateComponentBases(
     for (const key of Object.keys(tokens)) usedKeys.add(key);
   }
 
-  if (config.sections) {
-    collectSectionsConfig(config.sections as Record<string, unknown>, usedKeys);
+  if (config.slots) {
+    collectSlotsConfig(config.slots as Record<string, unknown>, usedKeys);
   }
 
   if (usedKeys.size === 0) return "";

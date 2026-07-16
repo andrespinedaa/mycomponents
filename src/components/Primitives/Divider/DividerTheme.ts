@@ -4,13 +4,17 @@ import type { DividerConfig } from "./Divider"
 export type DividerThemeComponent = ThemeComponentConfig<DividerConfig>;
 
 export const DividerTheme: DividerThemeComponent = {
-  // `thickness` hoy se controla vía prop (--divider-thickness inline), no vía [data-size] —
-  // placeholders vacíos para cumplir el contrato de `sizes` requerido.
   sizes: {
-    xs: {},
-    sm: {},
-    md: {},
-    lg: {},
-    xl: {},
+    xs: { w: "100%", h: "1px" },
+    sm: { w: "100%", h: "1px" },
+    md: { w: "100%", h: "1px" },
+    lg: { w: "100%", h: "1px" },
+    xl: { w: "100%", h: "2px" },
   },
+
+  variants: {
+    display: "flex",
+    align: "center",
+    gap: "sm"
+  }
 };

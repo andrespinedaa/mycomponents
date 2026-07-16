@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { ComponentFactory, type ComponentConfig } from "../../factory";
 import { Box } from "../Primitives/Box";
-import { Flex } from "../Primitives/Flex/Flex";
 
 export interface AvatarOwnProps {
   src?: string;
@@ -16,12 +15,7 @@ export type AvatarConfig = ComponentConfig<{
   ownProps: AvatarOwnProps;
   defaultProps: {
     shape: "circle";
-    size: "md";
-    display: "inline-flex";
-    overflow: "hidden";
-    flexShrink: 0;
     userSelect: "none";
-    variant: "Filled";
   };
   sizes: "xs" | "sm" | "md" | "lg" | "xl";
   variants: "Filled";
@@ -35,16 +29,7 @@ function getInitials(name: string): string {
 
 export const Avatar = ComponentFactory<AvatarConfig>({
   componentName: "Avatar",
-  defaultProps: {
-    size: "md",
-    role: "img",
-    flexShrink: 0,
-    shape: "circle",
-    overflow: "hidden",
-    userSelect: "none",
-    display: "inline-flex",
-    variant: "Filled",
-  },
+  defaultProps: { role: "img", shape: "circle", userSelect: "none" },
   render: function AvatarRender({
     src,
     alt,
@@ -80,7 +65,7 @@ export const Avatar = ComponentFactory<AvatarConfig>({
     }
 
     return (
-      <Flex
+      <Box
         ref={ref}
         apply="@flexCenter"
         aria-label={alt ?? name}
@@ -90,7 +75,7 @@ export const Avatar = ComponentFactory<AvatarConfig>({
         {...rest}
       >
         {children ?? (name ? getInitials(name) : "?")}
-      </Flex>
+      </Box>
     );
   },
 });

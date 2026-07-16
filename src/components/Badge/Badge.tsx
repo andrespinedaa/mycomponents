@@ -1,7 +1,7 @@
-import { LayoutProvider } from "../../context/LayoutContext";
 import { ComponentFactory, type ComponentConfig, type FactoryRender } from "../../factory";
 import type { StyleProps } from "../../theme";
-import { Box } from "../Primitives/Box";
+import { Box, type BoxConfig } from "../Primitives/Box";
+import { Layout, type LayoutConfig } from "../Primitives/Box/Layout";
 
 export interface DotBadgeOwnProps {
   dotColor?: StyleProps["bg"];
@@ -9,25 +9,16 @@ export interface DotBadgeOwnProps {
 
 export type DotBadgeConfig = ComponentConfig<{
   defaultProps: {};
-  defaultTag: "span";
+  defaultTag: BoxConfig["defaultTag"];
   componentName: "DotBadge";
   ownProps: DotBadgeOwnProps;
   sizes: "xs" | "sm" | "md" | "lg" | "xl";
+  variants: "Filled";
 }>;
 
 export const DotBadge = ComponentFactory<DotBadgeConfig>({
   componentName: "DotBadge",
-  render: function DotBadgeRender({ dotColor, ref, variant, size, ...rest }) {
-    return (
-      <Box
-        ref={ref}
-        mod={{ variant, size }}
-        bg={dotColor}
-        vars={dotColor ? { "--dot-color": dotColor } : undefined}
-        {...rest}
-      />
-    );
-  },
+  render: ({ dotColor, ...rest }) => <Box bg={dotColor} vars={dotColor ? { "--dot-color": dotColor } : undefined} {...rest} />
 });
 
 export interface BadgeOwnProps {
@@ -38,7 +29,7 @@ export interface BadgeOwnProps {
 
 export type BadgeConfig = ComponentConfig<{
   componentName: "Badge";
-  defaultTag: "span";
+  defaultTag: LayoutConfig["defaultTag"];
   ownProps: BadgeOwnProps;
   defaultProps: {};
   sizes: "xs" | "sm" | "md" | "lg" | "xl";
@@ -47,13 +38,5 @@ export type BadgeConfig = ComponentConfig<{
 
 export const Badge = ComponentFactory<BadgeConfig>({
   componentName: "Badge",
-  render: function BadgeRender({ ref, layoutCtx, set, size, dotIcon, children, variant, ...rest }) {
-    return (
-      <LayoutProvider value={layoutCtx}>
-        <Box ref={ref} mod={{ size, variant, set }} {...rest}>
-          {children}
-        </Box>
-      </LayoutProvider>
-    );
-  },
+  render: (props) => <Layout {...props} />
 });

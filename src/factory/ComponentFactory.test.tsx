@@ -41,7 +41,7 @@ type NoRenderConfig = ComponentConfig<{
 const TestComponent = ComponentFactory<TestConfig>({
   componentName: "Test",
   defaultProps: { variant: "Outlined" },
-  render: ({ variant, children, ref, ...rest }) => (
+  render: ({ variant, children, ref, set, ...rest }) => (
     <Box as="button" ref={ref} mod={{ variant }} {...rest}>
       {children}
     </Box>
@@ -257,7 +257,6 @@ describe("ComponentFactory", () => {
         defaultProps: {};
         sizes: never;
         presets: string;
-        slots: string;
       }>;
       const Anon = ComponentFactory<AnonConfig>({ componentName: "", render: "div" });
       const { container } = render(<Anon>contenido</Anon>, { wrapper });
@@ -271,7 +270,7 @@ describe("ComponentFactory", () => {
       let prefix: string | undefined;
       const ThemeComponent = ComponentFactory<NoRenderConfig>({
         componentName: "NoRender",
-        render: function ThemeRender({ ref, children, ...rest }) {
+        render: function ThemeRender({ ref, children, set, variant, ...rest }) {
           const { theme } = useTheme();
           prefix = theme.cssVarPrefix;
           return (
@@ -310,7 +309,6 @@ describe("ComponentFactory", () => {
       defaultProps: {};
       sizes: never;
       presets: string;
-      slots: string;
     }>;
 
     const WithStatics = ComponentFactory<WithStaticsConfig>({

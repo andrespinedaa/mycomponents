@@ -1,4 +1,3 @@
-import type { ElementType } from "react";
 import type { LayoutContextValue } from "../../context/LayoutContext";
 import type { ModProps } from "../../system/get-mod";
 import type {
@@ -45,13 +44,13 @@ export type FactoryConfig = {
   defaultProps: object;
   componentName: string;
   statics?: FactoryStatics;
-  defaultTag: ElementType;
   variants?: ComponentVariants;
-  sections?: Record<string, string>;
+  slots?: Record<string, string>;
+  defaultTag: keyof React.JSX.IntrinsicElements;
 };
 
 type SectionSets<Config extends FactoryConfig> =
-  NonNullable<Config["sections"]>[keyof NonNullable<Config["sections"]>];
+  NonNullable<Config["slots"]>[keyof NonNullable<Config["slots"]>];
 
 export type ComponentConfig<Config extends FactoryConfig> = Config;
 
@@ -64,7 +63,7 @@ export type SizeProp<Config extends FactoryConfig> = {
 };
 
 export type SectionProp<Config extends FactoryConfig> = {
-  section?: Unpack<keyof Config["sections"]>;
+  section?: Unpack<keyof Config["slots"]>;
 };
 
 export type SetProp<Config extends FactoryConfig> = {
@@ -75,7 +74,10 @@ export type VariantProp<Config extends FactoryConfig> = {
   variant?: Config["variants"];
 };
 
-// Props que renderRoot recibe — element-agnosticas para poder spreadearse en cualquier elemento.
+export type RenderRootProp<Config extends FactoryConfig> = {
+  renderRoot?: (props: RenderRootPayload<Config>) => React.ReactNode;
+};
+
 export type RenderRootPayload<Config extends FactoryConfig> = Omit<
   React.HTMLAttributes<HTMLElement>,
   "translate"
@@ -88,15 +90,8 @@ export type RenderRootPayload<Config extends FactoryConfig> = Omit<
   VariantProp<Config> & {
     ref?: React.Ref<any>;
     vars?: VarsProp;
-    layoutCtx: LayoutContextValue;
   };
 
-export type RenderRootProp<Config extends FactoryConfig> = {
-  renderRoot?: (props: RenderRootPayload<Config>) => React.ReactNode;
-};
-
-// Superficie pública Config-dependiente — lo que PolymorphicPropsConfig expone al consumidor
-// (sumado a PolymorphicComponentProps/SystemProps, que son públicas pero no dependen de Config).
 export type ConfigProps<Config extends FactoryConfig> = SizeProp<Config> &
   SectionProp<Config> &
   SetProp<Config> &
@@ -107,31 +102,19 @@ export type ConfigProps<Config extends FactoryConfig> = SizeProp<Config> &
 // ─── NO PÚBLICAS ── viajan dentro del objeto de props, el consumidor NUNCA debe escribirlas ─
 // ════════════════════════════════════════════════════════════════════════════════════════
 
-// Computadas por el factory (typedRef, useMemo) — siempre presentes, nunca defaulteables por el
-// autor del componente. Pasarlas por DefaultProps sería un no-op: ya nacen requeridas.
-//
-// `ref` vive acá conceptualmente (el factory también la "computa") pero NO entra en
-// NonPublicProps: viaja por el canal de forwardRef (ver typedRef.ts), nunca dentro del objeto de
-// props, así que no tiene el mismo vector de fuga y no necesita la protección de abajo.
 export type FactoryComputedProps<Config extends FactoryConfig> = {
   ref: PolymorphicRef<Config["defaultTag"]>;
   layoutCtx: LayoutContextValue;
 };
 
-// Suscripción única de campos no-públicos que SÍ viajan por el objeto de props — por lo tanto
-// pueden filtrarse vía ...rest desde un ancestro sin `render` propio (ver ComponentFactory.tsx).
-// Agregar un campo nuevo aquí (no en cada sitio de uso) es lo único que hace falta para que
-// PolymorphicPropsConfig lo reconozca y el factory pueda destructurarlo sin castear.
 export type NonPublicProps<Config extends FactoryConfig> = Partial<
   Pick<FactoryComputedProps<Config>, "layoutCtx">
 >;
 
-// Resueltas por defaultProps + useResolveLayout (own ?? layoutContext ?? responsive) — opcionales
-// salvo que el componente declare un default, en cuyo caso DefaultProps las vuelve requeridas.
 export type FactoryResolvableProps<Config extends FactoryConfig> = {
   size?: Config["sizes"];
   variant?: Config["variants"];
-  section?: Unpack<keyof Config["sections"]>;
+  slots?: Unpack<keyof Config["slots"]>;
   set?: Unpack<Config["presets"] | SectionSets<Config>>;
 };
 

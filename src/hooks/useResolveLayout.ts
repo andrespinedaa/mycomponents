@@ -18,36 +18,24 @@ function resolveBreakpointSize(theme: Theme, viewportW: number): Scales | undefi
 
   if (sorted.length === 0) return undefined;
 
-  // Viewport menor al breakpoint más chico → floor al más chico, nunca undefined
   return (sorted.filter((bp) => viewportW >= bp.px).at(-1) ?? sorted[0]).name;
 }
 
-// Nombres de preset propios de este componente — de su `presets` de nivel raíz y de los
-// `presets` de TODOS sus slots (sin importar cuál `section` esté activa ahora mismo). Usado
-// para el gate por nombre de la cascada de `set` — ver resolveInheritedSet.
 function collectOwnPresetNames(config: GeneratorConfig | undefined): Set<string> {
   const names = new Set<string>();
   if (config?.presets) {
     for (const key of Object.keys(config.presets)) names.add(key);
   }
-  const slots = (
-    config?.sections as { slots?: Record<string, { presets?: Record<string, unknown> }> } | undefined
-  )?.slots;
-  if (slots) {
-    for (const slot of Object.values(slots)) {
+  if (config?.slots) {
+    for (const slot of Object.values(
+      config.slots as Record<string, { presets?: Record<string, unknown> }>,
+    )) {
       if (slot?.presets) for (const key of Object.keys(slot.presets)) names.add(key);
     }
   }
   return names;
 }
 
-// `set` hereda del contexto SOLO si se cumplen dos condiciones a la vez:
-// 1. Family — quien proveyó el layer de contexto activo es el padre que este componente declaró
-//    (`componentConfig.parentName`). Nunca un ancestro cualquiera — así Badge, que no declara
-//    parentName, nunca puede heredar nada sin importar dónde se anide.
-// 2. Nombre — este componente (o alguno de sus slots) también declara un preset con ese mismo
-//    nombre. Así "background" en Card solo llega a CardSection si CardSection TAMBIÉN tiene un
-//    preset "background" — nunca por coincidencia accidental de string.
 function resolveInheritedSet(
   layout: LayoutContextValue,
   componentConfig: GeneratorConfig | undefined,
@@ -76,10 +64,6 @@ export function useResolveLayout(
   const layout = useLayoutContext();
   const ownPresetNames = useMemo(() => collectOwnPresetNames(componentConfig), [componentConfig]);
 
-  // variant NO hereda del contexto — es un selector de estilo propio del componente, no "ambiente"
-  // compartido, y a diferencia de `set` no tiene un mecanismo de gate por nombre (todavía).
-  // size/orientation sí son ambientales (viewport, dirección de layout) y se propagan siempre.
-  // set hereda solo bajo el gate de compound component — ver resolveInheritedSet.
   return {
     set: own.set ?? resolveInheritedSet(layout, componentConfig, ownPresetNames),
     variant: own.variant,

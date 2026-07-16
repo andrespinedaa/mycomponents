@@ -11,4 +11,11 @@ export const AlertThemeComponent: AlertThemeConfig = {
     md: { p: "12px", fontSize: "13px" },
     lg: { p: "16px", fontSize: "14px" },
   },
+
+  variants: {
+    display: "flex",
+    gap: "sm",
+    rounded: "md",
+    border: "1px solid",
+  }
 };

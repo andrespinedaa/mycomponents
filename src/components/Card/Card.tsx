@@ -1,11 +1,8 @@
-import { LayoutProvider } from "../../context/LayoutContext";
-import { ComponentFactory, type ComponentConfig, type OrientationProp } from "../../factory";
-import { Flex } from "../Primitives";
+import { ComponentFactory, type ComponentConfig } from "../../factory";
+import { Layout } from "../Primitives/Box/Layout";
 import { CardSection } from "./CardSection";
 
-export interface CardOwnProps {
-  orientation?: OrientationProp;
-}
+export interface CardOwnProps {}
 
 export type CardConfig = ComponentConfig<{
   defaultTag: "div";
@@ -13,21 +10,13 @@ export type CardConfig = ComponentConfig<{
   ownProps: CardOwnProps;
   sizes: "xs" | "sm" | "md" | "lg" | "xl";
   statics: { Section: typeof CardSection };
-  defaultProps: { orientation: "vertical", variant: "Filled" };
   variants: "Filled" | "Elevated" | "Outlined";
+  defaultProps: { orientation: "vertical", variant: "Filled" };
 }>;
 
 export const Card = ComponentFactory<CardConfig>({
   componentName: "Card",
   statics: { Section: CardSection },
   defaultProps: { orientation: "vertical", variant: "Filled" },
-  render: function CardRender({ ref, layoutCtx, size, variant, children, orientation, ...rest }) {
-    return (
-      <LayoutProvider value={layoutCtx}>
-        <Flex ref={ref} mod={[{ orientation, size, variant }]} {...rest}>
-          {children}
-        </Flex>
-      </LayoutProvider>
-    );
-  },
+  render: (props) => <Layout {...props} />
 });

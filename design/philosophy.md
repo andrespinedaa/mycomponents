@@ -20,7 +20,6 @@ Todos los componentes se construyen con `ComponentFactory`. Nunca con `forwardRe
 ```ts
 export const Badge = ComponentFactory<BadgeConfig>({
   componentName: "Badge",       // key en theme.components
-  defaultTag: "span",           // tag HTML por defecto
   defaultProps: { variant: "Filled", size: "md" },
   render: function BadgeRender({ variant, size, ref, ...rest }) {
     // hooks locales y contextos van aquí
@@ -135,7 +134,7 @@ type BoxConfig = ComponentConfig<{
 - [x] `vars` para CSS custom properties por instancia
 - [x] Contextos tipados con `useCreateProvider`
 - [x] `LayoutContext` compartido entre compound components
-- [x] Componentes base: Box, Flex, Grid, Stack, Divider, Badge, Button, Card, Alert, Avatar, Input
+- [x] Componentes base: Box, Grid, Divider, Badge, Button, Card, Alert, Avatar, Input
 
 ### Próximo
 - [ ] Variantes responsive (`variant={{ base: "Filled", md: "Subtle" }}`)
@@ -148,7 +147,7 @@ type BoxConfig = ComponentConfig<{
 ### Decisiones descartadas con razón
 - **`useHooks`** — eliminado; hooks van directo en `render` con function declaration
 - **`PolymorphicFactory`** — eliminado; unificado en `ComponentFactory`. La polimorfía (`as`) la maneja el factory internamente; el render no recibe `Component`
-- **`Component` en render props** — eliminado; los renders usan `Box`/`Flex` directamente, no el elemento resuelto por `as`
+- **`Component` en render props** — eliminado; los renders usan `Box`/ directamente, no el elemento resuelto por `as`
 - **`H` generic en factories** — TypeScript no soporta inferencia genérica parcial cuando `Config` es explícito; no hay solución limpia sin cambiar el API
 - **CSS-in-JS runtime** — descartado por costo en bundle y performance; el sistema usa CSS custom properties + data attributes
 - **Contexto genérico `Record<string, unknown>`** — descartado; elimina tipos y causa re-renders innecesarios

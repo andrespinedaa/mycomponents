@@ -215,9 +215,8 @@ render: ({ ref, ...rest }) => {
 ```ts
 export const MiComponente = ComponentFactory<MiConfig>({
   componentName: "MiComponente",   // 1. nombre (igual al key en theme.components)
-  defaultTag: "div",               // 2. tag HTML por defecto
-  defaultProps: { ... },           // 3. valores iniciales — única fuente de verdad
-  render: function MiComponenteRender({ ref, ...rest }) { // 4. function nombrada si usa hooks
+  defaultProps: { ... },           // 2. valores iniciales — única fuente de verdad
+  render: function MiComponenteRender({ ref, ...rest }) { // 3. function nombrada si usa hooks o default tag
     return <Box ref={ref} {...rest} />;
   },
 });
@@ -251,7 +250,7 @@ Cuando el usuario diga `CREATE_STORYBOOK_{NOMBRE}`, crear un archivo `{Nombre}.s
 
 2. **AllVariants** — grid con todas las variantes × todos los tamaños juntos en una sola story. Usar una tabla visual: filas = variantes, columnas = tamaños.
 
-3. **Si el componente es compound** (tiene hijos como `Card.Section`, `Badge.DotBadge`, etc.), incluir una story `Sections` o `Children` que muestre cada hijo disponible con todas sus variantes de prop — orientaciones, tipos de section, etc.
+3. **Si el componente es compound** (tiene hijos como `Card.Section`, `Badge.DotBadge`, etc.), incluir una story `Slots` o `Children` que muestre cada hijo disponible con todas sus variantes de prop — orientaciones, tipos de section, etc.
 
 4. **Una story por variante** — cada variante con sus estados visuales:
    - Normal (reposo)

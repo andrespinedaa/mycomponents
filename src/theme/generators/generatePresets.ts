@@ -95,43 +95,30 @@ export function generateComponentPresets(
     }
   }
 
-  // ── sections: SectionsConfig schema ──────────────────────────────────────────
-  if (config.sections) {
-    const sectionsObj = config.sections as Record<string, unknown>;
+  // ── slots: mapa directo nombre → SlotEntry → [data-slot="X"][data-section="Y"] ────
+  if (config.slots) {
+    for (const [slotName, slotVal] of Object.entries(config.slots)) {
+      if (!slotVal || typeof slotVal !== "object") continue;
+      const slotObj = slotVal as Record<string, unknown>;
+      const slotSelector = `${base}[data-section="${slotName}"]`;
 
-    // ① Sections root — flat tokens + states → [data-slot="X"]
-    //    (base compartida: aplica a TODOS los slots del componente)
-    const { flat: rootFlat, states: rootStates } = partitionEntry(sectionsObj, ["slots"]);
-    const rootBody = generateTokensCSS(rootFlat, prefix, theme, parentPrefix);
-    if (rootBody) css += `${base}{${rootBody}}`;
-    css += emitStateRules(base, rootStates, prefix, theme, parentPrefix);
+      const { flat: slotFlat, states: slotStates } = partitionEntry(slotObj, ["presets"]);
+      const slotBody = generateTokensCSS(slotFlat, prefix, theme, parentPrefix);
+      if (slotBody) css += `${slotSelector}{${slotBody}}`;
+      css += emitStateRules(slotSelector, slotStates, prefix, theme, parentPrefix);
 
-    // ② Slots — por nombre → [data-slot="X"][data-section="Y"]
-    const slotsMap = sectionsObj["slots"] as Record<string, unknown> | undefined;
-    if (slotsMap) {
-      for (const [slotName, slotVal] of Object.entries(slotsMap)) {
-        if (!slotVal || typeof slotVal !== "object") continue;
-        const slotObj = slotVal as Record<string, unknown>;
-        const slotSelector = `${base}[data-section="${slotName}"]`;
-
-        const { flat: slotFlat, states: slotStates } = partitionEntry(slotObj, ["presets"]);
-        const slotBody = generateTokensCSS(slotFlat, prefix, theme, parentPrefix);
-        if (slotBody) css += `${slotSelector}{${slotBody}}`;
-        css += emitStateRules(slotSelector, slotStates, prefix, theme, parentPrefix);
-
-        // ③ Presets del slot → [data-slot="X"][data-section="Y"][data-set="Z"]
-        const presetsMap = slotObj["presets"] as Record<string, unknown> | undefined;
-        if (presetsMap) {
-          for (const [presetName, presetVal] of Object.entries(presetsMap)) {
-            if (!presetVal || typeof presetVal !== "object") continue;
-            css += emitPreset(
-              `${slotSelector}[data-set="${presetName}"]`,
-              presetVal as Record<string, unknown>,
-              prefix,
-              theme,
-              parentPrefix,
-            );
-          }
+      // Presets del slot → [data-slot="X"][data-section="Y"][data-set="Z"]
+      const presetsMap = slotObj["presets"] as Record<string, unknown> | undefined;
+      if (presetsMap) {
+        for (const [presetName, presetVal] of Object.entries(presetsMap)) {
+          if (!presetVal || typeof presetVal !== "object") continue;
+          css += emitPreset(
+            `${slotSelector}[data-set="${presetName}"]`,
+            presetVal as Record<string, unknown>,
+            prefix,
+            theme,
+            parentPrefix,
+          );
         }
       }
     }

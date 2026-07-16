@@ -13,3 +13,5 @@
 3. En el generador de tokens — emitir las CSS custom properties semánticas bajo `:root` (light) y `.dark` (o `[data-theme="dark"]`) selectors.
 
 **Por qué importa:** sin esto el consumidor no puede usar tokens semánticos para dark mode. Tiene que hardcodear `bg="neutral.50"` en lugar de `bg="surface"`, lo que rompe en dark mode.
+
+4. Hacer que el StyledBlock pueda heredarle a los hijos esitlos, tipo &: {}

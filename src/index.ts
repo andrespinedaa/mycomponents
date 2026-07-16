@@ -2,8 +2,6 @@ export { default as App } from './App';
 /* Primitives */
 export * from './components/Primitives/Box';
 export * from './components/Primitives/Text/Text';
-export * from './components/Primitives/Flex/Flex';
-export * from './components/Primitives/Stack/Stack';
 export * from './components/Primitives/Grid/Grid';
 export * from './components/Primitives/Image/Image';
 export * from './components/Primitives/Divider/Divider';

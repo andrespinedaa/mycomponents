@@ -1,14 +1,9 @@
-import {
-  ComponentFactory,
-  type ComponentConfig,
-  type OrientationProp,
-} from "../../../factory";
+import { ComponentFactory, type ComponentConfig, type OrientationProp } from "../../../factory";
 import type { CSSLength, ColorValue } from "../../../theme";
-import { Box, Flex, Text } from "..";
+import { Box } from "..";
 
 export interface DividerOwnProps {
   orientation?: OrientationProp;
-  position?: "start" | "center" | "end";
   thickness?: CSSLength;
   color?: ColorValue;
   label?: string;
@@ -20,9 +15,7 @@ export type DividerConfig = ComponentConfig<{
   ownProps: DividerOwnProps;
   defaultProps: {
     orientation: "horizontal";
-    position: "center";
     thickness: "1px";
-    size: "md";
   };
   sizes: "xs" | "sm" | "md" | "lg" | "xl";
   presets: "label";
@@ -30,52 +23,45 @@ export type DividerConfig = ComponentConfig<{
 
 export const Divider = ComponentFactory<DividerConfig>({
   componentName: "Divider",
-  defaultProps: { orientation: "horizontal", position: "center", thickness: "1px", size: "md" },
+  defaultProps: { orientation: "horizontal", thickness: "1px" },
   render: function DividerRender({
-    set: _set,
+    set,
     ref,
-    color,
+    size,
     label,
+    variant,
+    children,
     position,
     thickness,
-    size,
-    variant,
     orientation,
     ...rest
   }) {
-    const thicknessVar = { "--divider-thickness": thickness };
 
-    if (label) {
-      return (
-        <Flex
-          gap="sm"
-          ref={ref}
-          align="center"
-          role="separator"
-          vars={thicknessVar}
-          aria-orientation={orientation}
-          mod={[{ orientation, size, variant }]}
-          {...rest}
-        >
-          {position !== "start" && <Box flex={1} borderColor={color} />}
-          <Text as="span" whiteSpace="nowrap">
-            {label}
-          </Text>
-          {position !== "end" && <Box flex={1} borderColor={color} />}
-        </Flex>
-      );
-    }
+    <Box
+      ref={ref}
+      role="separator"
+      aria-orientation={orientation}
+      h={children ? undefined : thickness}
+      mod={[{ orientation, size, variant, set }]}
+      {...rest}
+    >
+      {children &&
+        <>
+          <Box
+            h={thickness}
+            role="separator"
+            aria-orientation={orientation}
+            mod={[{ orientation, size, variant, set }]}
+          />
+          {children}
+          <Box
+            h={thickness}
+            role="separator"
+            aria-orientation={orientation}
+            mod={[{ orientation, size, variant, set }]}
 
-    return (
-      <Box
-        ref={ref}
-        role="separator"
-        vars={thicknessVar}
-        borderColor={color}
-        aria-orientation={orientation}
-        mod={[{ orientation, size, variant }]}
-        {...rest}
-      />
-    );
+          />
+        </>}
+    </Box>
   },
 });

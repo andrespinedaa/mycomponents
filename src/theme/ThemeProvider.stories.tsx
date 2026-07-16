@@ -1,51 +1,45 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ThemeProvider } from "./ThemeProvider";
 import { createTheme } from "./createTheme";
-import { graphiteTheme } from "../themes/graphite";
-import { haloTheme } from "../themes/halo";
-import { terraTheme } from "../themes/terra";
-import { Button } from "../components/Button/Button";
-import { Badge } from "../components/Badge/Badge";
-import { Card } from "../components/Card/Card";
-import { Text } from "../components/Primitives/Text/Text";
-import { Flex } from "../components/Primitives/Flex/Flex";
+import { graphiteTheme, haloTheme, terraTheme } from "../themes";
+import { Box, Button, Badge, Card, Text } from "../components";
 
 const themes = [
   { key: "graphite", label: "Graphite", theme: createTheme(graphiteTheme) },
-  { key: "halo",     label: "Halo",     theme: createTheme(haloTheme)     },
-  { key: "terra",    label: "Terra",     theme: createTheme(terraTheme)    },
+  { key: "halo", label: "Halo", theme: createTheme(haloTheme) },
+  { key: "terra", label: "Terra", theme: createTheme(terraTheme) },
 ] as const;
 
 function ThemePreview({ label, theme }: { label: string; theme: ReturnType<typeof createTheme> }) {
   return (
     <ThemeProvider theme={theme}>
-      <Flex flexDir="column" gap="12px" p="16px" style={{ minWidth: 240, flex: 1 }}>
+      <Box flexDir="column" gap="12px" p="16px" style={{ minWidth: 240, flex: 1 }}>
         <Text as="h3" weight={700} fontSize="13px" color="var(--mycomponents-color-text)">
           {label}
         </Text>
 
-        <Flex gap="8px" flexWrap="wrap">
+        <Box gap="8px" flexWrap="wrap">
           <Button size="sm">Filled</Button>
           <Button size="sm" variant="Outlined">Outlined</Button>
           <Button size="sm" variant="Ghost">Ghost</Button>
-        </Flex>
+        </Box>
 
-        <Flex gap="6px">
+        <Box gap="6px">
           <Badge>Default</Badge>
           <Badge variant="Subtle">Subtle</Badge>
           <Badge variant="Outlined">Outlined</Badge>
-        </Flex>
+        </Box>
 
         <Card p="0" style={{ overflow: "hidden" }}>
-          <Flex flexDir="column" gap="4px" p="12px">
+          <Box flexDir="column" gap="4px" p="12px">
             <Text as="p" weight={600} fontSize="13px">Card title</Text>
             <Text as="p" fontSize="12px" color="var(--mycomponents-color-text-subtle)">
               Card description text
             </Text>
-          </Flex>
+          </Box>
         </Card>
 
-        <Flex gap="6px">
+        <Box gap="6px">
           {(["primary", "secondary", "danger", "success"] as const).map((color) => (
             <div
               key={color}
@@ -58,8 +52,8 @@ function ThemePreview({ label, theme }: { label: string; theme: ReturnType<typeo
               }}
             />
           ))}
-        </Flex>
-      </Flex>
+        </Box>
+      </Box>
     </ThemeProvider>
   );
 }
@@ -75,7 +69,7 @@ export const AllThemes: StoryObj = {
   name: "Side by side",
   decorators: [(Story) => <Story />],
   render: () => (
-    <Flex
+    <Box
       gap="0"
       style={{
         minHeight: "100vh",
@@ -94,7 +88,7 @@ export const AllThemes: StoryObj = {
           <ThemePreview label={label} theme={theme} />
         </div>
       ))}
-    </Flex>
+    </Box>
   ),
 };
 

@@ -13,14 +13,11 @@ This is why you can't call hooks directly inside `render`: `render` is a plain f
 ```ts
 ComponentFactory<Config>({
   componentName: "Divider",
-  defaultTag: "div",
-  useHooks: () => ({ card: useCardContext() }),   // hooks run here — component root
-  render: ({ orientation, ref, theme: _t, hooks: { card }, ...rest }) => {
-    // render runs here — plain function, no hooks allowed
+  render: ({ orientation, ref, ...rest }) => {
     const resolved = orientation ?? card.orientation ?? "horizontal";
     return <Box ref={ref} apply="@dividerLineH" {...rest} />;
   },
 });
 ```
 
-The consumer gets every prop category in one typed object: OwnProps, StyleProps, BaseProps, HTML attributes, ref, theme, and hooks. They destructure what they need and spread the rest — the primitives (Box, Flex, Text) know how to process everything else.
+The consumer gets every prop category in one typed object: OwnProps, StyleProps, BaseProps, HTML attributes, ref, theme, and hooks. They destructure what they need and spread the rest — the primitives (Box, Text) know how to process everything else.

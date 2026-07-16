@@ -70,7 +70,7 @@ function mergeSlotEntry(
   return result;
 }
 
-function mergeSections(
+function mergeSlots(
   base: Record<string, unknown> | undefined,
   override: Record<string, unknown> | undefined,
 ): Record<string, unknown> | undefined {
@@ -117,7 +117,7 @@ export function mergeComponents(
       variants:     mergeVariants(baseEntry?.variants, overrideEntry.variants),
       sizes:        { ...(baseEntry?.sizes ?? {}),         ...(overrideEntry.sizes ?? {}) },
       presets:      { ...(baseEntry?.presets ?? {}),       ...(overrideEntry.presets ?? {}) },
-      sections: mergeSections(baseEntry?.sections, overrideEntry.sections),
+      slots: mergeSlots(baseEntry?.slots, overrideEntry.slots),
     };
   }
 

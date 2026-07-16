@@ -1,17 +1,16 @@
-import { useMemo, type ElementType } from "react";
 import type {
   ComponentFactoryOptions,
   FactoryComponentReturn,
   FactoryConfig,
-  FactoryRender,
   FactoryRenderProps,
   RenderRootPayload,
 } from ".";
-import { useTheme, useResolveLayout } from "../hooks";
-import { extractStyleProps, getMod, resolvedStyles, resolveStyle } from "../system";
-import { resolveVarsDSL } from "../theme/generators/css-gen-utils";
-import type { PolymorphicPropsConfig } from "../types/polimorphic.types";
 import { camelToKebab, typedRef } from "../utils";
+import { useResolveLayout } from "../hooks";
+import type { PolymorphicPropsConfig } from "../types/polimorphic.types";
+import { extractStyleProps, getMod, resolvedStyles, resolveStyle } from "../system";
+import type { ElementType } from "react";
+import { useThemeContext, resolveVarsDSL } from "../theme";
 
 export function ComponentFactory<Config extends FactoryConfig>({
   render,
@@ -23,10 +22,8 @@ export function ComponentFactory<Config extends FactoryConfig>({
     props,
     ref,
   ) {
-    const { theme } = useTheme();
+    const { theme } = useThemeContext()
     const componentConfig = theme.components?.[componentName];
-    // El theme solo puede sobreescribir el tag cuando `render` es un tag nativo — no tiene
-    // sentido "sobreescribir" una función con un string.
     const resolvedTag = typeof render === "string" ? componentConfig?.defaultTag ?? render : render;
     const resolvedComponentName = componentConfig?.componentName ?? componentName;
     const parentName = componentConfig?.parentName;
@@ -65,22 +62,10 @@ export function ComponentFactory<Config extends FactoryConfig>({
       Component.displayName = resolvedDisplayName;
     }
 
-    const layoutCtx = useMemo(
-      () => ({
-        size: resolvedSize,
-        variant: resolvedVariant,
-        set: resolvedSet,
-        orientation: resolvedOrientation,
-        componentName: resolvedComponentName,
-      }),
-      [resolvedSize, resolvedVariant, resolvedSet, resolvedOrientation, resolvedComponentName],
-    );
-
     if (renderRoot) {
       return renderRoot({
         ref,
         vars,
-        layoutCtx,
         set: resolvedSet,
         size: resolvedSize,
         dataSlot: dataName,
@@ -115,13 +100,9 @@ export function ComponentFactory<Config extends FactoryConfig>({
       return <Element ref={ref} style={styles} {...elementProps} {...elementModProps} />;
     }
 
-    // Cast necesario — mismo límite genérico que el de más abajo (Config todavía es abstracto
-    // acá dentro): TS no puede reducir FactoryTag<Config> | FactoryRender<...> a algo invocable
-    // sin conocer Config concreto. Runtime-verificado por el `typeof === "string"` de arriba.
-    return (resolvedTag as FactoryRender<FactoryRenderProps<Config>>)({
+    return (resolvedTag!)({
       ref,
       vars,
-      layoutCtx,
       set: resolvedSet,
       size: resolvedSize,
       dataSlot: dataName,

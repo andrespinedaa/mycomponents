@@ -13,7 +13,9 @@ export const InputThemeComponent: InputThemeConfig = {
     xl: { h: "56px", fontSize: "xl", px: "md" },
   },
   variants: {
-    // Flat base (estilo por defecto — sin variant attr)
+    display: "flex",
+    align: "center",
+    position: "relative",
     bg: "neutral.50",
     color: "neutral.900",
     border: "1px solid",
