@@ -40,5 +40,11 @@ export function resolveValue(value: string | number, category: PropCategory, the
     return v;
   }
 
+  if (category === "font") {
+    if (v === "sans") return `var(--${p}-font-sans)`;
+    if (v === "mono") return `var(--${p}-font-mono)`;
+    return v;
+  }
+
   return v;
 }

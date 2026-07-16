@@ -6,11 +6,11 @@ export type CardSectionTheme = ThemeComponentConfig<CardSectionConfig>;
 export const CardSectionThemeComponent: CardSectionTheme = {
   parentName: "Card",
   sizes: {
-    xs: { p: "sm" },
-    sm: { p: "sm" },
-    md: { p: "md" },
-    lg: { p: "lg" },    
-    xl: { p: "xl" },
+    xs: { flex: "1", minH: "80px" },
+    sm: { flex: "1", minH: "120px" },
+    md: { flex: "1", minH: "160px" },
+    lg: { flex: "1", minH: "200px" },
+    xl: { flex: "1", minH: "240px" },
   },
   variants: {
     zIndex: "1",
@@ -19,7 +19,8 @@ export const CardSectionThemeComponent: CardSectionTheme = {
   },
   slots: {
     header: {
-      gap: "sm",
+      display: "flex",
+      justify: "space-around",
       presets: {
         bottom: {
           align: "end",
@@ -38,7 +39,6 @@ export const CardSectionThemeComponent: CardSectionTheme = {
     },
     media: {
       flex: "1",
-      rounded: "md",
       overflow: "hidden",
       backgroundRepeat: "no-repeat",
       presets: {
@@ -46,13 +46,13 @@ export const CardSectionThemeComponent: CardSectionTheme = {
           p: "0",
           inset: "0",
           zIndex: "0",
-          rounded: "0",
+          rounded: "md",
           position: "absolute",
           backgroundSize: "cover",
           backgroundPosition: "center",
         },
-        alignTop: { backgroundPosition: "center top" },
-        alignBottom: { backgroundPosition: "center bottom" },
+        top: { backgroundPosition: "center top" },
+        bottom: { backgroundPosition: "center bottom" },
       },
     },
   },

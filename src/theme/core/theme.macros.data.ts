@@ -118,6 +118,19 @@ export const defaultThemeMacros = {
     borderLeftStyle: "solid",
     borderLeftWidth: "var(--divider-thickness, 1px)",
   },
+  // Gradientes direccionales — vars: "--gradient-from": "primary.300", "--gradient-stop": "60%"
+  "@fadeDown":  { background: "linear-gradient(to bottom, var(--gradient-from, currentColor) var(--gradient-stop, 0%), transparent)" },
+  "@fadeUp":    { background: "linear-gradient(to top,    var(--gradient-from, currentColor) var(--gradient-stop, 0%), transparent)" },
+  "@fadeRight": { background: "linear-gradient(to right,  var(--gradient-from, currentColor) var(--gradient-stop, 0%), transparent)" },
+  "@fadeLeft":  { background: "linear-gradient(to left,   var(--gradient-from, currentColor) var(--gradient-stop, 0%), transparent)" },
+
+  // Push — empuja el elemento dentro de un flex/grid usando margin auto
+  "@pushLeft":   { marginRight: "auto" },
+  "@pushRight":  { marginLeft: "auto" },
+  "@pushTop":    { marginBottom: "auto" },
+  "@pushBottom": { marginTop: "auto" },
+  "@pushCenter": { margin: "auto" },
+
   // Resets
   "@noMargin": { margin: 0 },
   "@inputReset": {

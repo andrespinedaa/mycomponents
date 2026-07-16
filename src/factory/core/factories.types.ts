@@ -49,7 +49,7 @@ export type FactoryConfig = {
   defaultTag: keyof React.JSX.IntrinsicElements;
 };
 
-type SectionSets<Config extends FactoryConfig> =
+type SlotSets<Config extends FactoryConfig> =
   NonNullable<Config["slots"]>[keyof NonNullable<Config["slots"]>];
 
 export type ComponentConfig<Config extends FactoryConfig> = Config;
@@ -62,12 +62,12 @@ export type SizeProp<Config extends FactoryConfig> = {
   size?: Config["sizes"];
 };
 
-export type SectionProp<Config extends FactoryConfig> = {
-  section?: Unpack<keyof Config["slots"]>;
+export type SlotProp<Config extends FactoryConfig> = {
+  slots?: keyof Config["slots"];
 };
 
 export type SetProp<Config extends FactoryConfig> = {
-  set?: Unpack<Config["presets"] | SectionSets<Config>>;
+  set?: Config["presets"] | SlotSets<Config>;
 };
 
 export type VariantProp<Config extends FactoryConfig> = {
@@ -85,7 +85,7 @@ export type RenderRootPayload<Config extends FactoryConfig> = Omit<
   ModProps &
   Config["ownProps"] &
   SizeProp<Config> &
-  SectionProp<Config> &
+  SlotProp<Config> &
   SetProp<Config> &
   VariantProp<Config> & {
     ref?: React.Ref<any>;
@@ -93,7 +93,7 @@ export type RenderRootPayload<Config extends FactoryConfig> = Omit<
   };
 
 export type ConfigProps<Config extends FactoryConfig> = SizeProp<Config> &
-  SectionProp<Config> &
+  SlotProp<Config> &
   SetProp<Config> &
   VariantProp<Config> &
   RenderRootProp<Config>;
@@ -115,7 +115,7 @@ export type FactoryResolvableProps<Config extends FactoryConfig> = {
   size?: Config["sizes"];
   variant?: Config["variants"];
   slots?: Unpack<keyof Config["slots"]>;
-  set?: Unpack<Config["presets"] | SectionSets<Config>>;
+  set?: Unpack<Config["presets"] | SlotSets<Config>>;
 };
 
 export type FactoryInternalProps<Config extends FactoryConfig> = FactoryComputedProps<Config> &

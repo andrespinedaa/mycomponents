@@ -6,7 +6,7 @@ import { ButtonThemeComponent } from "../../components/Button/ButtonTheme";
 import { CardThemeComponent } from "../../components/Card/CardTheme";
 import { CardSectionThemeComponent } from "../../components/Card/CardSectionTheme";
 import { InputThemeComponent } from "../../components/Input/InputTheme";
-import { DotBadgeThemeComponent } from "../../components/Badge/DotBadgeTheme";
+import { DotThemeComponent } from "../../components/Dot/DotTheme";
 import { ImageThemeComponent } from "../../components/Primitives/Image/ImageTheme";
 
 export const defaultThemeComponents: ThemeComponents = {
@@ -15,7 +15,7 @@ export const defaultThemeComponents: ThemeComponents = {
   Input: InputThemeComponent,
   Avatar: AvatarThemeComponent,
   Button: ButtonThemeComponent, */
-  DotBadge: DotBadgeThemeComponent,
+  Dot: DotThemeComponent,
   Image: ImageThemeComponent,
   Badge: BadgeThemeComponent,
   Card: CardThemeComponent,

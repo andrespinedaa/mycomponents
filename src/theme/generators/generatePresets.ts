@@ -95,19 +95,19 @@ export function generateComponentPresets(
     }
   }
 
-  // ── slots: mapa directo nombre → SlotEntry → [data-slot="X"][data-section="Y"] ────
+  // ── slots: mapa directo nombre → SlotEntry → [data-slot="X"][data-slots="Y"] ────
   if (config.slots) {
     for (const [slotName, slotVal] of Object.entries(config.slots)) {
       if (!slotVal || typeof slotVal !== "object") continue;
       const slotObj = slotVal as Record<string, unknown>;
-      const slotSelector = `${base}[data-section="${slotName}"]`;
+      const slotSelector = `${base}[data-slots="${slotName}"]`;
 
       const { flat: slotFlat, states: slotStates } = partitionEntry(slotObj, ["presets"]);
       const slotBody = generateTokensCSS(slotFlat, prefix, theme, parentPrefix);
       if (slotBody) css += `${slotSelector}{${slotBody}}`;
       css += emitStateRules(slotSelector, slotStates, prefix, theme, parentPrefix);
 
-      // Presets del slot → [data-slot="X"][data-section="Y"][data-set="Z"]
+      // Presets del slot → [data-slot="X"][data-slots="Y"][data-set="Z"]
       const presetsMap = slotObj["presets"] as Record<string, unknown> | undefined;
       if (presetsMap) {
         for (const [presetName, presetVal] of Object.entries(presetsMap)) {

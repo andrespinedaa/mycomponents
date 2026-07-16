@@ -5,6 +5,7 @@ import type {
   CSSLength,
   ColorValue,
   FontSizeValue,
+  FontValue,
   RadiusValue,
   SpacingValue,
 } from "../core/theme.types";
@@ -15,7 +16,7 @@ export type CSSMultiFormat<Format extends CaseFormat = "camel"> = {
 };
 
 // ─── PropOverride ─────────────────────────────────────────────────────────────
-export type PropCategory = "spacing" | "color" | "radius" | "fontSize" | "raw";
+export type PropCategory = "spacing" | "color" | "radius" | "fontSize" | "font" | "raw";
 export type CSSPropertyName = Extract<keyof CSSProperties, string>;
 export type PropOverride<
   CSSProp extends CSSPropertyName,
@@ -82,6 +83,7 @@ export const STYLE_PROPS_OVERRIDES = [
 
   // Tipografía
   { cssProp: "fontSize",                         alias: "fontSize",    responsive: true,  category: "fontSize"},
+  { cssProp: "fontFamily",                       alias: "fontFamily",                     category: "font"    },
 
   // Responsive sin token
   { cssProp: "opacity",                          alias: "opacity",     responsive: true,  category: "raw"     },
@@ -121,6 +123,7 @@ export type CategoryToToken = {
   color: ColorValue;
   radius: RadiusValue;
   fontSize: FontSizeValue;
+  font: FontValue;
 };
 
 // ─── StylePropDef ─────────────────────────────────────────────────────────────

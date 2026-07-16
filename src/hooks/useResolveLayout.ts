@@ -36,15 +36,27 @@ function collectOwnPresetNames(config: GeneratorConfig | undefined): Set<string>
   return names;
 }
 
+function isDeclaredChild(
+  layout: LayoutContextValue,
+  componentConfig: GeneratorConfig | undefined,
+): boolean {
+  return Boolean(componentConfig?.parentName) && layout.componentName === componentConfig?.parentName;
+}
+
 function resolveInheritedSet(
   layout: LayoutContextValue,
   componentConfig: GeneratorConfig | undefined,
   ownPresetNames: Set<string>,
 ): string | undefined {
-  const isFromDeclaredParent =
-    Boolean(componentConfig?.parentName) && layout.componentName === componentConfig?.parentName;
-  if (!isFromDeclaredParent || layout.set == null) return undefined;
+  if (!isDeclaredChild(layout, componentConfig) || layout.set == null) return undefined;
   return ownPresetNames.has(layout.set) ? layout.set : undefined;
+}
+
+function resolveInheritedVariant(
+  layout: LayoutContextValue,
+  componentConfig: GeneratorConfig | undefined,
+): ComponentVariants | undefined {
+  return isDeclaredChild(layout, componentConfig) ? layout.variant : undefined;
 }
 
 export function useResolveLayout(
@@ -61,12 +73,12 @@ export function useResolveLayout(
   }, []);
 
   const sizeResponsive = useMemo(() => resolveBreakpointSize(theme, viewportW), [theme, viewportW]);
-  const layout = useLayoutContext();
   const ownPresetNames = useMemo(() => collectOwnPresetNames(componentConfig), [componentConfig]);
+  const layout = useLayoutContext();
 
   return {
     set: own.set ?? resolveInheritedSet(layout, componentConfig, ownPresetNames),
-    variant: own.variant,
+    variant: own.variant ?? resolveInheritedVariant(layout, componentConfig),
     size: own.size ?? layout.size ?? sizeResponsive,
     orientation: own.orientation ?? layout.orientation,
   };

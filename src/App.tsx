@@ -1,11 +1,10 @@
-import { Card } from "./components/Card/Card";
-import { Badge, DotBadge } from "./components/Badge/Badge";
-import { Text } from "./components/Primitives/Text/Text";
+import { Card, Badge, Dot } from "./components";
+import { Text, Box, Image, Divider } from "./components/Primitives";
 import { ThemeProvider } from "./theme";
 import { createTheme } from "./theme/createTheme";
 import { graphiteTheme, haloTheme } from "./themes";
-import { Box, Image } from "./components";
 import bgImage from "./components/Card/background 2.jpg";
+import bg2 from "./components/Card/background.jpg";
 
 const theme = createTheme(haloTheme);
 const badgeInfo = [{ data: "ice grey" }, { data: "3.2s" }, { data: "Manual" }];
@@ -14,21 +13,21 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Box minH="100vh" p="40px">
-        <Card variant="Elevated" >
-          <Card.Section section="media" set="cover">
-            <Image src={bgImage} set="cover" />
+        <Card orientation="horizontal" gap="lg">
+          <Card.Section slots="media" set="cover">
+            <Image src={bgImage} set="cover" rounded="sm" />
           </Card.Section>
-          <Card.Section section="header" as="header" set="bottom">
+          <Card.Section slots="header" as="header" set="bottom">
             {badgeInfo.map((b, i) => {
               return (
                 <Badge key={i}>
-                  <DotBadge dotColor="success.300" />
+                  <Dot dotColor="success.300" />
                   {b.data}
                 </Badge>
               );
             })}
           </Card.Section>
-          <Card.Section section="body">
+          <Card.Section slots="body" px="md">
             <Text as="h2" color="neutral.100" fontSize={"3xl"} m={"0"}>
               Porsche 911
             </Text>
@@ -36,6 +35,43 @@ function App() {
               GT3 RS
             </Text>
             <Text color="neutral.100">Timeless, iconic, and unapologetically analog…</Text>
+          </Card.Section>
+        </Card>
+        <Card>
+          <Card.Section slots="header" apply="@pushRight" p={"sm"}>
+            <Badge>
+              <Text>🚀</Text>
+              <Text>Prime Pick</Text>
+            </Badge>
+          </Card.Section>
+          <Card.Section slots="media" set="cover">
+            <Image src={bg2} alt="Walled Sabir" />
+          </Card.Section>
+          <Card.Section
+            slots="body"
+            apply="@fadeUp"
+            vars={{ "--gradient-from": "primary.500", "--gradient-stop": "60%" }}
+          >
+            <Box>
+              <Text as="h2">List: $250,000</Text>
+              <Box>
+                <Text>Harry Koingsbergstr 1063 AG Guilaume Briard</Text>
+                <Box>
+                  <Text>29 m2 living</Text>
+                  <Divider />
+                  <Text>2 Rooms</Text>
+                </Box>
+              </Box>
+            </Box>
+            <Card.Section slots="footer">
+              <Text>
+                By{" "}
+                <b>
+                  <i>Walled Sabir</i>
+                </b>{" "}
+                2 days ago
+              </Text>
+            </Card.Section>
           </Card.Section>
         </Card>
       </Box>

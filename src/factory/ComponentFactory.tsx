@@ -52,7 +52,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
       variant: resolvedVariant,
       orientation: resolvedOrientation,
     } = useResolveLayout({ size, variant, set, orientation }, theme, componentConfig);
-    const vars = resolveVarsDSL(varsRaw, camelToKebab(resolvedComponentName));
+    const vars = resolveVarsDSL(varsRaw, camelToKebab(resolvedComponentName), theme);
     const dataName = dataSlot || inheritedSlot || resolvedComponentName || undefined;
 
     const resolvedDisplayName = parentName
@@ -76,7 +76,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
     }
 
     if (typeof resolvedTag === "string") {
-      const { as, mod, apply, section, style: styleRaw, unstyled = false, ...rest } = restProps;
+      const { as, mod, apply, slots, style: styleRaw, unstyled = false, ...rest } = restProps;
       const Element = (as ?? resolvedTag) as ElementType;
       const { styleProps, elementProps } = extractStyleProps(rest);
       const { styles, hasResponsive } = resolvedStyles({
@@ -89,7 +89,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
       });
       const elementModProps = getMod([
         mod,
-        { section },
+        { slots },
         { slot: dataName },
         { set: resolvedSet },
         { size: resolvedSize },

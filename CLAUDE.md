@@ -250,7 +250,7 @@ Cuando el usuario diga `CREATE_STORYBOOK_{NOMBRE}`, crear un archivo `{Nombre}.s
 
 2. **AllVariants** — grid con todas las variantes × todos los tamaños juntos en una sola story. Usar una tabla visual: filas = variantes, columnas = tamaños.
 
-3. **Si el componente es compound** (tiene hijos como `Card.Section`, `Badge.DotBadge`, etc.), incluir una story `Slots` o `Children` que muestre cada hijo disponible con todas sus variantes de prop — orientaciones, tipos de section, etc.
+3. **Si el componente es compound** (tiene hijos como `Card.Section`, `Badge.Dot`, etc.), incluir una story `Slots` o `Children` que muestre cada hijo disponible con todas sus variantes de prop — orientaciones, tipos de slots, etc.
 
 4. **Una story por variante** — cada variante con sus estados visuales:
    - Normal (reposo)

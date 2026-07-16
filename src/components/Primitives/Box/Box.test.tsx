@@ -26,7 +26,7 @@ describe("Box", () => {
     });
 
     it("renderiza otro elemento con as", () => {
-      const { container } = render(<Box as="section">contenido</Box>, {
+      const { container } = render(<Box as="slots">contenido</Box>, {
         wrapper,
       });
       expect(container.firstChild?.nodeName).toBe("SECTION");
@@ -204,7 +204,7 @@ describe("Box", () => {
   describe("renderRoot", () => {
     it("renderRoot reemplaza el render por defecto", () => {
       const { container } = render(
-        <Box renderRoot={(props) => <section {...props} />}>contenido</Box>,
+        <Box renderRoot={(props) => <slots {...props} />}>contenido</Box>,
         { wrapper },
       );
       expect(container.firstChild?.nodeName).toBe("SECTION");

@@ -8,8 +8,8 @@ function isStateKey(key: string): boolean {
 }
 
 // Collects all leaf CSS token keys from a StyledBlock (flat + states + variants).
-// Recurses into state nodes and variant blocks; skips section presets (non-state objects
-// within section entries are handled separately in collectSectionKeys).
+// Recurses into state nodes and variant blocks; skips slots presets (non-state objects
+// within slots entries are handled separately in collectSectionKeys).
 function collectStyledBlockKeys(block: Record<string, unknown>, usedKeys: Set<string>): void {
   for (const [key, value] of Object.entries(block)) {
     if (value == null) continue;

@@ -5,19 +5,19 @@ export type BadgeThemeConfig = ThemeComponentConfig<BadgeConfig>;
 
 export const BadgeThemeComponent: BadgeThemeConfig = {
   sizes: {
-    xs: { h: "15px", w: "60px", fontSize: "xs", px: "xs", gap: "xs" },
-    sm: { h: "15px", w: "30%", fontSize: "xs", px: "xs", gap: "xs" },
-    md: { h: "20px", w: "30%", fontSize: "sm", px: "xs", gap: "xs" },
-    lg: { h: "25px", w: "35%", fontSize: "md", px: "xs", gap: "xs" },
-    xl: { h: "30px", w: "40%", fontSize: "lg", px: "xs", gap: "xs" },
+    xs: { h: "md", w: "70px", fontSize: "xs", rounded: "md", px: "xs", gap: "xs" },
+    sm: { h: "md", w: "80px", fontSize: "xs", rounded: "md", px: "xs", gap: "xs" },
+    md: { h: "20px", w: "90px", fontSize: "sm", rounded: "md", px: "xs", gap: "xs" },
+    lg: { h: "25px", w: "90px", fontSize: "md", rounded: "lg", px: "xs", gap: "xs" },
+    xl: { h: "30px", w: "100px", fontSize: "lg", rounded: "lg", px: "xs", gap: "xs" },
   },
   variants: {
     fontFamily: "monospace",
     display: "flex",
+    justify: "start",
     align: "center",
     bg: "neutral.100",
     color: "neutral.900",
-    rounded: "sm",
     Subtle: { bg: "primary.100", color: "primary.700" },
     Outlined: {
       bg: "transparent",

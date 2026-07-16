@@ -81,7 +81,7 @@ describe("generateComponentPresets", () => {
   });
 
   describe("preset con orientation — nivel slot", () => {
-    it("genera [data-slot][data-section][data-set][data-orientation]", () => {
+    it("genera [data-slot][data-slots][data-set][data-orientation]", () => {
       const config: TestConfig = {
         parentName: "Card",
         slots: {
@@ -101,13 +101,13 @@ describe("generateComponentPresets", () => {
       const result = generateComponentPresets("CardSection", config, defaultTheme);
 
       expect(result).toContain(
-        `[data-slot="CardSection"][data-section="media"][data-set="background"]{--card-section-object-fit:cover;}`,
+        `[data-slot="CardSection"][data-slots="media"][data-set="background"]{--card-slots-object-fit:cover;}`,
       );
       expect(result).toContain(
-        `[data-slot="CardSection"][data-section="media"][data-set="background"][data-orientation="vertical"]{--card-section-aspect-ratio:3/4;}`,
+        `[data-slot="CardSection"][data-slots="media"][data-set="background"][data-orientation="vertical"]{--card-slots-aspect-ratio:3/4;}`,
       );
       expect(result).toContain(
-        `[data-slot="CardSection"][data-section="media"][data-set="background"][data-orientation="horizontal"]{--card-section-aspect-ratio:16/9;}`,
+        `[data-slot="CardSection"][data-slots="media"][data-set="background"][data-orientation="horizontal"]{--card-slots-aspect-ratio:16/9;}`,
       );
     });
   });

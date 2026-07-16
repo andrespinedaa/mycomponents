@@ -13,13 +13,13 @@ type Story = StoryObj<typeof Card>;
 // ─── Contenido de ejemplo reutilizable ───────────────────────────────────────
 const SampleContent = () => (
   <>
-    <Card.Section section="header" p="md" borderBottom="1px solid #e5e7eb" >
+    <Card.Section slots="header" p="md" borderBottom="1px solid #e5e7eb" >
       <strong>Card Header</strong>
     </Card.Section>
-    <Card.Section section="body" p="md">
+    <Card.Section slots="body" p="md">
       Este es el cuerpo de la card con contenido de ejemplo.
     </Card.Section>
-    <Card.Section section="footer" p="md" borderTop="1px solid #e5e7eb">
+    <Card.Section slots="footer" p="md" borderTop="1px solid #e5e7eb">
       Footer
     </Card.Section>
   </>
@@ -49,13 +49,13 @@ export const AllVariants: Story = {
               <div key={size} style={{ flex: 1 }}>
                 <p style={{ marginBottom: "0.25rem", fontSize: "0.75rem", color: "#888" }}>{size}</p>
                 <Card variant={variant} size={size} orientation="vertical">
-                  <Card.Section section="header" p="sm">
+                  <Card.Section slots="header" p="sm">
                     Header
                   </Card.Section>
-                  <Card.Section section="body" p="sm">
+                  <Card.Section slots="body" p="sm">
                     Body
                   </Card.Section>
-                  <Card.Section section="footer" p="sm">
+                  <Card.Section slots="footer" p="sm">
                     Footer
                   </Card.Section>
                 </Card>
@@ -76,7 +76,7 @@ export const DefaultStates: Story = {
         <div key={variant}>
           <p style={{ marginBottom: "0.5rem", fontSize: "0.75rem", color: "#888" }}>{variant}</p>
           <Card variant={variant} size="md">
-            <Card.Section section="body" p="md">
+            <Card.Section slots="body" p="md">
               Normal
             </Card.Section>
           </Card>
@@ -93,8 +93,8 @@ export const Orientation: Story = {
       <div>
         <p style={{ marginBottom: "0.5rem", fontWeight: 600, fontSize: "0.875rem" }}>Vertical (default)</p>
         <Card variant="Default" size="md" orientation="vertical" w="320px">
-          <Card.Section section="media" h="120px" bg="#e5e7eb" />
-          <Card.Section section="body" p="md">
+          <Card.Section slots="media" h="120px" bg="#e5e7eb" />
+          <Card.Section slots="body" p="md">
             Contenido vertical
           </Card.Section>
         </Card>
@@ -102,8 +102,8 @@ export const Orientation: Story = {
       <div>
         <p style={{ marginBottom: "0.5rem", fontWeight: 600, fontSize: "0.875rem" }}>Horizontal</p>
         <Card variant="Default" size="md" orientation="horizontal" w="400px">
-          <Card.Section section="media" w="120px" bg="#e5e7eb" />
-          <Card.Section section="body" p="md">
+          <Card.Section slots="media" w="120px" bg="#e5e7eb" />
+          <Card.Section slots="body" p="md">
             Contenido horizontal
           </Card.Section>
         </Card>
@@ -116,11 +116,11 @@ export const Orientation: Story = {
 export const Slots: Story = {
   render: () => (
     <Card variant="Default" size="md" w="360px">
-      <Card.Section section="header" p="md" bg="#f9fafb" borderBottom="1px solid #e5e7eb">
-        <strong>section="header"</strong>
+      <Card.Section slots="header" p="md" bg="#f9fafb" borderBottom="1px solid #e5e7eb">
+        <strong>slots="header"</strong>
       </Card.Section>
       <Card.Section
-        section="media"
+        slots="media"
         h="120px"
         bg="#e5e7eb"
         display="flex"
@@ -128,13 +128,13 @@ export const Slots: Story = {
         justify="center"
         color="#9ca3af"
       >
-        section="media"
+        slots="media"
       </Card.Section>
-      <Card.Section section="body" p="md">
-        <p>section="body" — el contenido principal va aquí.</p>
+      <Card.Section slots="body" p="md">
+        <p>slots="body" — el contenido principal va aquí.</p>
       </Card.Section>
-      <Card.Section section="footer" p="md" bg="#f9fafb" borderTop="1px solid #e5e7eb">
-        section="footer"
+      <Card.Section slots="footer" p="md" bg="#f9fafb" borderTop="1px solid #e5e7eb">
+        slots="footer"
       </Card.Section>
     </Card>
   ),

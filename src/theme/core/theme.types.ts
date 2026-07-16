@@ -21,7 +21,7 @@ export type ShadowScale = ScaleRange<"sm" | "md" | "lg" | "xl">;
 export type ControlHeightScale = ScaleRange<"sm" | "md" | "lg">;
 export type BreakPointsScale = ScaleRange<"xs" | "sm" | "md" | "lg" | "xl">;
 export type FontSizeScale = ScaleRange<SpacingScale | "3xl" | "4xl">;
-export type RadiiScale = ScaleRange<"none" | "sm" | "md" | "lg" | "full">;
+export type RadiiScale = ScaleRange<"none" | "xs" | "sm" | "md" | "lg" | "full">;
 export type SpacingScale = ScaleRange<"xs" | "sm" | "md" | "lg" | "xl" | "2xl">;
 export type Scales = "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "full" | keyof ConsumerScales;
 
@@ -151,6 +151,7 @@ export interface ConsumerSemanticColors {}
 
 // ─── Values tokens ──────────────────────────────────────────────────────────
 export type RadiusValue = keyof ThemeRadii;
+export type FontValue = "sans" | "mono";
 export type FontSizeValue = keyof ThemeFontSizes;
 export type ColorScaleKeys = BaseColors[keyof BaseColors];
 export type ColorValue = `${keyof BaseColors}.${keyof ColorScaleKeys}`;

@@ -115,9 +115,10 @@ export const graphiteTheme: Theme = {
 
   radii: {
     none: "0",
-    sm: "4px",
-    md: "6px",
-    lg: "8px",
+    xs:   "2px",
+    sm:   "4px",
+    md:   "6px",
+    lg:   "8px",
     full: "9999px",
   },
 

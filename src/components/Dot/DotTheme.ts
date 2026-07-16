@@ -1,9 +1,9 @@
 import type { ThemeComponentConfig } from "../../theme";
-import type { DotBadgeConfig } from "./Badge";
+import type { DotConfig } from "./Dot";
 
-export type DotBadgeThemeConfig = ThemeComponentConfig<DotBadgeConfig>;
+export type DotThemeConfig = ThemeComponentConfig<DotConfig>;
 
-export const DotBadgeThemeComponent: DotBadgeThemeConfig = {
+export const DotThemeComponent: DotThemeConfig = {
   sizes: {
     xs: { h: "5px", w: "5px", fontSize: "xs" },
     sm: { h: "8px", w: "8px", fontSize: "sm" },

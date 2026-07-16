@@ -3,6 +3,8 @@ export * from './Alert/AlertTheme';
 export * from './Avatar/Avatar';
 export * from './Avatar/AvatarTheme';
 export * from './Badge/Badge';
+export * from './Dot/Dot';
+export * from './Dot/DotTheme';
 export * from './Badge/BadgeTheme';
 export * from './Button/Button';
 export * from './Button/ButtonTheme';

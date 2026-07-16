@@ -117,6 +117,7 @@ export const terraTheme: Theme = {
   // Balanced radii
   radii: {
     none: "0",
+    xs:   "3px",
     sm:   "6px",
     md:   "9px",
     lg:   "14px",

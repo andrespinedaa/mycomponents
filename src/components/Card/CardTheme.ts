@@ -8,21 +8,19 @@ export const CardThemeComponent: CardTheme = {
   sizes: {
     xs: { w: "240px", h: "340px" },
     sm: { w: "220px", h: "340px" },
-    md: { w: "300px", h: "440px" },
-    lg: { w: "320px", h: "440px" },
+    md: { w: "350px", h: "480px" },
+    lg: { w: "400px", h: "440px" },
     xl: { w: "480px", h: "600px" },
   },
   variants: {
     display: "flex",
     flexDir: "column",
-    alignContent: "end",
     border: "none",
     rounded: "20px",
     bg: "neutral.50",
     cursor: "pointer",
     overflow: "hidden",
     position: "relative",
-    p: "xs",
 
     Outlined: {
       border: "1px solid",
@@ -42,7 +40,6 @@ export const CardThemeComponent: CardTheme = {
   },
   orientation: {
     horizontal: {
-      flexDir: "row",
       h: "$w",
       w: "$h",
     },

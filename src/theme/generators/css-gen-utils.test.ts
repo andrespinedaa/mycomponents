@@ -30,8 +30,8 @@ describe("resolveVarsDSL", () => {
     });
 
     it("usa el prefix del componente, no del padre", () => {
-      const result = resolveVarsDSL({ "--x": "$color" }, "card-section");
-      expect(result?.["--x"]).toBe("var(--card-section-color)");
+      const result = resolveVarsDSL({ "--x": "$color" }, "card-slots");
+      expect(result?.["--x"]).toBe("var(--card-slots-color)");
     });
   });
 

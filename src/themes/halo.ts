@@ -124,6 +124,7 @@ export const haloTheme: Theme = {
   // ─── Radii (soft) ─────────────────────────────────────────────────────────
   radii: {
     none: "0",
+    xs:   "4px",
     sm:   "8px",
     md:   "12px",
     lg:   "18px",
