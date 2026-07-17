@@ -1,6 +1,6 @@
 import type { DeepPartial, Prettify } from "../../types/utils.types";
 import type { ThemeComponents } from "./theme.components.types";
-import type { Macros } from "./theme.macros.types";
+import type { Macros } from "./macros/theme.macros.types";
 
 // ─── CSS Value Types ──────────────────────────────────────────────────────────
 // prettier-ignore

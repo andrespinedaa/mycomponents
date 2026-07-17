@@ -1,5 +1,5 @@
 import type { Theme } from "../theme/core/theme.types";
-import { defaultThemeMacros } from "../theme/core/theme.macros.data";
+import { defaultThemeMacros } from "../theme/core/macros/theme.macros.data";
 import { defaultThemeComponents } from "../theme/core/theme.components.data";
 
 // ─── Halo — "Violeta sobre zinc, espacioso y soft" ────────────────────────────

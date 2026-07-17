@@ -5,16 +5,17 @@ export type DividerThemeComponent = ThemeComponentConfig<DividerConfig>;
 
 export const DividerTheme: DividerThemeComponent = {
   sizes: {
-    xs: { w: "100%", h: "1px" },
-    sm: { w: "100%", h: "1px" },
-    md: { w: "100%", h: "1px" },
-    lg: { w: "100%", h: "1px" },
-    xl: { w: "100%", h: "2px" },
+    xs: { flex: "1", h: "2px" },
+    sm: { flex: "1", h: "2px" },
+    md: { flex: "1", h: "2px" },
+    lg: { flex: "1", h: "2px" },
+    xl: { flex: "1", h: "2px" },
   },
 
   variants: {
     display: "flex",
     align: "center",
-    gap: "sm"
+    gap: "sm",
+    bg: "neutral.500"
   }
 };

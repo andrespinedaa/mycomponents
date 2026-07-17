@@ -271,6 +271,47 @@ Cuando el usuario diga `CREATE_STORYBOOK_{NOMBRE}`, crear un archivo `{Nombre}.s
 
 ---
 
+## Filosofía — ThemeComponent: identidad vertical, no repetición horizontal
+
+`ThemeComponent` es donde el autor del design system define la **identidad CSS específica** de cada componente. No es un reemplazo de macros ni de `defaultProps`.
+
+### Cuándo escribir CSS en ThemeComponent
+
+Escribir CSS en `ThemeComponent` cuando el estilo es **exclusivo de ese componente** — no aparece en ningún otro:
+
+```ts
+// ✓ CSS de identidad — solo tiene sentido en Card
+variants: {
+  overflow: "hidden",
+  position: "relative",
+  cursor: "pointer",
+}
+```
+
+### Cuándo usar macro en lugar de CSS
+
+Cuando el mismo bloque CSS aparece en dos o más `ThemeComponents`, es una macro:
+
+```ts
+// ✗ duplicado en Card, Alert, Badge...
+variants: { display: "flex", alignItems: "center", justifyContent: "center" }
+
+// ✓ macro compartida
+apply: "@flexCenter"
+```
+
+### Regla de extracción
+
+> Si copias un bloque CSS de un ThemeComponent a otro → es una macro. Extráela antes de pegar.
+
+### Lo que NO va en ThemeComponent
+
+- Valores por defecto de props (`size`, `variant`) → van en `ComponentFactory.defaultProps`
+- CSS que el consumidor final override frecuentemente → mejor en `defaultProps` + sistema de variantes
+- Macros aplicadas inline (`apply: "@flexCenter"`) → el ThemeComponent no usa `apply`, eso es para el JSX del consumidor
+
+---
+
 ## Filosofía — el tema es la fuente de verdad en runtime
 
 Los generadores de CSS iteran directamente sobre `theme.X` — nunca sobre arrays o constantes paralelas hardcodeadas (como `["sm","md","lg","xl"]`). Si el tema cambia (el consumer agrega breakpoints, tokens, etc.), el CSS generado cambia automáticamente sin tocar el generador.

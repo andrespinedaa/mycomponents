@@ -13,14 +13,14 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Box minH="100vh" p="40px">
-        <Card orientation="horizontal" gap="lg">
+        <Card orientation="vertical" gap="lg">
           <Card.Section slots="media" set="cover">
             <Image src={bgImage} set="cover" rounded="sm" />
           </Card.Section>
-          <Card.Section slots="header" as="header" set="bottom">
+          <Card.Section slots="header" as="header" /* apply={["@pushCenter"]} */ /* set="bottom" */  >
             {badgeInfo.map((b, i) => {
               return (
-                <Badge key={i}>
+                <Badge key={i} apply={["@pushBottom"]}>
                   <Dot dotColor="success.300" />
                   {b.data}
                 </Badge>
@@ -38,7 +38,7 @@ function App() {
           </Card.Section>
         </Card>
         <Card>
-          <Card.Section slots="header" apply="@pushRight" p={"sm"}>
+          <Card.Section slots="header" apply={["@pushTop", "@pushLeft"]} p="sm">
             <Badge>
               <Text>🚀</Text>
               <Text>Prime Pick</Text>
@@ -51,14 +51,17 @@ function App() {
             slots="body"
             apply="@fadeUp"
             vars={{ "--gradient-from": "primary.500", "--gradient-stop": "60%" }}
+            p="sm"
           >
             <Box>
-              <Text as="h2">List: $250,000</Text>
+              <Text as="h2" color="#fff">
+                List: $250,000
+              </Text>
               <Box>
                 <Text>Harry Koingsbergstr 1063 AG Guilaume Briard</Text>
-                <Box>
+                <Box >
                   <Text>29 m2 living</Text>
-                  <Divider />
+                  <Divider bg="neutral.500" />
                   <Text>2 Rooms</Text>
                 </Box>
               </Box>
