@@ -83,7 +83,7 @@ export const STYLE_PROPS_OVERRIDES = [
 
   // Tipografía
   { cssProp: "fontSize",                         alias: "fontSize",    responsive: true,  category: "fontSize"},
-  { cssProp: "fontFamily",                       alias: "fontFamily",                     category: "font"    },
+  { cssProp: "fontFamily",                       alias: "fontFamily",  responsive: false, category: "font"    },
 
   // Responsive sin token
   { cssProp: "opacity",                          alias: "opacity",     responsive: true,  category: "raw"     },

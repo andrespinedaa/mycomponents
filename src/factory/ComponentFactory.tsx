@@ -22,7 +22,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
     props,
     ref,
   ) {
-    const { theme } = useThemeContext()
+    const { theme } = useThemeContext();
     const componentConfig = theme.components?.[componentName];
     const resolvedTag = typeof render === "string" ? componentConfig?.defaultTag ?? render : render;
     const resolvedComponentName = componentConfig?.componentName ?? componentName;
@@ -51,7 +51,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
       size: resolvedSize,
       variant: resolvedVariant,
       orientation: resolvedOrientation,
-    } = useResolveLayout({ size, variant, set, orientation }, theme, componentConfig);
+    } = useResolveLayout({ size, variant, set, orientation }, componentConfig);
     const vars = resolveVarsDSL(varsRaw, camelToKebab(resolvedComponentName), theme);
     const dataName = dataSlot || inheritedSlot || resolvedComponentName || undefined;
 
@@ -100,7 +100,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
       return <Element ref={ref} style={styles} {...elementProps} {...elementModProps} />;
     }
 
-    return (resolvedTag!)({
+    return resolvedTag!({
       ref,
       vars,
       set: resolvedSet,
