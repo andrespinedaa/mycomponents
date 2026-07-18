@@ -4,17 +4,12 @@ export function useResize() {
   const [resize, setResize] = useState(0);
 
   useEffect(() => {
-    setResize(window.innerWidth);
-    let raf: ReturnType<typeof requestAnimationFrame>;
-    const update = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => setResize(window.innerWidth));
-    };
-    window.addEventListener("resize", update);
-    return () => {
-      window.removeEventListener("resize", update);
-      cancelAnimationFrame(raf);
-    };
+    const getWidth = () => Math.round(window.visualViewport?.width ?? window.innerWidth);
+    setResize(getWidth());
+    const update = () => setResize(getWidth());
+    const target = window.visualViewport ?? window;
+    target.addEventListener("resize", update);
+    return () => target.removeEventListener("resize", update);
   }, []);
 
   return resize;
