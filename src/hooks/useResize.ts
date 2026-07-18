@@ -5,9 +5,16 @@ export function useResize() {
 
   useEffect(() => {
     setResize(window.innerWidth);
-    const update = () => setResize(window.innerWidth);
+    let raf: ReturnType<typeof requestAnimationFrame>;
+    const update = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => setResize(window.innerWidth));
+    };
     window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    return () => {
+      window.removeEventListener("resize", update);
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
   return resize;

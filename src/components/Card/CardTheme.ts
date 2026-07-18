@@ -5,30 +5,26 @@ import { CardSectionThemeComponent } from "./CardSectionTheme";
 export type CardTheme = ThemeComponentConfig<CardConfig>;
 
 export const CardThemeComponent: CardTheme = {
+  // prettier-ignore
   sizes: {
-    xs: { w: "240px", h: "340px" },
-    sm: { w: "220px", h: "340px" },
-    md: { w: "350px", h: "480px" },
-    lg: { w: "400px", h: "440px" },
-    xl: { w: "480px", h: "600px" },
+    xs: { minW: "300px",  maxW: "355px",  minH: "350px",  maxH: "505px"  },
+    sm: { minW: "355px",  maxW: "405px",  minH: "455px",  maxH: "505px"  },
+    md: { minW: "405px",  maxW: "740px",  minH: "455px",  maxH: "790px"  },
+    lg: { minW: "740px",  maxW: "1000px", minH: "790px",  maxH: "1050px" },
+    xl: { minW: "1000px", maxW: "1300px", minH: "1050px", maxH: "1300px" },
   },
   variants: {
-    display: "flex",
-    flexDir: "column",
     border: "none",
-    rounded: "20px",
+    rounded: "lg",
     bg: "neutral.50",
     cursor: "pointer",
     overflow: "hidden",
     position: "relative",
 
     Outlined: {
-      border: "1px solid",
+      border: "2px solid",
       borderColor: "neutral.200",
       hover: { borderColor: "primary.400" },
-    },
-    Filled: {
-      bg: "primary.50",
     },
     Elevated: {
       boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
