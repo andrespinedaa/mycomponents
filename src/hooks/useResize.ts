@@ -6,10 +6,9 @@ export function useResize() {
   useEffect(() => {
     const getWidth = () => Math.round(window.visualViewport?.width ?? window.innerWidth);
     setResize(getWidth());
-    const update = () => setResize(getWidth());
-    const target = window.visualViewport ?? window;
-    target.addEventListener("resize", update);
-    return () => target.removeEventListener("resize", update);
+    const ro = new ResizeObserver(() => setResize(getWidth()));
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
   }, []);
 
   return resize;
