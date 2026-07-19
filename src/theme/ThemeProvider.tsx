@@ -10,7 +10,8 @@ import { ThemeContext, type ThemeContextValue } from "./ThemeContext";
 import { generateComponents } from "./generators/generateComponents";
 import { generateResponsive } from "./generators/generateResponsive";
 import { generateTokens } from "./generators/generateTokens";
-import type { ColorScheme, Scales, Theme } from "./core/theme.types";
+import type { ColorScheme, Theme } from "./core/theme.types";
+import { useBreakpointSize } from "../hooks/useBreakpointSize";
 
 export interface ThemeProviderProps {
   theme: Theme;
@@ -32,44 +33,6 @@ function injectStyle(id: string, css: string): void {
 function removeStyle(id: string): void {
   if (typeof document === "undefined") return;
   document.getElementById(id)?.remove();
-}
-
-function resolveBreakpointSize(theme: Theme): Scales {
-  const sorted = Object.entries(theme.breakpoints).sort(
-    ([, a], [, b]) => parseInt(a) - parseInt(b),
-  );
-  let result = sorted[0]![0] as Scales;
-  for (const [name, val] of sorted) {
-    if (window.matchMedia(`(min-width: ${val})`).matches) result = name as Scales;
-  }
-  return result;
-}
-
-function useBreakpointSize(theme: Theme): Scales {
-  const [size, setSize] = useState<Scales>(() =>
-    typeof window === "undefined"
-      ? (Object.keys(theme.breakpoints)[0] as Scales)
-      : resolveBreakpointSize(theme),
-  );
-
-  useEffect(() => {
-    const update = () => setSize(resolveBreakpointSize(theme));
-    update();
-    const sorted = Object.entries(theme.breakpoints).sort(
-      ([, a], [, b]) => parseInt(a) - parseInt(b),
-    );
-    // matchMedia: fires on DevTools preset button clicks + boundary crossings
-    const mqls = sorted.map(([, val]) => window.matchMedia(`(min-width: ${val})`));
-    mqls.forEach((mql) => mql.addEventListener("change", update));
-    // resize: fallback for physical window resize and DevTools handle drag
-    window.addEventListener("resize", update);
-    return () => {
-      mqls.forEach((mql) => mql.removeEventListener("change", update));
-      window.removeEventListener("resize", update);
-    };
-  }, [theme]);
-
-  return size;
 }
 
 export function ThemeProvider({
