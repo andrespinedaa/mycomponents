@@ -5,6 +5,7 @@ import type {
   ButtonConfig,
   CardConfig,
   CardSectionConfig,
+  DotConfig,
   InputConfig,
   BoxConfig,
   DividerConfig,
@@ -28,10 +29,11 @@ export type ComponentConfigs = {
   Card: CardConfig;
   CardSection: CardSectionConfig;
   Alert: AlertConfig;
-  Badge: BadgeConfig;
-  Input: InputConfig;
   Avatar: AvatarConfig;
+  Badge: BadgeConfig;
   Button: ButtonConfig;
+  Dot: DotConfig;
+  Input: InputConfig;
 };
 
 // ─── StyledBlock — bloque estilizado con soporte de estados anidados (SCSS-like) ───

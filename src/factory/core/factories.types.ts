@@ -1,4 +1,3 @@
-import type { LayoutContextValue } from "../../context/LayoutContext";
 import type { ModProps } from "../../system/get-mod";
 import type {
   BuiltInMacros,
@@ -104,12 +103,9 @@ export type ConfigProps<Config extends FactoryConfig> = SizeProp<Config> &
 
 export type FactoryComputedProps<Config extends FactoryConfig> = {
   ref: PolymorphicRef<Config["defaultTag"]>;
-  layoutCtx: LayoutContextValue;
 };
 
-export type NonPublicProps<Config extends FactoryConfig> = Partial<
-  Pick<FactoryComputedProps<Config>, "layoutCtx">
->;
+export type NonPublicProps<Config extends FactoryConfig> = Partial<FactoryComputedProps<Config>>;
 
 export type FactoryResolvableProps<Config extends FactoryConfig> = {
   size?: Config["sizes"];

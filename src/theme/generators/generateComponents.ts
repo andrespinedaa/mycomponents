@@ -21,9 +21,7 @@ function generateComponent(
   if (config?.statics) {
     for (const [slotKey, slotConfig] of Object.entries(config.statics)) {
       if (!slotConfig) continue;
-      const canonicalEntry = Object.entries(theme.components ?? {}).find(([, cfg]) => cfg === slotConfig);
-      const canonicalName = canonicalEntry?.[0] ?? slotKey;
-      css += generateComponent(canonicalName, slotConfig as GeneratorConfig, theme);
+      css += generateComponent(slotKey, slotConfig as GeneratorConfig, theme);
     }
   }
 

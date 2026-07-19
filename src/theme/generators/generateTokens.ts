@@ -84,6 +84,7 @@ export function generateTokens(theme: Theme): string {
       for (const [name, scale] of Object.entries(dark.colors)) {
         if (!scale) continue;
         for (const [shade, value] of Object.entries(scale)) {
+          if (!value) continue;
           css += `--${prefix}-color-${name}-${shade}:${value};`;
         }
       }

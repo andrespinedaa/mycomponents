@@ -17,5 +17,5 @@ export type DotConfig = ComponentConfig<{
 
 export const Dot = ComponentFactory<DotConfig>({
   componentName: "Dot",
-  render: ({ dotColor, ...rest }) => <Box bg={dotColor} {...rest} />,
+  render: ({ ref, dotColor, ...rest }) => <Box ref={ref} bg={dotColor} {...rest} />,
 });

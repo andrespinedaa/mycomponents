@@ -84,13 +84,20 @@ export function generateTokensCSS(
   for (const [key, value] of Object.entries(tokens)) {
     if (value == null) continue;
     const strValue = String(value);
+    const properties = STYLE_PROPS_DATA[key]?.properties ?? [key];
 
     if (strValue.includes("$")) {
-      css += `${resolveVarName(key, prefix)}:${resolveDollarProps(strValue, prefix, prefixParent)};`;
+      const resolved = resolveDollarProps(strValue, prefix, prefixParent);
+      for (const prop of properties) {
+        css += `--${prefix}-${camelToKebab(prop)}:${resolved};`;
+      }
       continue;
     }
 
-    css += `${resolveVarName(key, prefix)}:${resolveTokenValue(key, strValue, theme)};`;
+    const resolved = resolveTokenValue(key, strValue, theme);
+    for (const prop of properties) {
+      css += `--${prefix}-${camelToKebab(prop)}:${resolved};`;
+    }
   }
   return css;
 }

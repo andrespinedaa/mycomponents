@@ -6,7 +6,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { ThemeContext, type ThemeContextValue } from "./ThemeContext";
+import { ThemeContextProvider, type ThemeContextValue } from "./ThemeContext";
 import { generateComponents } from "./generators/generateComponents";
 import { generateResponsive } from "./generators/generateResponsive";
 import { generateTokens } from "./generators/generateTokens";
@@ -71,5 +71,5 @@ export function ThemeProvider({
     [theme, sizeResponsive, colorScheme, toggleColorScheme],
   );
 
-  return <ThemeContext.Provider value={ctxValue}>{children}</ThemeContext.Provider>;
+  return <ThemeContextProvider value={ctxValue}>{children}</ThemeContextProvider>;
 }

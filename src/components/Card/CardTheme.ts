@@ -36,8 +36,10 @@ export const CardThemeComponent: CardTheme = {
   },
   orientation: {
     horizontal: {
-      h: "$w",
-      w: "$h",
+      minW: "$minH",
+      maxW: "$maxH",
+      minH: "$minW",
+      maxH: "$maxW",
     },
   },
 };

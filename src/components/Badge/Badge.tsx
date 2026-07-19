@@ -1,11 +1,7 @@
-import { ComponentFactory, type ComponentConfig, type FactoryRender } from "../../factory";
+import { ComponentFactory, type ComponentConfig } from "../../factory";
 import { Layout, type LayoutConfig } from "../Primitives/Box/Layout";
 
-export interface BadgeOwnProps {
-  dotIcon?: FactoryRender<{
-    size: BadgeConfig["sizes"];
-  }>;
-}
+export interface BadgeOwnProps {}
 
 export type BadgeConfig = ComponentConfig<{
   componentName: "Badge";
@@ -18,5 +14,5 @@ export type BadgeConfig = ComponentConfig<{
 
 export const Badge = ComponentFactory<BadgeConfig>({
   componentName: "Badge",
-  render: (props) => <Layout {...props} />,
+  render: ({ ref, ...rest }) => <Layout ref={ref} {...rest} />,
 });

@@ -1,4 +1,3 @@
-export * from './create-tokens';
 export * from './css-gen-utils';
 export * from './generateBases';
 export * from './generateComponents';

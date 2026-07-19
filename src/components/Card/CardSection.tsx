@@ -20,5 +20,5 @@ export type CardSectionConfig = ComponentConfig<{
 export const CardSection = ComponentFactory<CardSectionConfig>({
   componentName: "CardSection",
   defaultProps: { slots: "body" },
-  render: (props) => <Layout {...props} />,
+  render: ({ ref, ...rest }) => <Layout ref={ref} {...rest} />,
 });

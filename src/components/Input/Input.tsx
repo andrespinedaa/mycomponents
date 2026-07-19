@@ -46,6 +46,7 @@ export const Input = ComponentFactory<InputConfig>({
     defaultValue,
     size,
     variant,
+    dataSlot,
     "data-slot": _slot,
     ...rest
   }) {
@@ -66,6 +67,7 @@ export const Input = ComponentFactory<InputConfig>({
         )}
 
         <Box
+          dataSlot={dataSlot}
           mod={[{ variant, size, set, orientation, disabled: disabled, invalid: hasError }]}
         >
           {leftSection && (

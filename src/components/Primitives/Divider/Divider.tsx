@@ -23,32 +23,33 @@ export const Divider = ComponentFactory<DividerConfig>({
     size,
     variant,
     children,
-    position,
     orientation,
     ...rest
   }) {
-    <Box
-      ref={ref}
-      role="separator"
-      aria-orientation={orientation}
-      mod={[{ orientation, size, variant, set }]}
-      {...rest}
-    >
-      {children && (
-        <>
-          <Box
-            role="separator"
-            aria-orientation={orientation}
-            mod={[{ orientation, size, variant, set }]}
-          />
-          {children}
-          <Box
-            role="separator"
-            aria-orientation={orientation}
-            mod={[{ orientation, size, variant, set }]}
-          />
-        </>
-      )}
-    </Box>;
+    return (
+      <Box
+        ref={ref}
+        role="separator"
+        aria-orientation={orientation}
+        mod={[{ orientation, size, variant, set }]}
+        {...rest}
+      >
+        {children && (
+          <>
+            <Box
+              role="separator"
+              aria-orientation={orientation}
+              mod={[{ orientation, size, variant, set }]}
+            />
+            {children}
+            <Box
+              role="separator"
+              aria-orientation={orientation}
+              mod={[{ orientation, size, variant, set }]}
+            />
+          </>
+        )}
+      </Box>
+    );
   },
 });

@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { LayoutProvider } from "../context/LayoutContext";
 import { ComponentFactory } from "../factory/ComponentFactory";
 import type { ComponentConfig } from "../factory/core/factories.types";
 import { Box } from "../components/Primitives/Box/Box";
+import { Layout } from "../components/Primitives/Box/Layout";
 import { ThemeProvider } from "../theme";
 import type { Theme } from "../theme/core/theme.types";
 import { defaultTheme } from "../themes/default-theme";
@@ -20,12 +20,8 @@ type ParentConfig = ComponentConfig<{
 
 const TestParent = ComponentFactory<ParentConfig>({
   componentName: "TestParent",
-  render: ({ ref, layoutCtx, children, set, variant: _variant, ...rest }) => (
-    <LayoutProvider value={layoutCtx}>
-      <Box ref={ref} data-testid="parent" data-set={set} {...rest}>
-        {children}
-      </Box>
-    </LayoutProvider>
+  render: ({ ref, ...rest }) => (
+    <Layout ref={ref} data-testid="parent" {...rest} />
   ),
 });
 
@@ -108,7 +104,7 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
 
 // --- cascada de `set` por compound component ------------------------------------------
 
-describe("useResolveLayout — cascada de set por compound component", () => {
+describe("resolveLayout — cascada de set por compound component", () => {
   it("el hijo hereda `set` del padre si declara un preset con el mismo nombre", () => {
     render(
       <TestParent set="background">

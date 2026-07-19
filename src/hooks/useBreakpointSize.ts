@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import type { Scales, Theme } from "../theme/core/theme.types";
 
+function getSortedBreakpoints(theme: Theme): Array<[string, string]> {
+  return Object.entries(theme.breakpoints).sort(([, a], [, b]) => parseInt(a) - parseInt(b));
+}
+
 function resolveBreakpointSize(theme: Theme): Scales {
-  const sorted = Object.entries(theme.breakpoints).sort(
-    ([, a], [, b]) => parseInt(a) - parseInt(b),
-  );
+  const sorted = getSortedBreakpoints(theme);
   let result = sorted[0]![0] as Scales;
   for (const [name, val] of sorted) {
     if (window.matchMedia(`(min-width: ${val})`).matches) result = name as Scales;
@@ -22,9 +24,7 @@ export function useBreakpointSize(theme: Theme): Scales {
   useEffect(() => {
     const update = () => setSize(resolveBreakpointSize(theme));
     update();
-    const sorted = Object.entries(theme.breakpoints).sort(
-      ([, a], [, b]) => parseInt(a) - parseInt(b),
-    );
+    const sorted = getSortedBreakpoints(theme);
     // matchMedia: fires on DevTools preset button clicks + boundary crossings
     const mqls = sorted.map(([, val]) => window.matchMedia(`(min-width: ${val})`));
     mqls.forEach((mql) => mql.addEventListener("change", update));

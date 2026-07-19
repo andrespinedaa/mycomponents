@@ -11,7 +11,7 @@ export function resolveTokenValue(key: string, value: string, theme: Theme): str
 
 export const STATE_SELECTORS: Record<ComponentStates, string> = {
   hover:        ":hover",
-  focus:        ":focus-visible",
+  focus:        ":focus",
   focusVisible: ":focus-visible",
   focusWithin:  ":focus-within",
   active:       ":active",

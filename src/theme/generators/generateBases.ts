@@ -1,6 +1,6 @@
 import { camelToKebab } from "../../utils/string";
 import { buildSlotSelector, resolveGeneratorNames, type GeneratorConfig } from "./css-gen-utils";
-import { getCssProp, resolveVarName } from "./css-gen-utils";
+import { STYLE_PROPS_DATA } from "./system-css.data";
 import { STATE_SELECTORS } from "./generateVariants";
 
 function isStateKey(key: string): boolean {
@@ -81,12 +81,25 @@ export function generateComponentBases(
     collectSlotsConfig(config.slots as Record<string, unknown>, usedKeys);
   }
 
+  if (config.orientation) {
+    for (const tokens of Object.values(config.orientation)) {
+      if (!tokens || typeof tokens !== "object") continue;
+      for (const [key, value] of Object.entries(tokens as Record<string, unknown>)) {
+        if (typeof value !== "object") usedKeys.add(key);
+      }
+    }
+  }
+
   if (usedKeys.size === 0) return "";
 
   const selector = buildSlotSelector(resolvedName);
   let css = `${selector}{`;
   for (const key of usedKeys) {
-    css += `${camelToKebab(getCssProp(key))}:var(${resolveVarName(key, prefix)},unset);`;
+    const properties = STYLE_PROPS_DATA[key]?.properties ?? [key];
+    for (const prop of properties) {
+      const kebab = camelToKebab(prop);
+      css += `${kebab}:var(--${prefix}-${kebab},unset);`;
+    }
   }
   return css + "}";
 }

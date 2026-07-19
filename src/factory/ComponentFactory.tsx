@@ -42,7 +42,6 @@ export function ComponentFactory<Config extends FactoryConfig>({
       orientation,
       vars: varsRaw,
       "data-slot": inheritedSlot,
-      layoutCtx: _inheritedLayoutCtx,
       ...restProps
     } = mergedProps;
 
@@ -54,13 +53,6 @@ export function ComponentFactory<Config extends FactoryConfig>({
     } = useResolveLayout({ size, variant, set, orientation }, componentConfig);
     const vars = resolveVarsDSL(varsRaw, camelToKebab(resolvedComponentName), theme);
     const dataName = dataSlot || inheritedSlot || resolvedComponentName || undefined;
-
-    const resolvedDisplayName = parentName
-      ? `${parentName}.${resolvedComponentName}`
-      : resolvedComponentName;
-    if (Component.displayName !== resolvedDisplayName) {
-      Component.displayName = resolvedDisplayName;
-    }
 
     if (renderRoot) {
       return renderRoot({
@@ -111,6 +103,8 @@ export function ComponentFactory<Config extends FactoryConfig>({
       ...restProps,
     } as unknown as FactoryRenderProps<Config>);
   });
+
+  Component.displayName = componentName;
 
   if (statics) {
     Object.assign(Component, statics);

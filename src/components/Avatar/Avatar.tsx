@@ -70,7 +70,7 @@ export const Avatar = ComponentFactory<AvatarConfig>({
         apply="@flexCenter"
         aria-label={alt ?? name}
         fontWeight={600}
-        mod={{ size }}
+        mod={{ size, variant }}
         rounded={shape === "circle" ? "full" : "md"}
         {...rest}
       >
