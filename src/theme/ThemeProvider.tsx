@@ -11,7 +11,6 @@ import { generateComponents } from "./generators/generateComponents";
 import { generateResponsive } from "./generators/generateResponsive";
 import { generateTokens } from "./generators/generateTokens";
 import type { ColorScheme, Scales, Theme } from "./core/theme.types";
-import { useResize } from "../hooks/useResize";
 
 export interface ThemeProviderProps {
   theme: Theme;
@@ -35,12 +34,42 @@ function removeStyle(id: string): void {
   document.getElementById(id)?.remove();
 }
 
-function resolveBreakpointSize(theme: Theme, viewportW: number): Scales {
-  const sorted = Object.entries(theme.breakpoints)
-    .map(([name, val]) => ({ name: name as Scales, px: parseInt(val) }))
-    .sort((a, b) => a.px - b.px);
+function resolveBreakpointSize(theme: Theme): Scales {
+  const sorted = Object.entries(theme.breakpoints).sort(
+    ([, a], [, b]) => parseInt(a) - parseInt(b),
+  );
+  let result = sorted[0]![0] as Scales;
+  for (const [name, val] of sorted) {
+    if (window.matchMedia(`(min-width: ${val})`).matches) result = name as Scales;
+  }
+  return result;
+}
 
-  return sorted.filter((bp) => viewportW >= bp.px).at(-1)?.name ?? sorted[0]!.name;
+function useBreakpointSize(theme: Theme): Scales {
+  const [size, setSize] = useState<Scales>(() =>
+    typeof window === "undefined"
+      ? (Object.keys(theme.breakpoints)[0] as Scales)
+      : resolveBreakpointSize(theme),
+  );
+
+  useEffect(() => {
+    const update = () => setSize(resolveBreakpointSize(theme));
+    update();
+    const sorted = Object.entries(theme.breakpoints).sort(
+      ([, a], [, b]) => parseInt(a) - parseInt(b),
+    );
+    // matchMedia: fires on DevTools preset button clicks + boundary crossings
+    const mqls = sorted.map(([, val]) => window.matchMedia(`(min-width: ${val})`));
+    mqls.forEach((mql) => mql.addEventListener("change", update));
+    // resize: fallback for physical window resize and DevTools handle drag
+    window.addEventListener("resize", update);
+    return () => {
+      mqls.forEach((mql) => mql.removeEventListener("change", update));
+      window.removeEventListener("resize", update);
+    };
+  }, [theme]);
+
+  return size;
 }
 
 export function ThemeProvider({
@@ -53,7 +82,6 @@ export function ThemeProvider({
     () => setColorScheme((s) => (s === "light" ? "dark" : "light")),
     [],
   );
-  const resize = useResize();
   const p = theme.cssVarPrefix;
 
   useInsertionEffect(() => {
@@ -74,7 +102,7 @@ export function ThemeProvider({
     };
   }, [colorScheme]);
 
-  const sizeResponsive = useMemo(() => resolveBreakpointSize(theme, resize), [theme, resize]);
+  const sizeResponsive = useBreakpointSize(theme);
   const ctxValue = useMemo<ThemeContextValue>(
     () => ({ theme, sizeResponsive, colorScheme, setColorScheme, toggleColorScheme }),
     [theme, sizeResponsive, colorScheme, toggleColorScheme],
