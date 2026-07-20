@@ -14,7 +14,7 @@ function ThemePreview({ label, theme }: { label: string; theme: ReturnType<typeo
   return (
     <ThemeProvider theme={theme}>
       <Box flexDir="column" gap="12px" p="16px" style={{ minWidth: 240, flex: 1 }}>
-        <Text as="h3" weight={700} fontSize="13px" color="var(--mycomponents-color-text)">
+        <Text as="h3" fontWeight="700px" fontSize="13px" color="var(--mycomponents-color-text)">
           {label}
         </Text>
 
@@ -32,7 +32,7 @@ function ThemePreview({ label, theme }: { label: string; theme: ReturnType<typeo
 
         <Card p="0" style={{ overflow: "hidden" }}>
           <Box flexDir="column" gap="4px" p="12px">
-            <Text as="p" weight={600} fontSize="13px">Card title</Text>
+            <Text as="p" fontWeight="600px" fontSize="13px">Card title</Text>
             <Text as="p" fontSize="12px" color="var(--mycomponents-color-text-subtle)">
               Card description text
             </Text>

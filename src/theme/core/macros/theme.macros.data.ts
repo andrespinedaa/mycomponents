@@ -52,8 +52,6 @@ export const ALIGNS = [
   "Center",
   "Start",
   "End",
-  "FlexStart",
-  "FlexEnd",
   "SelfStart",
   "SelfEnd",
   "Baseline",

@@ -209,11 +209,11 @@ export const haloTheme: Theme = {
   },
 
   breakpoints: {
-    xs: "150px",
-    sm: "640px",
-    md: "768px",
-    lg: "1024px",
-    xl: "1280px",
+    xs: "320px",
+    sm: "375px",
+    md: "425px",
+    lg: "768px",
+    xl: "1024px",
   },
 
   macros: defaultThemeMacros,

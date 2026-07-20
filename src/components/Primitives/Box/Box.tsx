@@ -16,6 +16,6 @@ export type BoxConfig = ComponentConfig<{
 }>;
 
 export const Box = ComponentFactory<BoxConfig>({
-  componentName: "Box",
   render: "div",
+  componentName: "Box",
 });

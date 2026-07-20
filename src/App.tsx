@@ -1,6 +1,6 @@
 import { Card, Badge, Dot } from "./components";
 import { Text, Box, Image, Divider } from "./components/Primitives";
-import { ThemeProvider } from "./theme";
+import { ThemeProvider, useThemeContext } from "./theme";
 import { createTheme } from "./theme/createTheme";
 import { graphiteTheme, haloTheme } from "./themes";
 import bgImage from "./components/Card/background 2.jpg";
@@ -10,28 +10,36 @@ const theme = createTheme(haloTheme);
 const badgeInfo = [{ data: "ice grey" }, { data: "3.2s" }, { data: "Manual" }];
 
 function App() {
+
+  const { sizeResponsive } = useThemeContext();
+
   return (
     <ThemeProvider theme={theme}>
       <Box minH="100vh" p="40px">
-        <Card orientation="vertical" gap="lg">
+        <Card
+          p="sm"
+          variant="Outlined"
+          orientation="vertical"
+          apply={["@flexCenterEnd", "@flexCol"]}
+        >
           <Card.Section slots="media" set="cover">
-            <Image src={bgImage} set="cover" rounded="sm" />
+            <Image src={bgImage} set="cover" rounded={sizeResponsive} />
           </Card.Section>
-          <Card.Section slots="header" as="header" /* apply={["@pushCenter"]} */ /* set="bottom" */  >
+          <Card.Section slots="header" as="header" apply={["@flexEndSpaceAround"]}>
             {badgeInfo.map((b, i) => {
               return (
-                <Badge key={i} apply={["@pushBottom"]}>
+                <Badge key={i}>
                   <Dot dotColor="success.300" />
                   {b.data}
                 </Badge>
               );
             })}
           </Card.Section>
-          <Card.Section slots="body" px="md">
-            <Text as="h2" color="neutral.100" fontSize={"3xl"} m={"0"}>
+          <Card.Section slots="body" apply={["@flexCol", "@flexStartEnd"]} p="md">
+            <Text as="h2" color="neutral.100" fontSize={"3xl"}>
               Porsche 911
             </Text>
-            <Text as="h2" color="neutral.100" fontSize={"3xl"} m={"0"}>
+            <Text as="h2" color="neutral.100" fontSize={"3xl"}>
               GT3 RS
             </Text>
             <Text color="neutral.100">Timeless, iconic, and unapologetically analog…</Text>
@@ -59,7 +67,7 @@ function App() {
               </Text>
               <Box>
                 <Text>Harry Koingsbergstr 1063 AG Guilaume Briard</Text>
-                <Box >
+                <Box>
                   <Text>29 m2 living</Text>
                   <Divider bg="neutral.500" />
                   <Text>2 Rooms</Text>
