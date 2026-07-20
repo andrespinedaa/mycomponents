@@ -36,13 +36,6 @@ export type PolymorphicComponentProps<E extends ElementType, OwnProps = object> 
   OwnProps & SystemProps
 >;
 
-// NonPublicProps (layoutCtx, hoy) es el único lugar donde esos campos son keys formalmente
-// reconocidos del lado "entrante" — nunca a través de PolymorphicComponentProps/SystemProps
-// (esos son la superficie pública que el consumidor tipa). Existe para que ComponentFactory
-// pueda destructurarlos y descartarlos sin castear: mergedProps nace de PolymorphicPropsConfig,
-// y a runtime puede traer valores filtrados desde un ancestro sin `render` propio (ver
-// ComponentFactory.tsx). Para sumar un campo nuevo con esta misma protección, suscribirlo en
-// NonPublicProps — no repetir un Pick acá.
 export type PolymorphicPropsConfig<Config extends FactoryConfig> = PolymorphicComponentProps<
   Config["defaultTag"],
   Config["ownProps"]

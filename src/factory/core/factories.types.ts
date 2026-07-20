@@ -12,7 +12,6 @@ import type {
 import type { PolymorphicRef } from "../../types/polimorphic.types";
 import type { DefaultProps, FactoryDefaultPropsConfig } from "./factory.defaults";
 import type { FactoryFunctionOptions } from "./factory.render";
-import type { Unpack } from "../../types";
 
 export type VarsProp = Record<string, string>;
 export type ModProp = Record<string, unknown> | string;
@@ -48,8 +47,9 @@ export type FactoryConfig = {
   defaultTag: keyof React.JSX.IntrinsicElements;
 };
 
-type SlotSets<Config extends FactoryConfig> =
-  NonNullable<Config["slots"]>[keyof NonNullable<Config["slots"]>];
+type SlotSets<Config extends FactoryConfig> = NonNullable<Config["slots"]>[keyof NonNullable<
+  Config["slots"]
+>];
 
 export type ComponentConfig<Config extends FactoryConfig> = Config;
 
@@ -110,8 +110,8 @@ export type NonPublicProps<Config extends FactoryConfig> = Partial<FactoryComput
 export type FactoryResolvableProps<Config extends FactoryConfig> = {
   size?: Config["sizes"];
   variant?: Config["variants"];
-  slots?: Unpack<keyof Config["slots"]>;
-  set?: Unpack<Config["presets"] | SlotSets<Config>>;
+  slots?: keyof Config["slots"];
+  set?: Config["presets"] | SlotSets<Config>;
 };
 
 export type FactoryInternalProps<Config extends FactoryConfig> = FactoryComputedProps<Config> &
