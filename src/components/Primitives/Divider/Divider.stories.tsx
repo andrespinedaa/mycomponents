@@ -14,17 +14,14 @@ const meta = {
       options: ["horizontal", "vertical"],
       description: "Dirección del separador",
     },
-    thickness: {
-      control: "text",
-      description: "Grosor del borde (cualquier valor CSS: 1px, 2px, 0.5rem…)",
+    size: {
+      control: "radio",
+      options: ["xs", "sm", "md", "lg", "xl"],
+      description: "Tamaño del separador — controla su grosor via el tema",
     },
     color: {
       control: "text",
       description: "Color del borde — token de tema (primary.500) o valor CSS",
-    },
-    label: {
-      control: "text",
-      description: "Texto centrado sobre el separador",
     },
   },
 } satisfies Meta<typeof Divider>;
@@ -45,15 +42,16 @@ export const Default: Story = {
   ),
 };
 
-// ─── Thickness ────────────────────────────────────────────────────────────────
+// ─── Size ─────────────────────────────────────────────────────────────────────
 
-export const Thickness: Story = {
+export const Size: Story = {
   render: () => (
     <Box gap="lg" w="400px">
-      <Divider thickness="1px" />
-      <Divider thickness="2px" />
-      <Divider thickness="4px" />
-      <Divider thickness="8px" />
+      <Divider size="xs" />
+      <Divider size="sm" />
+      <Divider size="md" />
+      <Divider size="lg" />
+      <Divider size="xl" />
     </Box>
   ),
 };
@@ -66,7 +64,7 @@ export const Color: Story = {
       <Divider color="primary.300" />
       <Divider color="primary.500" />
       <Divider color="primary.700" />
-      <Divider color="neutral.300" thickness="2px" />
+      <Divider color="neutral.300" size="md" />
     </Box>
   ),
 };
@@ -74,12 +72,11 @@ export const Color: Story = {
 // ─── Label ────────────────────────────────────────────────────────────────────
 
 export const WithLabel: Story = {
-  args: { label: "o continúa con" },
-  render: (args) => (
+  render: () => (
     <Box gap="lg" w="400px">
-      <Divider {...args} />
-      <Divider label="Sección" color="primary.400" thickness="2px" />
-      <Divider label="2024" />
+      <Divider>o continúa con</Divider>
+      <Divider color="primary.400" size="md">Sección</Divider>
+      <Divider>2024</Divider>
     </Box>
   ),
 };
@@ -92,7 +89,7 @@ export const Vertical: Story = {
       <Text>Izquierda</Text>
       <Divider orientation="vertical" />
       <Text>Centro</Text>
-      <Divider orientation="vertical" thickness="2px" color="primary.500" />
+      <Divider orientation="vertical" size="md" color="primary.500" />
       <Text>Derecha</Text>
     </div>
   ),
@@ -103,8 +100,7 @@ export const Vertical: Story = {
 export const Playground: Story = {
   args: {
     orientation: "horizontal",
-    thickness: "1px",
-    label: "",
+    size: "sm",
   },
   render: (args) => (
     <Box gap="sm" w="400px">

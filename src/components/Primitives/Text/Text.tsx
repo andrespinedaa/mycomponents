@@ -1,5 +1,5 @@
 import { ComponentFactory, type ComponentConfig } from "../../../factory";
-import type { ComponentVariants, Scales } from "../../../theme";
+import type { ComponentVariants } from "../../../theme";
 
 export interface TextOwnProps {}
 

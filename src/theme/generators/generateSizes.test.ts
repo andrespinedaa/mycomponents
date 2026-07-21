@@ -165,7 +165,7 @@ describe("generateComponentSizes � DSL $prop", () => {
       sizes: { md: { gap: "$gap" } },
     };
     const result = generateComponentSizes("CardSection", config, defaultTheme);
-    expect(result).toContain(`--card-slots-gap:var(--card-gap);`);
+    expect(result).toContain(`--card-section-gap:var(--card-gap);`);
   });
 
   it("$prop inline en size resuelve var del padre dentro del valor", () => {
@@ -175,7 +175,7 @@ describe("generateComponentSizes � DSL $prop", () => {
       sizes: { md: { rounded: "0 0 $rounded $rounded" } },
     };
     const result = generateComponentSizes("CardSection", config, defaultTheme);
-    expect(result).toContain(`--card-slots-border-radius:0 0 var(--card-border-radius) var(--card-border-radius);`);
+    expect(result).toContain(`--card-section-border-radius:0 0 var(--card-border-radius) var(--card-border-radius);`);
   });
 
   it("$prop en size tambi�n se repite en media queries responsive", () => {

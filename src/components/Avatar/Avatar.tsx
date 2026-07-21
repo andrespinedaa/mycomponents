@@ -67,7 +67,7 @@ export const Avatar = ComponentFactory<AvatarConfig>({
     return (
       <Box
         ref={ref}
-        apply="@flexCenter"
+        apply="@flexCenterCenter"
         aria-label={alt ?? name}
         fontWeight={600}
         mod={{ size, variant }}

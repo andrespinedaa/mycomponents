@@ -5,7 +5,7 @@ import type { ComponentConfig } from "../factory/core/factories.types";
 import { Box } from "../components/Primitives/Box/Box";
 import { Layout } from "../components/Primitives/Box/Layout";
 import { ThemeProvider } from "../theme";
-import type { Theme } from "../theme/core/theme.types";
+import type { ComponentVariants, Theme } from "../theme/core/theme.types";
 import { defaultTheme } from "../themes/default-theme";
 
 // ─── Componentes de prueba — mimican la relación compound Card → Card.Section ──────────
@@ -15,14 +15,17 @@ type ParentConfig = ComponentConfig<{
   ownProps: {};
   defaultProps: {};
   sizes: "md";
+  variants: ComponentVariants;
   presets: "background";
 }>;
 
 const TestParent = ComponentFactory<ParentConfig>({
   componentName: "TestParent",
-  render: ({ ref, ...rest }) => (
-    <Layout ref={ref} data-testid="parent" {...rest} />
-  ),
+  render: function TestParentRender({ ref, set, variant, ...rest }) {
+    return (
+      <Layout ref={ref} data-testid="parent" set={set} variant={variant} {...rest} />
+    );
+  },
 });
 
 type ChildWithPresetConfig = ComponentConfig<{

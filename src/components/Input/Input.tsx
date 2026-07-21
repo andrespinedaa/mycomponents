@@ -71,7 +71,7 @@ export const Input = ComponentFactory<InputConfig>({
           mod={[{ variant, size, set, orientation, disabled: disabled, invalid: hasError }]}
         >
           {leftSection && (
-            <Box apply="@flexCenter" flexShrink={1} px="xs">
+            <Box apply="@flexCenterCenter" flexShrink={1} px="xs">
               {leftSection}
             </Box>
           )}
@@ -97,7 +97,7 @@ export const Input = ComponentFactory<InputConfig>({
           />
 
           {rightSection && (
-            <Box apply="@flexCenter" flexShrink={1} px="xs">
+            <Box apply="@flexCenterCenter" flexShrink={1} px="xs">
               {rightSection}
             </Box>
           )}

@@ -33,14 +33,6 @@ describe("resolveMacros", () => {
       });
     });
 
-    it("resuelve @flexFlexStartFlexEnd", () => {
-      expect(resolveMacros("@flexFlexStartFlexEnd")).toEqual({
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "flex-end",
-      });
-    });
-
     it("resuelve @flexCenterSpaceBetween", () => {
       expect(resolveMacros("@flexCenterSpaceBetween")).toEqual({
         display: "flex",
@@ -144,7 +136,7 @@ describe("resolveMacros", () => {
   // ─── custom macros del tema ───────────────────────────────────────────────────
   describe("custom macros", () => {
     it("resuelve macro custom del tema", () => {
-      const result = resolveMacros("@flexCenter", defaultThemeMacros);
+      const result = resolveMacros("@flexColCenter", defaultThemeMacros);
       expect(result).toMatchObject({
         display: "flex",
         alignItems: "center",
@@ -163,7 +155,7 @@ describe("resolveMacros", () => {
   // ─── array de macros ─────────────────────────────────────────────────────────
   describe("array de macros", () => {
     it("combina múltiples macros", () => {
-      const result = resolveMacros(["@flexCenterCenter", "@flexCenter"], defaultThemeMacros);
+      const result = resolveMacros(["@flexCenterCenter", "@flexColCenter"], defaultThemeMacros);
       expect(result.display).toBe("flex");
       expect(result.alignItems).toBe("center");
     });
@@ -213,14 +205,6 @@ describe("resolveMacros", () => {
         display: "flex",
         alignItems: "last-baseline",
         justifyContent: "center",
-      });
-    });
-
-    it("FlexStart no confunde con Start — @flexFlexStartFlexStart", () => {
-      expect(resolveMacros("@flexFlexStartFlexStart")).toEqual({
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "flex-start",
       });
     });
 

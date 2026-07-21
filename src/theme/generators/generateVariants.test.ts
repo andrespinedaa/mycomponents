@@ -72,7 +72,7 @@ describe("generateComponentVariants", () => {
 
     it("focus → [data-slot='X']:focus-visible", () => {
       const config: TestConfig = {
-        variants: { focus: { bg: "neutral.100" } } as any,
+        variants: { focusVisible: { bg: "neutral.100" } } as any,
       };
       const result = generateComponentVariants("Card", config, defaultTheme);
       expect(result).toContain(`[data-slot="Card"]:focus-visible{`);
@@ -305,7 +305,7 @@ describe("generateComponentVariants — DSL $prop", () => {
       variants: { color: "$color" } as any,
     };
     const result = generateComponentVariants("CardSection", config, defaultTheme);
-    expect(result).toContain(`--card-slots-color:var(--card-color);`);
+    expect(result).toContain(`--card-section-color:var(--card-color);`);
   });
 
   it("$prop inline en variante nombrada resuelve dentro del valor", () => {
@@ -315,7 +315,7 @@ describe("generateComponentVariants — DSL $prop", () => {
       variants: { Filled: { outline: "2px solid $borderColor" } },
     };
     const result = generateComponentVariants("CardSection", config, defaultTheme);
-    expect(result).toContain(`--card-slots-outline:2px solid var(--card-border-color);`);
+    expect(result).toContain(`--card-section-outline:2px solid var(--card-border-color);`);
   });
 
   it("$prop en estado hover a nivel raíz", () => {
@@ -326,7 +326,7 @@ describe("generateComponentVariants — DSL $prop", () => {
     };
     const result = generateComponentVariants("CardSection", config, defaultTheme);
     expect(result).toContain(`:hover`);
-    expect(result).toContain(`--card-slots-background:var(--card-background);`);
+    expect(result).toContain(`--card-section-background:var(--card-background);`);
   });
 
   it("$prop coexiste con tokens normales en flat base", () => {
@@ -339,8 +339,8 @@ describe("generateComponentVariants — DSL $prop", () => {
       } as any,
     };
     const result = generateComponentVariants("CardSection", config, defaultTheme);
-    expect(result).toContain(`--card-slots-background:var(--${p}-color-neutral-50);`);
-    expect(result).toContain(`--card-slots-color:var(--card-color);`);
+    expect(result).toContain(`--card-section-background:var(--${p}-color-neutral-50);`);
+    expect(result).toContain(`--card-section-color:var(--card-color);`);
   });
 
   it("sin parentName, $prop apunta al propio prefix (auto-referencia)", () => {
