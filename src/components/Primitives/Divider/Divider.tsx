@@ -36,17 +36,9 @@ export const Divider = ComponentFactory<DividerConfig>({
       >
         {children && (
           <>
-            <Box
-              role="separator"
-              aria-orientation={orientation}
-              mod={[{ orientation, size, variant, set }]}
-            />
+            <Box aria-hidden mod={[{ orientation, size, variant, set }]} />
             {children}
-            <Box
-              role="separator"
-              aria-orientation={orientation}
-              mod={[{ orientation, size, variant, set }]}
-            />
+            <Box aria-hidden mod={[{ orientation, size, variant, set }]} />
           </>
         )}
       </Box>

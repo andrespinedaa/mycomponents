@@ -1,11 +1,11 @@
 import { ComponentFactory, type ComponentConfig } from "../../factory";
-import { Layout } from "../Primitives/Box/Layout";
+import { Layout, type LayoutConfig } from "../Primitives/Box/Layout";
 import { CardSection } from "./CardSection";
 
 export interface CardOwnProps {}
 
 export type CardConfig = ComponentConfig<{
-  defaultTag: "div";
+  defaultTag: LayoutConfig["defaultTag"];
   componentName: "Card";
   ownProps: CardOwnProps;
   sizes: "xs" | "sm" | "md" | "lg" | "xl";

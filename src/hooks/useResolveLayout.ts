@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { useLayoutContext, type LayoutContextValue } from "../context/LayoutContext";
 import type { OrientationProp } from "../factory";
-import { useThemeContext } from "../theme/ThemeContext";
 import { type ComponentVariants, type Scales } from "../theme";
 import type { GeneratorConfig } from "../theme/generators/css-gen-utils";
 
@@ -27,7 +26,7 @@ function collectOwnPresetNames(config: GeneratorConfig | undefined): Set<string>
   return names;
 }
 
-function isDeclaredChild(
+function isChild(
   layout: LayoutContextValue,
   componentConfig: GeneratorConfig | undefined,
 ): boolean {
@@ -41,7 +40,7 @@ function resolveInheritedSet(
   componentConfig: GeneratorConfig | undefined,
   ownPresetNames: Set<string>,
 ): string | undefined {
-  if (!isDeclaredChild(layout, componentConfig) || layout.set == null) return undefined;
+  if (!isChild(layout, componentConfig) || layout.set == null) return undefined;
   return ownPresetNames.has(layout.set) ? layout.set : undefined;
 }
 
@@ -49,14 +48,14 @@ function resolveInheritedVariant(
   layout: LayoutContextValue,
   componentConfig: GeneratorConfig | undefined,
 ): ComponentVariants | undefined {
-  return isDeclaredChild(layout, componentConfig) ? layout.variant : undefined;
+  return isChild(layout, componentConfig) ? layout.variant : undefined;
 }
 
 export function useResolveLayout(
+  sizeResponsive: Scales,
   own: LayoutContextValue,
   componentConfig?: GeneratorConfig,
 ): ResolvedLayout {
-  const { sizeResponsive } = useThemeContext();
   const ownPresetNames = useMemo(() => collectOwnPresetNames(componentConfig), [componentConfig]);
   const layout = useLayoutContext();
 

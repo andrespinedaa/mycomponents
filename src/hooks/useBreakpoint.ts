@@ -14,7 +14,7 @@ function resolveBreakpointSize(theme: Theme): Scales {
   return result;
 }
 
-export function useBreakpointSize(theme: Theme): Scales {
+export function useBreakPoint(theme: Theme): Scales {
   const [size, setSize] = useState<Scales>(() =>
     typeof window === "undefined"
       ? (Object.keys(theme.breakpoints)[0] as Scales)
@@ -25,10 +25,8 @@ export function useBreakpointSize(theme: Theme): Scales {
     const update = () => setSize(resolveBreakpointSize(theme));
     update();
     const sorted = getSortedBreakpoints(theme);
-    // matchMedia: fires on DevTools preset button clicks + boundary crossings
     const mqls = sorted.map(([, val]) => window.matchMedia(`(min-width: ${val})`));
     mqls.forEach((mql) => mql.addEventListener("change", update));
-    // resize: fallback for physical window resize and DevTools handle drag
     window.addEventListener("resize", update);
     return () => {
       mqls.forEach((mql) => mql.removeEventListener("change", update));

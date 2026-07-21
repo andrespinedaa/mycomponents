@@ -14,5 +14,5 @@ export type ButtonConfig = ComponentConfig<{
 
 export const Button = ComponentFactory<ButtonConfig>({
   componentName: "Button",
-  render: ({ ref, ...rest }) => <Box ref={ref} {...rest} />
+  render: ({ ref, ...rest }) => <Box as="button" type="button" ref={ref} {...rest} />
 });

@@ -11,7 +11,7 @@ import { generateComponents } from "./generators/generateComponents";
 import { generateResponsive } from "./generators/generateResponsive";
 import { generateTokens } from "./generators/generateTokens";
 import type { ColorScheme, Theme } from "./core/theme.types";
-import { useBreakpointSize } from "../hooks/useBreakpointSize";
+import { useBreakPoint } from "../hooks/useBreakpoint";
 
 export interface ThemeProviderProps {
   theme: Theme;
@@ -65,7 +65,7 @@ export function ThemeProvider({
     };
   }, [colorScheme]);
 
-  const sizeResponsive = useBreakpointSize(theme);
+  const sizeResponsive = useBreakPoint(theme);
   const ctxValue = useMemo<ThemeContextValue>(
     () => ({ theme, sizeResponsive, colorScheme, setColorScheme, toggleColorScheme }),
     [theme, sizeResponsive, colorScheme, toggleColorScheme],

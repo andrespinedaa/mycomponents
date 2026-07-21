@@ -22,11 +22,11 @@ export function ComponentFactory<Config extends FactoryConfig>({
     props,
     ref,
   ) {
-    const { theme } = useThemeContext();
+    const { theme, sizeResponsive } = useThemeContext();
     const componentConfig = theme.components?.[componentName];
     const resolvedTag = typeof render === "string" ? componentConfig?.defaultTag ?? render : render;
     const resolvedComponentName = componentConfig?.componentName ?? componentName;
-    const parentName = componentConfig?.parentName;
+
     const mergedProps = {
       ...(defaultProps ?? {}),
       ...(componentConfig?.defaultProps ?? {}),
@@ -50,7 +50,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
       size: resolvedSize,
       variant: resolvedVariant,
       orientation: resolvedOrientation,
-    } = useResolveLayout({ size, variant, set, orientation }, componentConfig);
+    } = useResolveLayout(sizeResponsive, { size, variant, set, orientation }, componentConfig);
     const vars = resolveVarsDSL(varsRaw, camelToKebab(resolvedComponentName), theme);
     const dataName = dataSlot || inheritedSlot || resolvedComponentName || undefined;
 

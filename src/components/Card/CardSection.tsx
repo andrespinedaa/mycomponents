@@ -1,5 +1,5 @@
 import { ComponentFactory, type ComponentConfig } from "../../factory";
-import { Layout } from "../Primitives/Box/Layout";
+import { Layout, type LayoutConfig } from "../Primitives/Box/Layout";
 
 export type CardSectionSets = "cover" | "top" | "bottom" | "gradient" | "background";
 export type CardSlots = "header" | "body" | "footer" | "media";
@@ -8,7 +8,7 @@ export interface CardSectionOwnProps {}
 
 export type CardSectionConfig = ComponentConfig<{
   componentName: "CardSection";
-  defaultTag: "div";
+  defaultTag: LayoutConfig["defaultTag"];
   ownProps: CardSectionOwnProps;
   slots: Record<CardSlots, CardSectionSets>;
   defaultProps: { slots: "body" };

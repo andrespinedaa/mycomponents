@@ -1,6 +1,6 @@
 import { Card, Badge, Dot } from "./components";
 import { Text, Box, Image, Divider } from "./components/Primitives";
-import { ThemeProvider, useThemeContext } from "./theme";
+import { ThemeProvider } from "./theme";
 import { createTheme } from "./theme/createTheme";
 import { graphiteTheme, haloTheme } from "./themes";
 import bgImage from "./components/Card/background 2.jpg";
@@ -10,20 +10,18 @@ const theme = createTheme(haloTheme);
 const badgeInfo = [{ data: "ice grey" }, { data: "3.2s" }, { data: "Manual" }];
 
 function App() {
-
-  const { sizeResponsive } = useThemeContext();
-
   return (
     <ThemeProvider theme={theme}>
-      <Box minH="100vh" p="40px">
+      <Box minH="100vh" flexDir="column" apply={["@flexCenterCenter"]} >
         <Card
           p="sm"
+          flexDir="column"
           variant="Outlined"
           orientation="vertical"
-          apply={["@flexCenterEnd", "@flexCol"]}
+          apply={["@flexCenterEnd"]}
         >
           <Card.Section slots="media" set="cover">
-            <Image src={bgImage} set="cover" rounded={sizeResponsive} />
+            <Image src={bgImage} set="cover" rounded="sm" />
           </Card.Section>
           <Card.Section slots="header" as="header" apply={["@flexEndSpaceAround"]}>
             {badgeInfo.map((b, i) => {
@@ -35,7 +33,7 @@ function App() {
               );
             })}
           </Card.Section>
-          <Card.Section slots="body" apply={["@flexCol", "@flexStartEnd"]} p="md">
+          <Card.Section slots="body" flexDir="column" apply="@flexStartEnd" p="md">
             <Text as="h2" color="neutral.100" fontSize={"3xl"}>
               Porsche 911
             </Text>

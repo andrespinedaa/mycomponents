@@ -87,7 +87,7 @@ export type ThemeComponentOptions<Config extends FactoryConfig> = {
   defaultProps?: RequiredDefaultProps<Config>;
   /* Style's Properties */
   variants?: VariantsField;
-  sizes: SizeField<Config>;
+  sizes?: SizeField<Config>;
   presets?: PresetsField<Config>;
   slots?: SlotsField<Config>;
   orientation?: OrientationField;
