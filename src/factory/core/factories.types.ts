@@ -1,17 +1,11 @@
+// prettier-ignore
+import type React from "react";
 import type { ModProps } from "../../system/get-mod";
-import type {
-  BuiltInMacros,
-  ComponentVariants,
-  Scales,
-  StyleProps,
-  SystemCSS,
-  Theme,
-  ThemeBreakpoints,
-  ThemeMacros,
-} from "../../theme";
-import type { PolymorphicRef } from "../../types/polimorphic.types";
+import type { BuiltInMacros, ComponentVariants, Scales, StyleProps, SystemCSS, Theme, ThemeBreakpoints, ThemeMacros } from "../../theme";
 import type { DefaultProps, FactoryDefaultPropsConfig } from "./factory.defaults";
 import type { FactoryFunctionOptions } from "./factory.render";
+
+export type PolymorphicRef<E extends React.ElementType> = React.ComponentPropsWithRef<E>["ref"];
 
 export type VarsProp = Record<string, string>;
 export type ModProp = Record<string, unknown> | string;
@@ -20,7 +14,6 @@ export type ApplyProp = keyof ThemeMacros | BuiltInMacros;
 export type StyleProp = SystemCSS | ((theme: Theme) => SystemCSS);
 
 export type BaseProps = {
-  "data-slot"?: string;
   vars?: VarsProp;
   unstyled?: boolean;
   dataSlot?: string;
@@ -36,7 +29,7 @@ export type SystemProps = StyleProps & BaseProps;
 export type FactoryStatics = Record<string, React.ComponentType<any>>;
 
 export type FactoryConfig = {
-  sizes: keyof ThemeBreakpoints | Scales;
+  tag: keyof React.JSX.IntrinsicElements;
   ownProps: object;
   presets?: string;
   defaultProps: object;
@@ -44,7 +37,7 @@ export type FactoryConfig = {
   statics?: FactoryStatics;
   variants?: ComponentVariants;
   slots?: Record<string, string>;
-  defaultTag: keyof React.JSX.IntrinsicElements;
+  sizes: keyof ThemeBreakpoints | Scales;
 };
 
 type SlotSets<Config extends FactoryConfig> = NonNullable<Config["slots"]>[keyof NonNullable<
@@ -66,7 +59,7 @@ export type SlotProp<Config extends FactoryConfig> = {
 };
 
 export type SetProp<Config extends FactoryConfig> = {
-  set?: Config["presets"] | SlotSets<Config>;
+  set?: Extract<Config["presets"], string> | SlotSets<Config>;
 };
 
 export type VariantProp<Config extends FactoryConfig> = {
@@ -102,7 +95,8 @@ export type ConfigProps<Config extends FactoryConfig> = SizeProp<Config> &
 // ════════════════════════════════════════════════════════════════════════════════════════
 
 export type FactoryComputedProps<Config extends FactoryConfig> = {
-  ref: PolymorphicRef<Config["defaultTag"]>;
+  ref: PolymorphicRef<Config["tag"]>;
+  "data-slot"?: string;
 };
 
 export type NonPublicProps<Config extends FactoryConfig> = Partial<FactoryComputedProps<Config>>;
@@ -111,7 +105,7 @@ export type FactoryResolvableProps<Config extends FactoryConfig> = {
   size?: Config["sizes"];
   variant?: Config["variants"];
   slots?: keyof Config["slots"];
-  set?: Config["presets"] | SlotSets<Config>;
+  set?: Extract<Config["presets"], string> | SlotSets<Config>;
 };
 
 export type FactoryInternalProps<Config extends FactoryConfig> = FactoryComputedProps<Config> &
