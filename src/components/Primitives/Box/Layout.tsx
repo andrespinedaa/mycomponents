@@ -7,27 +7,33 @@ import { Box } from "./Box";
 export interface LayoutProps {}
 
 export type LayoutConfig = ComponentConfig<{
+  tag: "div";
   sizes: Scales;
-  defaultProps: {};
-  defaultTag: "div";
+  name: "Layout";
+  presets: string;
   ownProps: LayoutProps;
-  componentName: "Layout";
   variants: ComponentVariants;
   slots: Record<string, string>;
-  presets: string;
 }>;
 
 export const Layout = ComponentFactory<LayoutConfig>({
-  componentName: "Layout",
+  name: "Layout",
   render: function LayoutRender({ ref, set, size, slots, variant, orientation, ...rest }) {
     const layoutCtx = useMemo<LayoutContextValue>(
-      () => ({ size, variant, set, orientation, componentName: rest.dataSlot }),
-      [size, variant, set, orientation, rest.dataSlot],
+      () => ({ variant, set, orientation, name: rest.dataSlot }),
+      [variant, set, orientation, rest.dataSlot],
     );
 
     return (
       <LayoutProvider value={layoutCtx}>
-        <Box ref={ref} mod={{ orientation, size, variant, slots, set }} {...rest} />
+        <Box
+          ref={ref}
+          size={size}
+          variant={variant}
+          orientation={orientation}
+          mod={{ slots, set }}
+          {...rest}
+        />
       </LayoutProvider>
     );
   },

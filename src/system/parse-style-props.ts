@@ -1,12 +1,22 @@
 import type { CSSProperties } from "react";
-import { type Theme, type StyleProps, STYLE_PROPS_DATA } from "../theme";
-import { resolveValue } from "./resolve-value";
-import { isResponsiveObject, cssPropToVarKey } from "./responsive.data";
+import {
+  type Theme,
+  type StyleProps,
+  STYLE_PROPS_DATA,
+  type Responsive,
+  type PartialBreakPointKey,
+} from "../theme";
+import { resolveValue } from "./resolvers/resolve-value";
+import { camelToKebab } from "../utils/string";
 
 export type ParsedStyleProps = {
   styles: CSSProperties;
   hasResponsive: boolean;
 };
+
+function isResponsiveObject<T>(value: Responsive<T> | undefined): value is PartialBreakPointKey<T> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
 
 export function parseStyleProps(styleProps: StyleProps, theme: Theme): ParsedStyleProps {
   const result: Record<string, string | number> = {};
@@ -36,7 +46,7 @@ export function parseStyleProps(styleProps: StyleProps, theme: Theme): ParsedSty
         if (bpValue === undefined || bpValue === null) continue;
         const resolved = resolveValue(bpValue as string | number, category, theme);
         for (const cssProp of properties) {
-          result[`--${cssPropToVarKey(cssProp)}-${breakpoint}`] = resolved;
+          result[`--${camelToKebab(cssProp)}-${breakpoint}`] = resolved;
         }
         hasResponsive = true;
       }

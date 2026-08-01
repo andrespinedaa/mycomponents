@@ -4,16 +4,12 @@ import type { ComponentVariants } from "../../../theme";
 export interface ImageProps {}
 
 export type ImgConfig = ComponentConfig<{
-  componentName: "Image";
-  defaultTag: "img";
-  ownProps: ImageProps;
-  defaultProps: {};
+  tag: "img";
+  name: "Image";
   presets: "cover";
-  sizes: "xs" | "sm" | "md" | "lg" | "xl";
+  ownProps: ImageProps;
   variants: ComponentVariants;
+  sizes: "xs" | "sm" | "md" | "lg" | "xl";
 }>;
 
-export const Image = ComponentFactory<ImgConfig>({
-  render: "img",
-  componentName: "Image",
-});
+export const Image = ComponentFactory<ImgConfig>({ render: "img", name: "Image" });

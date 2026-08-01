@@ -161,7 +161,7 @@ describe("generateComponentSizes � DSL $prop", () => {
   it("$prop standalone en size resuelve var del padre", () => {
     const config: TestConfig = {
       parentName: "Card",
-      componentName: "CardSection",
+      name: "CardSection",
       sizes: { md: { gap: "$gap" } },
     };
     const result = generateComponentSizes("CardSection", config, defaultTheme);
@@ -171,7 +171,7 @@ describe("generateComponentSizes � DSL $prop", () => {
   it("$prop inline en size resuelve var del padre dentro del valor", () => {
     const config: TestConfig = {
       parentName: "Card",
-      componentName: "CardSection",
+      name: "CardSection",
       sizes: { md: { rounded: "0 0 $rounded $rounded" } },
     };
     const result = generateComponentSizes("CardSection", config, defaultTheme);
@@ -181,7 +181,7 @@ describe("generateComponentSizes � DSL $prop", () => {
   it("$prop en size tambi�n se repite en media queries responsive", () => {
     const config: TestConfig = {
       parentName: "Card",
-      componentName: "CardSection",
+      name: "CardSection",
       sizes: { md: { gap: "$gap" } },
     };
     const result = generateComponentSizes("CardSection", config, defaultTheme);

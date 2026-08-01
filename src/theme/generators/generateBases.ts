@@ -7,25 +7,19 @@ function isStateKey(key: string): boolean {
   return key in STATE_SELECTORS;
 }
 
-// Collects all leaf CSS token keys from a StyledBlock (flat + states + variants).
-// Recurses into state nodes and variant blocks; skips slots presets (non-state objects
-// within slots entries are handled separately in collectSectionKeys).
 function collectStyledBlockKeys(block: Record<string, unknown>, usedKeys: Set<string>): void {
   for (const [key, value] of Object.entries(block)) {
     if (value == null) continue;
     if (typeof value !== "object") {
       usedKeys.add(key);
     } else if (isStateKey(key)) {
-      // state node — recurse (handles nested states at 2nd level too)
       collectStyledBlockKeys(value as Record<string, unknown>, usedKeys);
     } else {
-      // variant block — recurse
       collectStyledBlockKeys(value as Record<string, unknown>, usedKeys);
     }
   }
 }
 
-// Collects keys from a SlotsConfig — mapa directo de nombre de slot → SlotEntry (flat+states+presets).
 function collectSlotsConfig(slots: Record<string, unknown>, usedKeys: Set<string>): void {
   for (const slotVal of Object.values(slots)) {
     if (!slotVal || typeof slotVal !== "object") continue;
@@ -33,7 +27,6 @@ function collectSlotsConfig(slots: Record<string, unknown>, usedKeys: Set<string
   }
 }
 
-// Collects keys from a SlotEntry: flat+states + presets (each a StyledBlock).
 function collectSlotEntry(slot: Record<string, unknown>, usedKeys: Set<string>): void {
   for (const [key, value] of Object.entries(slot)) {
     if (key === "presets") {
@@ -55,11 +48,11 @@ function collectSlotEntry(slot: Record<string, unknown>, usedKeys: Set<string>):
 }
 
 export function generateComponentBases(
-  componentName: string,
+  name: string,
   config: GeneratorConfig,
 ): string {
   if (!config?.variants && !config?.sizes && !config?.presets && !config?.slots) return "";
-  const { resolvedName, prefix } = resolveGeneratorNames(componentName, config);
+  const { resolvedName, prefix } = resolveGeneratorNames(name, config);
 
   const usedKeys = new Set<string>();
 

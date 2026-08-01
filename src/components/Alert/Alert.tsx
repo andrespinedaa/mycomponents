@@ -12,40 +12,35 @@ export interface AlertOwnProps {
 }
 
 export type AlertConfig = ComponentConfig<{
-  componentName: "Alert";
-  defaultTag: "div";
+  tag: "div";
+  name: "Alert";
   ownProps: AlertOwnProps;
-  defaultProps: {
-    severity: "info";
-  };
   sizes: "xs" | "sm" | "md" | "lg" | "xl";
   variants: "Subtle" | "Filled" | "Outlined";
 }>;
 
 export const Alert = ComponentFactory<AlertConfig>({
-  componentName: "Alert",
-  defaultProps: { severity: "info", role: "alert" },
-  render: function AlertRender({
-    set,
+  name: "Alert",
+  render: ({
     ref,
     icon,
-    size,
     title,
-    variant,
     onClose,
-    severity,
     closable,
     children,
+    role = "alert",
+    severity = "info",
+    variant = "Filled",
     ...rest
-  }) {
+  }) => {
     return (
-      <Box ref={ref} mod={{ size, variant, set }} {...rest}>
+      <Box ref={ref} variant={variant} {...rest}>
         <Box as="span" flexShrink={0} aria-hidden>
           {icon}
         </Box>
         <Box flex={1}>
           {title && (
-            <Text as="p" weight={600} mb="xs" apply="@noMargin">
+            <Text fontWeight="600px" mb="xs" apply="@noMargin">
               {title}
             </Text>
           )}

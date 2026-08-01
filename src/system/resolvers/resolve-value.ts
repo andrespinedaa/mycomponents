@@ -1,4 +1,5 @@
-import type { PropCategory, Theme } from "../theme";
+import type { PropCategory, Theme } from "../../theme";
+
 
 const SIZE_ALIASES: Record<string, string> = {
   full: "100%",
@@ -44,6 +45,11 @@ export function resolveValue(value: string | number, category: PropCategory, the
     if (v === "sans") return `var(--${p}-font-sans)`;
     if (v === "mono") return `var(--${p}-font-mono)`;
     return v;
+  }
+
+  if(category === "shadow"){
+    if (v in theme.shadows) return `var(--${p}-box-shadow-${v})`;
+    return v
   }
 
   return v;

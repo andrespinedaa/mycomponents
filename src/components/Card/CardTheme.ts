@@ -7,11 +7,11 @@ export type CardTheme = ThemeComponentConfig<CardConfig>;
 export const CardThemeComponent: CardTheme = {
   // prettier-ignore
   sizes: {
-    xs: { minW: "300px",  maxW: "355px",  minH: "350px",  maxH: "505px"  },
-    sm: { minW: "355px",  maxW: "405px",  minH: "455px",  maxH: "505px"  },
-    md: { minW: "405px",  maxW: "740px",  minH: "455px",  maxH: "790px"  },
-    lg: { minW: "740px",  maxW: "1000px", minH: "790px",  maxH: "1050px" },
-    xl: { minW: "1000px", maxW: "1300px", minH: "1050px", maxH: "1300px" },
+    xs: { minW: "250px",  maxW: "320px",  minH: "250px",  maxH: "400px" },
+    sm: { minW: "320px",  maxW: "370px",  minH: "400px",  maxH: "470px" },
+    md: { minW: "370px",  maxW: "420px",  minH: "470px",  maxH: "500px" },
+    lg: { minW: "420px",  maxW: "450px",  minH: "500px",  maxH: "530px" },
+    xl: { minW: "450px",  maxW: "500px",  minH: "530px",  maxH: "600px" },
   },
   variants: {
     border: "none",
@@ -27,8 +27,8 @@ export const CardThemeComponent: CardTheme = {
       hover: { borderColor: "primary.400" },
     },
     Elevated: {
-      boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
-      hover: { boxShadow: "0 8px 24px rgba(0,0,0,0.10), 0 28px 64px rgba(0,0,0,0.16)" },
+      shadow: "0 4px 16px rgba(0,0,0,0.4)",
+      hover: { shadow: "0 8px 24px rgba(0,0,0,0.10), 0 28px 64px rgba(0,0,0,0.16)" },
     },
   },
   statics: {

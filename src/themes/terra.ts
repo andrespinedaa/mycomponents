@@ -1,18 +1,17 @@
-import type { Theme } from "../theme/core/theme.types";
-import { defaultThemeMacros } from "../theme/core/macros/theme.macros.data";
-import { defaultThemeComponents } from "../theme/core/theme.components.data";
+import { type Theme, defaultThemeMacros, defaultThemeComponents } from "../theme/core";
 
 // ─── Terra — "Terracota sobre stone, balanceada y warm" ──────────────────────
 // Terracotta primary · teal secondary · stone neutral
 // Balanced radii (6/9/14px) · standard spacing · mid-height controls
 
 export const terraTheme: Theme = {
-  cssVarPrefix: "mycomponents",
+  cssVarPrefix: "terra",
 
+  // ─── System Colors ────────────────────────────────────────────────────────
   colors: {
     // Terracotta — warm, earthy primary
     primary: {
-      50:  "#fdf4f0",
+      50: "#fdf4f0",
       100: "#fbe6dc",
       200: "#f6c8b4",
       300: "#eea487",
@@ -26,7 +25,7 @@ export const terraTheme: Theme = {
     },
     // Teal — earthy complement
     secondary: {
-      50:  "#f0fdfa",
+      50: "#f0fdfa",
       100: "#ccfbf1",
       200: "#99f6e4",
       300: "#5eead4",
@@ -40,7 +39,7 @@ export const terraTheme: Theme = {
     },
     // Stone — warm neutral, not cold gray
     neutral: {
-      50:  "#fafaf9",
+      50: "#fafaf9",
       100: "#f5f5f4",
       200: "#e7e5e4",
       300: "#d6d3d1",
@@ -53,7 +52,7 @@ export const terraTheme: Theme = {
       950: "#0c0a09",
     },
     danger: {
-      50:  "#fef2f2",
+      50: "#fef2f2",
       100: "#fee2e2",
       200: "#fecaca",
       300: "#fca5a5",
@@ -66,7 +65,7 @@ export const terraTheme: Theme = {
       950: "#450a0a",
     },
     success: {
-      50:  "#ecfdf5",
+      50: "#ecfdf5",
       100: "#d1fae5",
       200: "#a7f3d0",
       300: "#6ee7b7",
@@ -79,7 +78,7 @@ export const terraTheme: Theme = {
       950: "#022c22",
     },
     warning: {
-      50:  "#fffbeb",
+      50: "#fffbeb",
       100: "#fef3c7",
       200: "#fde68a",
       300: "#fcd34d",
@@ -92,7 +91,7 @@ export const terraTheme: Theme = {
       950: "#451a03",
     },
     info: {
-      50:  "#eff6ff",
+      50: "#eff6ff",
       100: "#dbeafe",
       200: "#bfdbfe",
       300: "#93c5fd",
@@ -105,36 +104,41 @@ export const terraTheme: Theme = {
       950: "#172554",
     },
   },
-  // Balanced spacing
+
+  // ─── Spacing Tokens ───────────────────────────────────────────────────────
   spacing: {
-    xs:    "4px",
-    sm:    "8px",
-    md:    "16px",
-    lg:    "24px",
-    xl:    "36px",
+    xs: "4px",
+    sm: "8px",
+    md: "16px",
+    lg: "24px",
+    xl: "36px",
     "2xl": "48px",
   },
-  // Balanced radii
+
+  // ─── Radius Tokens ────────────────────────────────────────────────────────
   radii: {
     none: "0",
-    xs:   "3px",
-    sm:   "6px",
-    md:   "9px",
-    lg:   "14px",
+    xs: "3px",
+    sm: "6px",
+    md: "9px",
+    lg: "14px",
+    xl: "18px",
     full: "9999px",
   },
 
+  // ─── Font sizes Tokens ────────────────────────────────────────────────────
   fontSizes: {
-    xs:    "12px",
-    sm:    "13px",
-    md:    "15px",
-    lg:    "16px",
-    xl:    "19px",
+    xs: "12px",
+    sm: "13px",
+    md: "15px",
+    lg: "16px",
+    xl: "19px",
     "2xl": "24px",
     "3xl": "30px",
     "4xl": "40px",
   },
 
+  // ─── Typography ───────────────────────────────────────────────────────────
   typography: {
     fontSans: "'Inter','Inter var',system-ui,-apple-system,'Segoe UI',sans-serif",
     fontMono: "ui-monospace,'SF Mono','JetBrains Mono','Menlo',monospace",
@@ -142,48 +146,53 @@ export const terraTheme: Theme = {
     weightHeading: 700,
   },
 
+  // ─── Shadows Tokens ───────────────────────────────────────────────────────
   shadows: {
+    xs: "0 1px 2px rgba(0,0,0,.45)",
     sm: "0 1px 2px rgba(0,0,0,.45)",
     md: "0 2px 6px rgba(0,0,0,.45), 0 6px 16px rgba(0,0,0,.40)",
     lg: "0 10px 28px rgba(0,0,0,.50)",
     xl: "0 18px 48px rgba(0,0,0,.60)",
   },
 
+  // ─── Motion ───────────────────────────────────────────────────────────────
   motion: {
     easeDefault: "cubic-bezier(.4,0,.2,1)",
-    easeIn:      "cubic-bezier(.4,0,1,1)",
-    durFast:     "150ms",
-    durState:    "200ms",
-    durLayout:   "300ms",
+    easeIn: "cubic-bezier(.4,0,1,1)",
+    durFast: "150ms",
+    durState: "200ms",
+    durLayout: "300ms",
   },
 
+  // ─── Semantic layer (dark-first) ──────────────────────────────────────────
   semantic: {
     dark: {
-      background:    "neutral.950",
-      surface:       "neutral.900",
+      background: "neutral.950",
+      surface: "neutral.900",
       surfaceRaised: "neutral.800",
-      surfaceHover:  "neutral.800",
+      surfaceHover: "neutral.800",
       surfaceSunken: "#000000",
-      border:        "neutral.800",
-      borderStrong:  "neutral.700",
-      text:          "neutral.50",
-      textSubtle:    "neutral.400",
-      textDisabled:  "neutral.600",
+      border: "neutral.800",
+      borderStrong: "neutral.700",
+      text: "neutral.50",
+      textSubtle: "neutral.400",
+      textDisabled: "neutral.600",
     },
     light: {
-      background:    "neutral.50",
-      surface:       "#ffffff",
+      background: "neutral.50",
+      surface: "#ffffff",
       surfaceRaised: "#ffffff",
-      surfaceHover:  "neutral.100",
+      surfaceHover: "neutral.100",
       surfaceSunken: "neutral.100",
-      border:        "neutral.200",
-      borderStrong:  "neutral.300",
-      text:          "neutral.900",
-      textSubtle:    "neutral.500",
-      textDisabled:  "neutral.400",
+      border: "neutral.200",
+      borderStrong: "neutral.300",
+      text: "neutral.900",
+      textSubtle: "neutral.500",
+      textDisabled: "neutral.400",
     },
   },
 
+  // ─── Dark mode — light shadows override ───────────────────────────────────
   dark: {
     shadows: {
       sm: "0 1px 2px rgba(0,0,0,.45)",
@@ -193,6 +202,7 @@ export const terraTheme: Theme = {
     },
   },
 
+  // ─── BreakPoints Mobile First ─────────────────────────────────────────────
   breakpoints: {
     xs: "150px",
     sm: "640px",
@@ -202,5 +212,6 @@ export const terraTheme: Theme = {
   },
 
   macros: defaultThemeMacros,
+  
   components: defaultThemeComponents,
 };

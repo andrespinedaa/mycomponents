@@ -4,41 +4,31 @@ import { Box } from "..";
 export interface DividerOwnProps {}
 
 export type DividerConfig = ComponentConfig<{
-  componentName: "Divider";
-  defaultTag: "div";
-  ownProps: DividerOwnProps;
-  defaultProps: {
-    orientation: "horizontal";
-  };
-  sizes: "xs" | "sm" | "md" | "lg" | "xl";
+  tag: "div";
+  name: "Divider";
   presets: "label";
+  ownProps: DividerOwnProps;
+  variants: "Filled" | "Elevated";
+  sizes: "xs" | "sm" | "md" | "lg" | "xl";
 }>;
 
 export const Divider = ComponentFactory<DividerConfig>({
-  componentName: "Divider",
-  defaultProps: { orientation: "horizontal" },
-  render: function DividerRender({
-    set,
-    ref,
-    size,
-    variant,
-    children,
-    orientation,
-    ...rest
-  }) {
+  name: "Divider",
+  render: ({ ref, children, variant = "Filled", orientation = "horizontal", ...rest }) => {
     return (
       <Box
         ref={ref}
         role="separator"
         aria-orientation={orientation}
-        mod={[{ orientation, size, variant, set }]}
+        orientation={orientation}
+        variant={variant}
         {...rest}
       >
         {children && (
           <>
-            <Box aria-hidden mod={[{ orientation, size, variant, set }]} />
+            <Box aria-hidden orientation={orientation} variant={variant} />
             {children}
-            <Box aria-hidden mod={[{ orientation, size, variant, set }]} />
+            <Box aria-hidden orientation={orientation} variant={variant} />
           </>
         )}
       </Box>

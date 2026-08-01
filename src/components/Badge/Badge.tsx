@@ -4,15 +4,14 @@ import { Layout, type LayoutConfig } from "../Primitives/Box/Layout";
 export interface BadgeOwnProps {}
 
 export type BadgeConfig = ComponentConfig<{
-  componentName: "Badge";
-  defaultTag: LayoutConfig["defaultTag"];
+  name: "Badge";
   ownProps: BadgeOwnProps;
-  defaultProps: {};
+  tag: LayoutConfig["tag"];
   sizes: "xs" | "sm" | "md" | "lg" | "xl";
   variants: "Filled" | "Subtle" | "Outlined";
 }>;
 
 export const Badge = ComponentFactory<BadgeConfig>({
-  componentName: "Badge",
+  name: "Badge",
   render: ({ ref, ...rest }) => <Layout ref={ref} {...rest} />,
 });

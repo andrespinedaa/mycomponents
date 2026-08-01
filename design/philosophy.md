@@ -19,7 +19,7 @@ Todos los componentes se construyen con `ComponentFactory`. Nunca con `forwardRe
 
 ```ts
 export const Badge = ComponentFactory<BadgeConfig>({
-  componentName: "Badge",       // key en theme.components
+  name: "Badge",       // key en theme.components
   defaultProps: { variant: "Filled", size: "md" },
   render: function BadgeRender({ variant, size, ref, ...rest }) {
     // hooks locales y contextos van aquí

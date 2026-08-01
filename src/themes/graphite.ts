@@ -1,6 +1,4 @@
-import type { Theme } from "../theme/core/theme.types";
-import { defaultThemeMacros } from "../theme/core/macros/theme.macros.data";
-import { defaultThemeComponents } from "../theme/core/theme.components.data";
+import { type Theme, defaultThemeMacros, defaultThemeComponents } from "../theme/core";
 
 // ─── Graphite — "Azul señal sobre slate, compacto y sharp" ───────────────────
 // (Formerly "Mineral" in the initial proposal)
@@ -8,8 +6,9 @@ import { defaultThemeComponents } from "../theme/core/theme.components.data";
 // Sharp radii (4/6/8px) · compact spacing · standard controls
 
 export const graphiteTheme: Theme = {
-  cssVarPrefix: "mycomponents",
+  cssVarPrefix: "graphite",
 
+  // ─── System Colors ────────────────────────────────────────────────────────
   colors: {
     primary: {
       50: "#eff6ff",
@@ -104,6 +103,7 @@ export const graphiteTheme: Theme = {
     },
   },
 
+  // ─── Spacing Tokens ───────────────────────────────────────────────────────
   spacing: {
     xs: "4px",
     sm: "8px",
@@ -113,15 +113,18 @@ export const graphiteTheme: Theme = {
     "2xl": "32px",
   },
 
+  // ─── Radius Tokens ────────────────────────────────────────────────────────
   radii: {
     none: "0",
-    xs:   "2px",
-    sm:   "4px",
-    md:   "6px",
-    lg:   "8px",
+    xs: "2px",
+    sm: "4px",
+    md: "6px",
+    lg: "8px",
+    xl: "10px",
     full: "9999px",
   },
 
+  // ─── Font sizes Tokens ────────────────────────────────────────────────────
   fontSizes: {
     xs: "12px",
     sm: "13px",
@@ -133,21 +136,24 @@ export const graphiteTheme: Theme = {
     "4xl": "38px",
   },
 
+  // ─── Typography ───────────────────────────────────────────────────────────
   typography: {
-    fontSans:
-      "'Inter','Inter var',system-ui,-apple-system,'Segoe UI',sans-serif",
+    fontSans: "'Inter','Inter var',system-ui,-apple-system,'Segoe UI',sans-serif",
     fontMono: "ui-monospace,'SF Mono','JetBrains Mono','Menlo',monospace",
     trackingTight: "-0.014em",
     weightHeading: 650,
   },
 
+  // ─── Shadows Tokens ───────────────────────────────────────────────────────
   shadows: {
+    xs: "0 1px 2px rgba(0,0,0,.45)",
     sm: "0 1px 2px rgba(0,0,0,.45)",
     md: "0 2px 6px rgba(0,0,0,.45), 0 6px 16px rgba(0,0,0,.40)",
     lg: "0 10px 28px rgba(0,0,0,.50)",
     xl: "0 18px 48px rgba(0,0,0,.60)",
   },
 
+  // ─── Motion ───────────────────────────────────────────────────────────────
   motion: {
     easeDefault: "cubic-bezier(.4,0,.2,1)",
     easeIn: "cubic-bezier(.4,0,1,1)",
@@ -156,6 +162,7 @@ export const graphiteTheme: Theme = {
     durLayout: "300ms",
   },
 
+  // ─── Semantic layer (dark-first) ──────────────────────────────────────────
   semantic: {
     dark: {
       background: "neutral.950",
@@ -183,6 +190,7 @@ export const graphiteTheme: Theme = {
     },
   },
 
+  // ─── Dark mode — light shadows override ───────────────────────────────────
   dark: {
     shadows: {
       sm: "0 1px 2px rgba(0,0,0,.45)",
@@ -192,6 +200,7 @@ export const graphiteTheme: Theme = {
     },
   },
 
+  // ─── BreakPoints Mobile First ─────────────────────────────────────────────
   breakpoints: {
     xs: "150px",
     sm: "640px",

@@ -1,2 +1,2 @@
 export * from './ComponentFactory';
-export * from './core';
+export * from './factories.types';

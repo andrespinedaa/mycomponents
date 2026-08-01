@@ -74,7 +74,7 @@ describe("generateComponents", () => {
         ...defaultTheme,
         components: {
           CardSection: {
-            componentName: "Section",
+            name: "Section",
             parentName: "Card",
             sizes: { md: { p: "md" } },
           },
@@ -90,7 +90,7 @@ describe("generateComponents", () => {
           Card: {
             statics: {
               Section: {
-                componentName: "CardSection",
+                name: "CardSection",
                 parentName: "Card",
                 sizes: { md: { p: "md" } },
               },

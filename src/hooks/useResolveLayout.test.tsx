@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ComponentFactory } from "../factory/ComponentFactory";
-import type { ComponentConfig } from "../factory/core/factories.types";
+import type { ComponentConfig } from "../factory/factories.types";
 import { Box } from "../components/Primitives/Box/Box";
 import { Layout } from "../components/Primitives/Box/Layout";
 import { ThemeProvider } from "../theme";
@@ -10,8 +10,8 @@ import { defaultTheme } from "../themes/default-theme";
 
 // ─── Componentes de prueba — mimican la relación compound Card → Card.Section ──────────
 type ParentConfig = ComponentConfig<{
-  componentName: "TestParent";
-  defaultTag: "div";
+  name: "TestParent";
+  tag: "div";
   ownProps: {};
   defaultProps: {};
   sizes: "md";
@@ -20,7 +20,7 @@ type ParentConfig = ComponentConfig<{
 }>;
 
 const TestParent = ComponentFactory<ParentConfig>({
-  componentName: "TestParent",
+  name: "TestParent",
   render: function TestParentRender({ ref, set, variant, ...rest }) {
     return (
       <Layout ref={ref} data-testid="parent" set={set} variant={variant} {...rest} />
@@ -29,8 +29,8 @@ const TestParent = ComponentFactory<ParentConfig>({
 });
 
 type ChildWithPresetConfig = ComponentConfig<{
-  componentName: "TestChildWithPreset";
-  defaultTag: "div";
+  name: "TestChildWithPreset";
+  tag: "div";
   ownProps: {};
   defaultProps: {};
   sizes: "md";
@@ -38,15 +38,15 @@ type ChildWithPresetConfig = ComponentConfig<{
 }>;
 
 const TestChildWithPreset = ComponentFactory<ChildWithPresetConfig>({
-  componentName: "TestChildWithPreset",
+  name: "TestChildWithPreset",
   render: ({ ref, set, variant: _variant, ...rest }) => (
     <Box ref={ref} data-testid="child-with-preset" data-set={set} {...rest} />
   ),
 });
 
 type ChildNoPresetConfig = ComponentConfig<{
-  componentName: "TestChildNoPreset";
-  defaultTag: "div";
+  name: "TestChildNoPreset";
+  tag: "div";
   ownProps: {};
   defaultProps: {};
   sizes: "md";
@@ -54,15 +54,15 @@ type ChildNoPresetConfig = ComponentConfig<{
 }>;
 
 const TestChildNoPreset = ComponentFactory<ChildNoPresetConfig>({
-  componentName: "TestChildNoPreset",
+  name: "TestChildNoPreset",
   render: ({ ref, set, variant: _variant, ...rest }) => (
     <Box ref={ref} data-testid="child-no-preset" data-set={set} {...rest} />
   ),
 });
 
 type UnrelatedConfig = ComponentConfig<{
-  componentName: "TestUnrelated";
-  defaultTag: "div";
+  name: "TestUnrelated";
+  tag: "div";
   ownProps: {};
   defaultProps: {};
   sizes: "md";
@@ -71,7 +71,7 @@ type UnrelatedConfig = ComponentConfig<{
 
 // Mismo nombre de preset que TestParent ("background") pero SIN parentName — no es de la familia.
 const TestUnrelated = ComponentFactory<UnrelatedConfig>({
-  componentName: "TestUnrelated",
+  name: "TestUnrelated",
   render: ({ ref, set, variant: _variant, ...rest }) => (
     <Box ref={ref} data-testid="unrelated" data-set={set} {...rest} />
   ),

@@ -97,7 +97,7 @@ describe("Box", () => {
       expect(container.firstChild).toHaveAttribute("data-slot", "header");
     });
 
-    it("genera data-slot con componentName por defecto", () => {
+    it("genera data-slot con name por defecto", () => {
       const { container } = render(<Box>contenido</Box>, { wrapper });
       expect(container.firstChild).toHaveAttribute("data-slot", "Box");
     });

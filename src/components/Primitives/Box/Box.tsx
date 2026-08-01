@@ -1,21 +1,14 @@
-import {
-  ComponentFactory,
-  type ComponentConfig,
-} from "../../../factory";
+import { ComponentFactory, type ComponentConfig } from "../../../factory";
 import type { ComponentVariants, Scales } from "../../../theme";
 
 export interface BoxProps {}
 
 export type BoxConfig = ComponentConfig<{
-  componentName: "Box";
-  defaultTag: "div";
-  ownProps: BoxProps;
-  defaultProps: {};
+  tag: "div";
+  name: "Box";
   sizes: Scales;
-  variants: ComponentVariants; 
+  ownProps: BoxProps;
+  variants: ComponentVariants;
 }>;
 
-export const Box = ComponentFactory<BoxConfig>({
-  render: "div",
-  componentName: "Box",
-});
+export const Box = ComponentFactory<BoxConfig>({ render: "div", name: "Box" });

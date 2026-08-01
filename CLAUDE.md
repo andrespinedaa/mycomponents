@@ -214,7 +214,7 @@ render: ({ ref, ...rest }) => {
 
 ```ts
 export const MiComponente = ComponentFactory<MiConfig>({
-  componentName: "MiComponente",   // 1. nombre (igual al key en theme.components)
+  name: "MiComponente",   // 1. nombre (igual al key en theme.components)
   defaultProps: { ... },           // 2. valores iniciales — única fuente de verdad
   render: function MiComponenteRender({ ref, ...rest }) { // 3. function nombrada si usa hooks o default tag
     return <Box ref={ref} {...rest} />;

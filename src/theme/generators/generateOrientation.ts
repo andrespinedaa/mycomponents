@@ -32,12 +32,12 @@ function resolveSizeAwareBody(
 }
 
 export function generateComponentOrientation(
-  componentName: string,
+  name: string,
   config: GeneratorConfig,
   theme: Theme,
 ): string {
   if (!config?.orientation) return "";
-  const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(componentName, config);
+  const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(name, config);
   const base = buildSlotSelector(resolvedName);
   let css = "";
 

@@ -32,8 +32,8 @@ describe("generateComponentBases", () => {
     });
   });
 
-  describe("prefix derivado de componentName", () => {
-    it("deriva el prefix de camelToKebab(componentName) — flat token en variants", () => {
+  describe("prefix derivado de name", () => {
+    it("deriva el prefix de camelToKebab(name) — flat token en variants", () => {
       const config: TestConfig = {
         variants: { bg: "neutral.50" } as any,
       };
@@ -164,7 +164,7 @@ describe("generateComponentBases", () => {
     it("acumula keys de estados en raíz y dentro de variantes", () => {
       const config: TestConfig = {
         variants: {
-          hover: { boxShadow: "0 4px 6px rgba(0,0,0,0.08)" },
+          hover: { shadow: "0 4px 6px rgba(0,0,0,0.08)" },
           Outlined: { hover: { borderColor: "primary.400" } },
         } as any,
       };

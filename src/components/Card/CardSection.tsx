@@ -7,18 +7,16 @@ export type CardSlots = "header" | "body" | "footer" | "media";
 export interface CardSectionOwnProps {}
 
 export type CardSectionConfig = ComponentConfig<{
-  componentName: "CardSection";
-  defaultTag: LayoutConfig["defaultTag"];
+  name: "CardSection";
+  presets: CardSectionSets;
+  tag: LayoutConfig["tag"];
   ownProps: CardSectionOwnProps;
   slots: Record<CardSlots, CardSectionSets>;
-  defaultProps: { slots: "body" };
   sizes: "xs" | "sm" | "md" | "lg" | "xl";
-  presets: CardSectionSets;
   variants: "Filled" | "Elevated" | "Outlined";
 }>;
 
 export const CardSection = ComponentFactory<CardSectionConfig>({
-  componentName: "CardSection",
-  defaultProps: { slots: "body" },
-  render: ({ ref, ...rest }) => <Layout ref={ref} {...rest} />,
+  name: "CardSection",
+  render: ({ ref, slots = "body", ...rest }) => <Layout slots={slots} ref={ref} {...rest} />,
 });

@@ -7,7 +7,7 @@ import { useTheme } from "../hooks";
 import { ThemeProvider } from "../theme";
 import { defaultTheme } from "../themes/default-theme";
 import { ComponentFactory } from "./ComponentFactory";
-import type { ComponentConfig } from "./core/factories.types";
+import type { ComponentConfig } from "./factories.types";
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>
@@ -15,8 +15,8 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
 
 // ─── Configs de prueba ────────────────────────────────────────
 type TestConfig = ComponentConfig<{
-  componentName: "Test";
-  defaultTag: "button";
+  name: "Test";
+  tag: "button";
   ownProps: {
     label?: string;
   };
@@ -29,8 +29,8 @@ type TestConfig = ComponentConfig<{
 }>;
 
 type NoRenderConfig = ComponentConfig<{
-  componentName: "NoRender";
-  defaultTag: "section";
+  name: "NoRender";
+  tag: "section";
   ownProps: {};
   defaultProps: {};
   sizes: never;
@@ -39,9 +39,8 @@ type NoRenderConfig = ComponentConfig<{
 
 // ─── Componentes de prueba ────────────────────────────────────
 const TestComponent = ComponentFactory<TestConfig>({
-  componentName: "Test",
-  defaultProps: { variant: "Outlined" },
-  render: ({ variant, children, ref, set, ...rest }) => (
+  name: "Test",
+  render: ({ variant = "Outlined", children, ref, set, ...rest }) => (
     <Box as="button" ref={ref} mod={{ variant }} {...rest}>
       {children}
     </Box>
@@ -50,13 +49,13 @@ const TestComponent = ComponentFactory<TestConfig>({
 
 const NoRenderComponent = ComponentFactory<NoRenderConfig>({
   render: "section",
-  componentName: "NoRender",
+  name: "NoRender",
 });
 
 describe("ComponentFactory", () => {
   // ─── displayName ──────────────────────────────────────────────
   describe("displayName", () => {
-    it("asigna displayName desde componentName", () => {
+    it("asigna displayName desde name", () => {
       render(<TestComponent>btn</TestComponent>, { wrapper });
       expect(TestComponent.displayName).toBe("Test");
     });
@@ -132,7 +131,7 @@ describe("ComponentFactory", () => {
 
   // ─── fallback sin render ──────────────────────────────────────
   describe("sin render — fallback a Element", () => {
-    it("renderiza el defaultTag cuando no hay render", () => {
+    it("renderiza el tag cuando no hay render", () => {
       const { container } = render(<NoRenderComponent>contenido</NoRenderComponent>, { wrapper });
       expect(container.firstChild?.nodeName).toBe("SECTION");
     });
@@ -234,14 +233,14 @@ describe("ComponentFactory", () => {
     });
   });
 
-  // ─── componentName → data-slot ───────────────────────────────
+  // ─── name → data-slot ───────────────────────────────
   describe("data-slot", () => {
     it("genera data-slot en fallback sin render", () => {
       const { container } = render(<NoRenderComponent>contenido</NoRenderComponent>, { wrapper });
       expect(container.firstChild).toHaveAttribute("data-slot", "NoRender");
     });
 
-    it("dataSlot sobreescribe componentName", () => {
+    it("dataSlot sobreescribe name", () => {
       const { container } = render(
         <NoRenderComponent dataSlot="custom">contenido</NoRenderComponent>,
         { wrapper },
@@ -249,16 +248,16 @@ describe("ComponentFactory", () => {
       expect(container.firstChild).toHaveAttribute("data-slot", "custom");
     });
 
-    it("sin componentName ni dataSlot no genera data-slot", () => {
+    it("sin name ni dataSlot no genera data-slot", () => {
       type AnonConfig = ComponentConfig<{
-        componentName: "";
-        defaultTag: "div";
+        name: "";
+        tag: "div";
         ownProps: {};
         defaultProps: {};
         sizes: never;
         presets: string;
       }>;
-      const Anon = ComponentFactory<AnonConfig>({ componentName: "", render: "div" });
+      const Anon = ComponentFactory<AnonConfig>({ name: "", render: "div" });
       const { container } = render(<Anon>contenido</Anon>, { wrapper });
       expect(container.firstChild).not.toHaveAttribute("data-slot");
     });
@@ -269,7 +268,7 @@ describe("ComponentFactory", () => {
     it("theme accesible via useTheme en renders que lo necesitan", () => {
       let prefix: string | undefined;
       const ThemeComponent = ComponentFactory<NoRenderConfig>({
-        componentName: "NoRender",
+        name: "NoRender",
         render: function ThemeRender({ ref, children, set, variant, ...rest }) {
           const { theme } = useTheme();
           prefix = theme.cssVarPrefix;
@@ -297,13 +296,13 @@ describe("ComponentFactory", () => {
   // ─── statics ──────────────────────────────────────────────────
   describe("statics", () => {
     const SubComponent = ComponentFactory<TestConfig>({
-      componentName: "Test",
+      name: "Test",
       render: ({ children, ref }) => <Box ref={ref as any}>{children}</Box>,
     });
 
     type WithStaticsConfig = ComponentConfig<{
-      componentName: "WithStatics";
-      defaultTag: "div";
+      name: "WithStatics";
+      tag: "div";
       ownProps: {};
       statics: { Sub: typeof SubComponent };
       defaultProps: {};
@@ -312,7 +311,7 @@ describe("ComponentFactory", () => {
     }>;
 
     const WithStatics = ComponentFactory<WithStaticsConfig>({
-      componentName: "WithStatics",
+      name: "WithStatics",
       render: ({ children, ref }) => <Box ref={ref as any}>{children}</Box>,
       statics: { Sub: SubComponent },
     });
@@ -336,7 +335,7 @@ describe("ComponentFactory", () => {
   describe("edge cases", () => {
     it("render que retorna null no lanza error", () => {
       const NullComponent = ComponentFactory<NoRenderConfig>({
-        componentName: "NoRender",
+        name: "NoRender",
         render: () => null,
       });
       expect(() => render(<NullComponent />, { wrapper })).not.toThrow();

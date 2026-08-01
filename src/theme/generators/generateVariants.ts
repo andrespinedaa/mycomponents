@@ -1,5 +1,5 @@
 import type { ComponentStates, Theme } from "../";
-import { resolveValue } from "../../system/resolve-value";
+import { resolveValue } from "../../system/resolvers/resolve-value";
 import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames, type GeneratorConfig } from "./css-gen-utils";
 import { STYLE_PROPS_DATA } from "./system-css.data";
 
@@ -9,37 +9,22 @@ export function resolveTokenValue(key: string, value: string, theme: Theme): str
   return resolveValue(value, def.category, theme);
 }
 
-export const STATE_SELECTORS: Record<ComponentStates, string> = {
-  hover:        ":hover",
-  focus:        ":focus",
-  focusVisible: ":focus-visible",
-  focusWithin:  ":focus-within",
-  active:       ":active",
-  disabled:     "[data-disabled]",
-  checked:      ":checked",
-  indeterminate:":indeterminate",
-  required:     ":required",
-  invalid:      "[data-invalid]",
-  valid:        ":valid",
-  readOnly:     ":read-only",
-  placeholder:  "::placeholder",
-  autofill:     ":-webkit-autofill",
-  loading:      "[data-loading]",
-  selected:     "[data-selected]",
-  before:       "::before",
-  after:        "::after",
-  selection:    "::selection",
-  marker:       "::marker",
-  firstChild:   ":first-child",
-  lastChild:    ":last-child",
-  empty:        ":empty",
-};
-
 export function isStateKey(key: string): key is ComponentStates {
   return key in STATE_SELECTORS;
 }
 
-// Separates a StyledBlock into flat CSS tokens, state entries, and variant entries.
+// prettier-ignore
+export const STATE_SELECTORS: Record<ComponentStates, string> = {
+  hover:      ":hover",           focus:        ":focus",             focusVisible: ":focus-visible",
+  focusWithin:":focus-within",    active:       ":active",            disabled:     "[data-disabled]",
+  checked:    ":checked",         indeterminate:":indeterminate",     required:     ":required",
+  invalid:    "[data-invalid]",   valid:        ":valid",             readOnly:     ":read-only",
+  placeholder:"::placeholder",    autofill:     ":-webkit-autofill",  loading:      "[data-loading]",
+  selected:   "[data-selected]",  before:       "::before",           after:        "::after",
+  marker:     "::marker",         firstChild:   ":first-child",       lastChild:    ":last-child",
+  empty:      ":empty",           selection:    "::selection",
+};
+
 function partitionBlock(block: Record<string, unknown>): {
   flat: Record<string, unknown>;
   states: Array<[ComponentStates, Record<string, unknown>]>;
@@ -63,7 +48,6 @@ function partitionBlock(block: Record<string, unknown>): {
   return { flat, states, variants };
 }
 
-// Separates a StateNode into flat tokens and nested states (2nd level).
 function partitionStateNode(node: Record<string, unknown>): {
   flat: Record<string, unknown>;
   nested: Array<[ComponentStates, Record<string, unknown>]>;
@@ -111,12 +95,12 @@ export function emitStateRules(
 }
 
 export function generateComponentVariants(
-  componentName: string,
+  name: string,
   config: GeneratorConfig,
   theme: Theme,
 ): string {
   if (!config?.variants) return "";
-  const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(componentName, config);
+  const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(name, config);
   const baseSelector = buildSlotSelector(resolvedName);
   let css = "";
 

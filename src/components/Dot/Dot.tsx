@@ -7,15 +7,14 @@ export interface DotOwnProps {
 }
 
 export type DotConfig = ComponentConfig<{
-  defaultProps: {};
-  defaultTag: BoxConfig["defaultTag"];
-  componentName: "Dot";
+  name: "Dot";
+  tag: BoxConfig["tag"];
   ownProps: DotOwnProps;
   sizes: "xs" | "sm" | "md" | "lg" | "xl";
   variants: "Filled" | "Outlined" | "Elevated";
 }>;
 
 export const Dot = ComponentFactory<DotConfig>({
-  componentName: "Dot",
+  name: "Dot",
   render: ({ ref, dotColor, ...rest }) => <Box ref={ref} bg={dotColor} {...rest} />,
 });

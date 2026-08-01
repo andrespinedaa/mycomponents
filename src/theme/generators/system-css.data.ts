@@ -8,15 +8,12 @@ import {
 // ─── CSS_PASSTHROUGH — props sin alias, sin tokens, sin responsive ────────────
 // prettier-ignore
 const CSS_PASSTHROUGH = [
-  "display", "flex", "flexWrap", "flexBasis",
-  "position", "overflow", "overflowX", "overflowY",
-  "fontWeight", "textAlign", "whiteSpace", "lineHeight",
-  "justifyItems", "alignContent", "placeItems", "placeContent",
-  "gridTemplateColumns", "gridTemplateRows", "gridTemplateAreas",
-  "border", "borderTop", "borderRight", "borderBottom", "borderLeft",
-  "cursor", "pointerEvents", "userSelect", "transition", "boxShadow", "justifyContent",
-  "gridColumn", "gridRow", "gridArea", "gridAutoColumns", "gridAutoRows", "gridAutoFlow",
-  "objectFit", "objectPosition",
+  "display", "flex", "flexWrap", "flexBasis", "position", "overflow", "overflowX", "overflowY",
+  "fontWeight", "textAlign", "whiteSpace", "lineHeight", "justifyItems", "alignContent", "placeItems",
+  "placeContent", "gridTemplateColumns", "gridTemplateRows", "gridTemplateAreas","border", "borderTop", 
+  "borderRight", "borderBottom", "borderLeft", "cursor", "pointerEvents", "userSelect", "transition",
+  "justifyContent", "gridColumn", "gridRow", "gridArea", "gridAutoColumns", "gridAutoRows",
+  "gridAutoFlow", "objectFit", "objectPosition",
 ] as const;
 
 // ─── CSS_PROP_TO_CATEGORY — lookup runtime para resolveStyle ─────────────────

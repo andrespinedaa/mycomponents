@@ -12,7 +12,7 @@ This is why you can't call hooks directly inside `render`: `render` is a plain f
 
 ```ts
 ComponentFactory<Config>({
-  componentName: "Divider",
+  name: "Divider",
   render: ({ orientation, ref, ...rest }) => {
     const resolved = orientation ?? card.orientation ?? "horizontal";
     return <Box ref={ref} apply="@dividerLineH" {...rest} />;

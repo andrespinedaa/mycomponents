@@ -73,11 +73,11 @@ function emitPreset(
 }
 
 export function generateComponentPresets(
-  componentName: string,
+  name: string,
   config: GeneratorConfig,
   theme: Theme,
 ): string {
-  const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(componentName, config);
+  const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(name, config);
   const base = buildSlotSelector(resolvedName);
   let css = "";
 

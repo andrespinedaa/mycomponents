@@ -5,7 +5,7 @@ export type CardSectionTheme = ThemeComponentConfig<CardSectionConfig>;
 
 export const CardSectionThemeComponent: CardSectionTheme = {
   parentName: "Card",
-  componentName: "CardSection",
+  name: "CardSection",
   sizes: {
     xs: {},
     sm: {},

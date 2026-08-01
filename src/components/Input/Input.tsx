@@ -13,20 +13,18 @@ export interface InputOwnProps {
 }
 
 export type InputConfig = ComponentConfig<{
-  componentName: "Input";
-  defaultTag: "div";
-  ownProps: InputOwnProps & SafeInputHTMLAttributes;
-  defaultProps: {};
-  sizes: "xs" | "sm" | "md" | "lg" | "xl";
+  tag: "div";
+  name: "Input";
   variants: "Filled";
+  sizes: "xs" | "sm" | "md" | "lg" | "xl";
+  ownProps: InputOwnProps & SafeInputHTMLAttributes;
 }>;
 
 export const Input = ComponentFactory<InputConfig>({
-  componentName: "Input",
+  name: "Input",
   render: function InputRender({
     ref,
     id,
-    set,
     type,
     name,
     hint,
@@ -47,7 +45,6 @@ export const Input = ComponentFactory<InputConfig>({
     size,
     variant,
     dataSlot,
-    "data-slot": _slot,
     ...rest
   }) {
     const inputId = id ?? (label ? `input-${label.toLowerCase().replace(/\s+/g, "-")}` : undefined);
@@ -56,7 +53,7 @@ export const Input = ComponentFactory<InputConfig>({
     return (
       <Box ref={ref} flexDir="column" {...rest}>
         {label && (
-          <Text as="label" htmlFor={inputId} size="sm" weight={500} mb="xs">
+          <Text as="label" htmlFor={inputId} size="sm" fontWeight={"500px"} mb="xs">
             {label}
             {required && (
               <Text as="span" color="danger.500" ml="2px">
@@ -68,7 +65,7 @@ export const Input = ComponentFactory<InputConfig>({
 
         <Box
           dataSlot={dataSlot}
-          mod={[{ variant, size, set, orientation, disabled: disabled, invalid: hasError }]}
+          mod={[{ variant, size, orientation, disabled: disabled, invalid: hasError }]}
         >
           {leftSection && (
             <Box apply="@flexCenterCenter" flexShrink={1} px="xs">

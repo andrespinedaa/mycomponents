@@ -23,7 +23,7 @@ export const ButtonThemeComponent: ButtonThemeConfig = {
     Filled: {
       bg: "primary.500",
       color: "neutral.50",
-      boxShadow: "none",
+      shadow: "none",
       hover: { bg: "primary.600" },
       focus: { bg: "primary.600", outline: "2px solid", outlineColor: "primary.500", outlineOffset: "2px" },
       active: { bg: "primary.700" },
@@ -41,10 +41,10 @@ export const ButtonThemeComponent: ButtonThemeConfig = {
     },
     Elevated: {
       bg: "neutral.50",
-      boxShadow: "0 1px 3px rgba(0,0,0,0.12)",
-      hover: { boxShadow: "0 4px 6px rgba(0,0,0,0.12)" },
-      active: { boxShadow: "0 1px 2px rgba(0,0,0,0.08)" },
-      disabled: { bg: "neutral.100", color: "neutral.400", boxShadow: "none" },
+      shadow: "0 1px 3px rgba(0,0,0,0.12)",
+      hover: { shadow: "0 4px 6px rgba(0,0,0,0.12)" },
+      active: { shadow: "0 1px 2px rgba(0,0,0,0.08)" },
+      disabled: { bg: "neutral.100", color: "neutral.400", shadow: "none" },
     },
   },
 };

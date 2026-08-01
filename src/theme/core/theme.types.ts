@@ -1,6 +1,13 @@
-import type { DeepPartial, Prettify } from "../../types/utils.types";
-import type { ThemeComponents } from "./theme.components.types";
+import type { DeepPartial, Prettify } from "../../utils/utils.types";
 import type { Macros } from "./macros/theme.macros.types";
+import type { ThemeComponents } from "./theme.components.types";
+
+// ─── Helpers ─────
+export type SystemVariants<Allowed extends ComponentVariants> = Allowed;
+export type SystemStatus<Allowed extends ComponentStates> = Allowed;
+export type ScaleRange<Allowed extends Scales> = Allowed;
+export type BreakpointKey = "base" | keyof ThemeBreakpoints;
+export type PartialBreakPointKey<T> = Partial<Record<BreakpointKey, T>>;
 
 // ─── CSS Value Types ──────────────────────────────────────────────────────────
 // prettier-ignore
@@ -15,15 +22,12 @@ export type CSSLength = `${number}${CSSUnit}` | "0";
 
 // ─── Scales Range ──────────────────────────────────────────────────────────
 // prettier-ignore
-export type BreakpointKey = "base" | keyof ThemeBreakpoints;
-export type PartialBreakPointKey<T> = Partial<Record<BreakpointKey, T>>;
-export type ShadowScale = ScaleRange<"sm" | "md" | "lg" | "xl">;
-export type ControlHeightScale = ScaleRange<"sm" | "md" | "lg">;
+export type Scales = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "full" | "none" | keyof ConsumerScales;
 export type BreakPointsScale = ScaleRange<"xs" | "sm" | "md" | "lg" | "xl">;
-export type FontSizeScale = ScaleRange<SpacingScale | "3xl" | "4xl">;
-export type RadiiScale = ScaleRange<"none" | "xs" | "sm" | "md" | "lg" | "full">;
-export type SpacingScale = ScaleRange<"xs" | "sm" | "md" | "lg" | "xl" | "2xl">;
-export type Scales = "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "full" | keyof ConsumerScales;
+export type ShadowScale = ScaleRange<BreakPointsScale>;
+export type SpacingScale = ScaleRange<BreakPointsScale | "2xl">;
+export type RadiiScale = ScaleRange<BreakPointsScale | "full" | "none">;
+export type FontSizeScale = ScaleRange<BreakPointsScale | "2xl" | "3xl" | "4xl">;
 
 // ─── Variants ──────────────────────────────────────────────────────────
 // prettier-ignore
@@ -148,10 +152,12 @@ export interface ConsumerFontSizes {}
 export interface ConsumerTypography {}
 export interface ConsumerBreakPoints {}
 export interface ConsumerSemanticColors {}
+export interface ConsumerThemeComponents {}
 
 // ─── Values tokens ──────────────────────────────────────────────────────────
-export type RadiusValue = keyof ThemeRadii;
 export type FontValue = "sans" | "mono";
+export type RadiusValue = keyof ThemeRadii;
+export type ShadowValue = keyof ThemeShadows;
 export type FontSizeValue = keyof ThemeFontSizes;
 export type ColorScaleKeys = BaseColors[keyof BaseColors];
 export type ColorValue = `${keyof BaseColors}.${keyof ColorScaleKeys}`;
@@ -179,7 +185,6 @@ export type ThemeOverride = {
   macros?: Macros;
   cssVarPrefix?: string;
   dark?: DarkThemeOverride;
-  components?: ThemeComponents;
   semantic?: ThemeSemanticLayer;
   motion?: Partial<ThemeMotion>;
   shadows?: Partial<ThemeShadows>;
@@ -189,6 +194,7 @@ export type ThemeOverride = {
   radii?: MergeBaseCustomsOverride<BaseRadii, ConsumerRadii>;
   spacing?: MergeBaseCustomsOverride<BaseSpacing, ConsumerSpacing>;
   fontSizes?: MergeBaseCustomsOverride<BaseFontSizes, ConsumerFontSizes>;
+  components?: ThemeComponents
 };
 
 export interface Theme extends ConsumerTheme {
@@ -208,8 +214,3 @@ export interface Theme extends ConsumerTheme {
 }
 
 export type ColorScheme = "light" | "dark";
-
-// ─── Helpers ─────
-export type SystemVariants<Allowed extends ComponentVariants> = Allowed;
-export type SystemStatus<Allowed extends ComponentStates> = Allowed;
-export type ScaleRange<Allowed extends Scales> = Allowed;

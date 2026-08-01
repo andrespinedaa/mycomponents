@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ComponentFactory, type ComponentConfig } from "../../factory";
-import { Box } from "../Primitives/Box";
+import { Box, Image } from "../Primitives";
 
 export interface AvatarOwnProps {
   src?: string;
@@ -10,15 +10,11 @@ export interface AvatarOwnProps {
 }
 
 export type AvatarConfig = ComponentConfig<{
-  componentName: "Avatar";
-  defaultTag: "div";
+  tag: "div";
+  name: "Avatar";
   ownProps: AvatarOwnProps;
-  defaultProps: {
-    shape: "circle";
-    userSelect: "none";
-  };
   sizes: "xs" | "sm" | "md" | "lg" | "xl";
-  variants: "Filled";
+  variants: "Filled" | "Outlined" | "Elevated";
 }>;
 
 function getInitials(name: string): string {
@@ -28,17 +24,17 @@ function getInitials(name: string): string {
 }
 
 export const Avatar = ComponentFactory<AvatarConfig>({
-  componentName: "Avatar",
-  defaultProps: { role: "img", shape: "circle", userSelect: "none" },
+  name: "Avatar",
   render: function AvatarRender({
     src,
     alt,
     ref,
-    name,
-    size,
-    shape,
-    variant,
     children,
+    role = "img",
+    name = "avatar",
+    shape = "circle",
+    variant = "Filled",
+    userSelect = "none",
     ...rest
   }) {
     const [imgError, setImgError] = useState(false);
@@ -47,18 +43,19 @@ export const Avatar = ComponentFactory<AvatarConfig>({
       return (
         <Box
           ref={ref}
-          align="center"
-          justify="center"
+          variant={variant}
           aria-label={alt ?? name}
-          mod={{ size, variant }}
+          apply="@flexCenterCenter"
           rounded={shape === "circle" ? "full" : "md"}
           {...rest}
         >
-          <img
+          <Image
+            w="100%"
+            h="100%"
             src={src}
-            alt={alt ?? name ?? "avatar"}
+            objectFit="cover"
+            alt={alt ?? name}
             onError={() => setImgError(true)}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         </Box>
       );
@@ -70,7 +67,7 @@ export const Avatar = ComponentFactory<AvatarConfig>({
         apply="@flexCenterCenter"
         aria-label={alt ?? name}
         fontWeight={600}
-        mod={{ size, variant }}
+        variant={variant}
         rounded={shape === "circle" ? "full" : "md"}
         {...rest}
       >

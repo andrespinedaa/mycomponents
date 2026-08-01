@@ -5,7 +5,7 @@ import type { Scales, ComponentVariants } from "../theme";
 export interface LayoutContextValue {
   set?: string;
   size?: Scales;
-  componentName?: string;
+  name?: string;
   variant?: ComponentVariants;
   orientation?: OrientationProp;
 }

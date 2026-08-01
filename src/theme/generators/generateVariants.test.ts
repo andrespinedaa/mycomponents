@@ -184,9 +184,9 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: {
           bg: "neutral.50",
-          hover: { boxShadow: "0 4px 6px rgba(0,0,0,0.08)" },
+          hover: { shadow: "0 4px 6px rgba(0,0,0,0.08)" },
           Outlined: {
-            boxShadow: "none",
+            shadow: "none",
             hover: { borderColor: "primary.400" },
           },
         } as any,
@@ -276,8 +276,8 @@ describe("generateComponentVariants", () => {
     });
   });
 
-  describe("prefix derivado de componentName", () => {
-    it("deriva el prefix de camelToKebab(componentName)", () => {
+  describe("prefix derivado de name", () => {
+    it("deriva el prefix de camelToKebab(name)", () => {
       const config: TestConfig = {
         variants: { bg: "primary.500" } as any,
       };
@@ -301,7 +301,7 @@ describe("generateComponentVariants — DSL $prop", () => {
   it("$prop en flat base resuelve var del padre", () => {
     const config: TestConfig = {
       parentName: "Card",
-      componentName: "CardSection",
+      name: "CardSection",
       variants: { color: "$color" } as any,
     };
     const result = generateComponentVariants("CardSection", config, defaultTheme);
@@ -311,7 +311,7 @@ describe("generateComponentVariants — DSL $prop", () => {
   it("$prop inline en variante nombrada resuelve dentro del valor", () => {
     const config: TestConfig = {
       parentName: "Card",
-      componentName: "CardSection",
+      name: "CardSection",
       variants: { Filled: { outline: "2px solid $borderColor" } },
     };
     const result = generateComponentVariants("CardSection", config, defaultTheme);
@@ -321,7 +321,7 @@ describe("generateComponentVariants — DSL $prop", () => {
   it("$prop en estado hover a nivel raíz", () => {
     const config: TestConfig = {
       parentName: "Card",
-      componentName: "CardSection",
+      name: "CardSection",
       variants: { hover: { bg: "$background" } } as any,
     };
     const result = generateComponentVariants("CardSection", config, defaultTheme);
@@ -332,7 +332,7 @@ describe("generateComponentVariants — DSL $prop", () => {
   it("$prop coexiste con tokens normales en flat base", () => {
     const config: TestConfig = {
       parentName: "Card",
-      componentName: "CardSection",
+      name: "CardSection",
       variants: {
         bg: "neutral.50",
         color: "$color",

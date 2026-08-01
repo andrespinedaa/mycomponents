@@ -1,18 +1,13 @@
 import { ComponentFactory, type ComponentConfig } from "../../factory";
-import { Box } from "../Primitives/Box";
 
-export interface ButtonOwnProps { }
+export interface ButtonOwnProps {}
 
 export type ButtonConfig = ComponentConfig<{
-  componentName: "Button";
-  defaultTag: "button";
+  tag: "button";
+  name: "Button";
   ownProps: ButtonOwnProps;
   sizes: "xs" | "sm" | "md" | "lg" | "xl";
-  defaultProps: {}
   variants: "Elevated" | "Filled" | "Outlined" | "Ghost";
 }>;
 
-export const Button = ComponentFactory<ButtonConfig>({
-  componentName: "Button",
-  render: ({ ref, ...rest }) => <Box as="button" type="button" ref={ref} {...rest} />
-});
+export const Button = ComponentFactory<ButtonConfig>({ name: "Button", render: "button" });

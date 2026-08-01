@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
-import type { CaseFormat, ConvertFormat, Prettify } from "../../types";
+import type { Prettify } from "../../utils/utils.types";
+import type { CaseFormat, ConvertFormat } from "./cases.types";
 import type {
   PartialBreakPointKey,
   CSSLength,
@@ -8,6 +9,7 @@ import type {
   FontValue,
   RadiusValue,
   SpacingValue,
+  ShadowValue,
 } from "../core/theme.types";
 
 // ─── CSSMultiFormat ─────────────────────────────────────────────────────────────
@@ -16,7 +18,7 @@ export type CSSMultiFormat<Format extends CaseFormat = "camel"> = {
 };
 
 // ─── PropOverride ─────────────────────────────────────────────────────────────
-export type PropCategory = "spacing" | "color" | "radius" | "fontSize" | "font" | "raw";
+export type PropCategory = "spacing" | "color" | "radius" | "fontSize" | "font" | "raw" | "shadow";
 export type CSSPropertyName = Extract<keyof CSSProperties, string>;
 export type PropOverride<
   CSSProp extends CSSPropertyName,
@@ -65,6 +67,9 @@ export const STYLE_PROPS_OVERRIDES = [
 
   // Bordes
   { cssProp: "borderRadius",                     alias: "rounded",     responsive: false, category: "radius"  },
+
+  // Shadows
+  { cssProp: "boxShadow",                        alias: "shadow",      responsive: false, category: "shadow"  },
 
   // Flexbox
   { cssProp: "flexDirection",                    alias: "flexDir",     responsive: true,  category: "raw"     },
@@ -119,11 +124,12 @@ export type WithTokens<T extends string> = T | CSSLength | (string & {});
 
 // ─── CategoryToToken — fuente de verdad: categoría → tipo de token ────────────
 export type CategoryToToken = {
-  spacing: SpacingValue;
-  color: ColorValue;
-  radius: RadiusValue;
-  fontSize: FontSizeValue;
   font: FontValue;
+  color: ColorValue;
+  shadow: ShadowValue;
+  radius: RadiusValue;
+  spacing: SpacingValue;
+  fontSize: FontSizeValue;
 };
 
 // ─── StylePropDef ─────────────────────────────────────────────────────────────

@@ -31,7 +31,7 @@ function generateComponent(
 export function generateComponents(theme: Theme): string {
   if (!theme.components) return "";
   return Object.entries(theme.components)
-    .filter(([, config]) => !config?.parentName) // statics are generated via parent recursion
+    .filter(([, config]) => !config?.parentName)
     .map(([name, config]) => generateComponent(name, config, theme))
     .join("");
 }

@@ -263,10 +263,10 @@ describe("parseStyleProps", () => {
   // ─── 4. Salvaguarda — prop fuera de la lista cerrada responsive ───────────
   describe("salvaguarda — prop fuera de RESPONSIVE_CSS_PROPERTIES", () => {
     it("prop responsive no elegible cae al valor de base", () => {
-      // boxShadow no está en RESPONSIVE_CSS_PROPERTIES
+      // shadow no está en RESPONSIVE_CSS_PROPERTIES
       const { styles, hasResponsive } = parseStyleProps(
         {
-          boxShadow: {
+          shadow: {
             base: "0 2px 4px rgba(0,0,0,0.1)",
             md: "0 8px 24px rgba(0,0,0,0.2)",
           },
@@ -276,7 +276,7 @@ describe("parseStyleProps", () => {
       const vars = asVars(styles);
 
       // cae al valor de base — no pierde el valor completamente
-      expect(styles.boxShadow).toBe("0 2px 4px rgba(0,0,0,0.1)");
+      expect(styles.shadow).toBe("0 2px 4px rgba(0,0,0,0.1)");
 
       // NO genera vars (no hay @media que las lea)
       expect(vars["--box-shadow-base" as any]).toBeUndefined();
@@ -288,21 +288,21 @@ describe("parseStyleProps", () => {
     it("prop no elegible descarta breakpoints distintos de base", () => {
       const { styles } = parseStyleProps(
         {
-          boxShadow: { base: "0 2px 4px black", lg: "0 8px 24px black" },
+          shadow: { base: "0 2px 4px black", lg: "0 8px 24px black" },
         } as any,
         theme,
       );
       // solo base — lg se descarta silenciosamente
-      expect(styles.boxShadow).toBe("0 2px 4px black");
+      expect(styles.shadow).toBe("0 2px 4px black");
     });
 
     it("prop no elegible sin base no genera ningún valor", () => {
       const { styles } = parseStyleProps(
-        { boxShadow: { md: "0 8px 24px black" } } as any,
+        { shadow: { md: "0 8px 24px black" } } as any,
         theme,
       );
       // md no es base, se descarta — sin valor
-      expect(styles.boxShadow).toBeUndefined();
+      expect(styles.shadow).toBeUndefined();
     });
   });
 

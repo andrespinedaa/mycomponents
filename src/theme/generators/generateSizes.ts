@@ -2,12 +2,12 @@ import type { Theme, ThemeBreakpoints } from "../core/theme.types";
 import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames, type GeneratorConfig } from "./css-gen-utils";
 
 export function generateComponentSizes(
-  componentName: string,
+  name: string,
   config: GeneratorConfig,
   theme: Theme,
 ): string {
   if (!config?.sizes) return "";
-  const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(componentName, config);
+  const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(name, config);
   let css = "";
 
   for (const [sizeKey, tokens] of Object.entries(config.sizes)) {

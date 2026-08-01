@@ -4,16 +4,11 @@ import type { ComponentVariants } from "../../../theme";
 export interface TextOwnProps {}
 
 export type TextConfig = ComponentConfig<{
-  componentName: "Text";
-  defaultTag: "p";
+  tag: "p";
+  name: "Text";
   ownProps: TextOwnProps;
-  defaultProps: { m: "0" };
-  sizes: "xs" | "sm" | "md" | "lg" | "xl";
   variants: ComponentVariants;
+  sizes: "xs" | "sm" | "md" | "lg" | "xl";
 }>;
 
-export const Text = ComponentFactory<TextConfig>({
-  render: "p",
-  componentName: "Text",
-  defaultProps: { m: "0" },
-});
+export const Text = ComponentFactory<TextConfig>({ render: "p", name: "Text" });

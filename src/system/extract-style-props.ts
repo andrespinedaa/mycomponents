@@ -1,17 +1,13 @@
-import type { ElementType } from "react";
-import type { MyComponentProps } from "../factory/core";
 import { type StyleProps, STYLE_PROPS_KEYS } from "../theme/generators";
 
-export type ExtractedStyleProps<E extends ElementType, OwnProps extends object> = {
+export type ExtractedStyleProps = {
   styleProps: StyleProps;
-  elementProps: MyComponentProps<E, OwnProps>;
+  elementProps: Record<string, unknown>;
 };
 
-export function extractStyleProps<E extends ElementType, OwnProps extends object>(
-  props: Record<string, unknown>,
-): ExtractedStyleProps<E, OwnProps> {
+export function extractStyleProps(props: Record<string, unknown>): ExtractedStyleProps {
   const styleProps = {} as StyleProps;
-  const elementProps = {} as MyComponentProps<E, OwnProps>;
+  const elementProps = {} as Record<string, unknown>;
 
   for (const [key, value] of Object.entries(props)) {
     if (STYLE_PROPS_KEYS.has(key)) {
@@ -21,5 +17,5 @@ export function extractStyleProps<E extends ElementType, OwnProps extends object
     }
   }
 
-  return { styleProps, elementProps } as ExtractedStyleProps<E, OwnProps>;
+  return { styleProps, elementProps } as ExtractedStyleProps;
 }

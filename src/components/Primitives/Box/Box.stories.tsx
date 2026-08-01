@@ -21,7 +21,7 @@ export const Default: Story = {
     rounded: "md",
     bg: "primary.500",
     color: "danger.100",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+    shadow: "0 4px 12px rgba(0,0,0,0.15)",
   },
 };
 

@@ -35,7 +35,6 @@ export function mergeRecord<T extends Record<string, string>>(
   return { ...base, ...override } as T;
 }
 
-// Deep-merges two VariantsField objects: flat tokens and variant/state sub-objects each merged one level.
 function mergeVariants(
   base: Record<string, unknown> | undefined,
   override: Record<string, unknown> | undefined,

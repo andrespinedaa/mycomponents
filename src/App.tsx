@@ -1,29 +1,49 @@
-import { Card, Badge, Dot } from "./components";
+import { Card, Badge, Dot, Button } from "./components";
 import { Text, Box, Image, Divider } from "./components/Primitives";
 import { ThemeProvider } from "./theme";
 import { createTheme } from "./theme/createTheme";
-import { graphiteTheme, haloTheme } from "./themes";
-import bgImage from "./components/Card/background 2.jpg";
+import { graphiteTheme, haloTheme, terraTheme } from "./themes";
+import bg1 from "./components/Card/background 2.jpg";
 import bg2 from "./components/Card/background.jpg";
 
-const theme = createTheme(haloTheme);
+const theme = createTheme(terraTheme);
 const badgeInfo = [{ data: "ice grey" }, { data: "3.2s" }, { data: "Manual" }];
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Box minH="100vh" flexDir="column" apply={["@flexCenterCenter"]} >
+      <Box w="100vh">
+        <Box as="header">
+          <Box></Box>
+          <Box></Box>
+          <Box display="flex" gap="md">
+            <Button
+              type="button"
+              shadow="md"
+              rounded="xs"
+              style={(t) => ({ background: t.colors.primary[300] })}
+            >
+              Sign Up
+            </Button>
+            <Button type="button" shadow="md" rounded="xs">
+              login
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+      <Box minH="100vh" flexDir="column" apply="@flexCenterCenter">
         <Card
           p="sm"
           flexDir="column"
           variant="Outlined"
           orientation="vertical"
-          apply={["@flexCenterEnd"]}
+          apply="@flexCenterEnd"
         >
           <Card.Section slots="media" set="cover">
-            <Image src={bgImage} set="cover" rounded="sm" />
+            <Image src={bg1} set="cover" rounded="sm" />
           </Card.Section>
-          <Card.Section slots="header" as="header" apply={["@flexEndSpaceAround"]}>
+
+          <Card.Section slots="header" as="header" apply="@flexEndSpaceAround">
             {badgeInfo.map((b, i) => {
               return (
                 <Badge key={i}>
@@ -33,6 +53,7 @@ function App() {
               );
             })}
           </Card.Section>
+
           <Card.Section slots="body" flexDir="column" apply="@flexStartEnd" p="md">
             <Text as="h2" color="neutral.100" fontSize={"3xl"}>
               Porsche 911

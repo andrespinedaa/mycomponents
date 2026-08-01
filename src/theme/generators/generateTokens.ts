@@ -55,7 +55,7 @@ export function generateTokens(theme: Theme): string {
 
   // ─── Shadows ─────────────────────────────────────────────────────────────
   for (const [key, value] of Object.entries(shadows)) {
-    css += `--${prefix}-shadow-${key}:${value};`;
+    css += `--${prefix}-box-shadow-${key}:${value};`;
   }
 
   // ─── Motion ───────────────────────────────────────────────────────────────

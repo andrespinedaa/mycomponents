@@ -1,4 +1,5 @@
 import type { ThemeComponents } from "..";
+import { ButtonThemeComponent } from "../../components/Button/ButtonTheme";
 import { BadgeThemeComponent } from "../../components/Badge/BadgeTheme";
 import { CardSectionThemeComponent } from "../../components/Card/CardSectionTheme";
 import { CardThemeComponent } from "../../components/Card/CardTheme";
@@ -10,8 +11,8 @@ export const defaultThemeComponents: ThemeComponents = {
   /*   Alert: AlertThemeComponent,
   
   Input: InputThemeComponent,
-  Avatar: AvatarThemeComponent,
-  Button: ButtonThemeComponent, */
+  Avatar: AvatarThemeComponent, */
+  Button: ButtonThemeComponent,
   Divider: DividerTheme,
   Dot: DotThemeComponent,
   Image: ImageThemeComponent,

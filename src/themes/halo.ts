@@ -1,6 +1,4 @@
-import type { Theme } from "../theme/core/theme.types";
-import { defaultThemeMacros } from "../theme/core/macros/theme.macros.data";
-import { defaultThemeComponents } from "../theme/core/theme.components.data";
+import { type Theme, defaultThemeMacros, defaultThemeComponents } from "../theme/core";
 
 // ─── Halo — "Violeta sobre zinc, espacioso y soft" ────────────────────────────
 // Violet primary · pink secondary · zinc neutral
@@ -8,8 +6,9 @@ import { defaultThemeComponents } from "../theme/core/theme.components.data";
 // Dark-first: neutral.950 = #09090b
 
 export const haloTheme: Theme = {
-  cssVarPrefix: "mycomponents",
+  cssVarPrefix: "halo",
 
+  // ─── System Colors ────────────────────────────────────────────────────────
   colors: {
     // Violet — the Halo signature
     primary: {
@@ -111,7 +110,7 @@ export const haloTheme: Theme = {
     },
   },
 
-  // ─── Spacing (generosa — Halo breathes) ───────────────────────────────────
+  // ─── Spacing Tokens ───────────────────────────────────────────────────────
   spacing: {
     xs:   "6px",
     sm:   "12px",
@@ -121,17 +120,18 @@ export const haloTheme: Theme = {
     "2xl":"56px",
   },
 
-  // ─── Radii (soft) ─────────────────────────────────────────────────────────
+  // ─── Radius Tokens ────────────────────────────────────────────────────────
   radii: {
     none: "0",
     xs:   "4px",
     sm:   "8px",
     md:   "12px",
     lg:   "18px",
+    xl:   "22px",
     full: "9999px",
   },
 
-  // ─── Font sizes (ampliada) ────────────────────────────────────────────────
+  // ─── Font sizes Tokens ────────────────────────────────────────────────────
   fontSizes: {
     xs:   "10px",
     sm:   "11px",
@@ -151,8 +151,9 @@ export const haloTheme: Theme = {
     weightHeading: 600,
   },
 
-  // ─── Shadows — dark default (high opacity, Halo lives in the dark) ────────
+  // ─── Shadows Tokens ───────────────────────────────────────────────────────
   shadows: {
+    xs: "0 1px 2px rgba(0,0,0,.45)",
     sm: "0 1px 2px rgba(0,0,0,.45)",
     md: "0 2px 6px rgba(0,0,0,.45), 0 6px 16px rgba(0,0,0,.40)",
     lg: "0 10px 28px rgba(0,0,0,.50)",
@@ -169,7 +170,6 @@ export const haloTheme: Theme = {
   },
 
   // ─── Semantic layer (dark-first) ──────────────────────────────────────────
-  // dark = default (`:root`), light = override (`[data-color-scheme=light]`)
   semantic: {
     dark: {
       background:    "neutral.950",   // #09090b
@@ -198,7 +198,6 @@ export const haloTheme: Theme = {
   },
 
   // ─── Dark mode — light shadows override ───────────────────────────────────
-  // (shadows in :root are already the dark values; light mode gets softer ones)
   dark: {
     shadows: {
       sm: "0 1px 2px rgba(0,0,0,.45)",
@@ -208,6 +207,7 @@ export const haloTheme: Theme = {
     },
   },
 
+  // ─── BreakPoints Mobile First ─────────────────────────────────────────────
   breakpoints: {
     xs: "320px",
     sm: "375px",
@@ -217,5 +217,6 @@ export const haloTheme: Theme = {
   },
 
   macros: defaultThemeMacros,
+
   components: defaultThemeComponents,
 };

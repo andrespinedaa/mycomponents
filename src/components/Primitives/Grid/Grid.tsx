@@ -13,16 +13,15 @@ export interface GridItemOwnProps {
 }
 
 export type GridItemConfig = ComponentConfig<{
-  componentName: "GridItem";
-  defaultTag: "div";
-  ownProps: GridItemOwnProps;
-  defaultProps: {};
+  tag: "div";
   sizes: Scales;
+  name: "GridItem";
+  ownProps: GridItemOwnProps;
   variants: ComponentVariants;
 }>;
 
 const GridItem = ComponentFactory<GridItemConfig>({
-  componentName: "GridItem",
+  name: "GridItem",
   render: function GridItemRender({
     colSpan,
     rowSpan,
@@ -68,18 +67,17 @@ export interface GridBoxOwnProps {
   inline?: boolean;
 }
 
-export type GridBoxConfig = ComponentConfig<{
-  componentName: "GridBox";
-  defaultTag: "div";
-  ownProps: GridBoxOwnProps;
-  statics: { Item: typeof GridItem };
-  defaultProps: {};
+export type GridConfig = ComponentConfig<{
+  tag: "div";
+  name: "Grid";
   sizes: Scales;
+  ownProps: GridBoxOwnProps;
   variants: ComponentVariants;
+  statics: { Item: typeof GridItem };
 }>;
 
-export const GridBox = ComponentFactory<GridBoxConfig>({
-  componentName: "GridBox",
+export const Grid = ComponentFactory<GridConfig>({
+  name: "Grid",
   statics: { Item: GridItem },
   render: function GridBoxRender({ columns, rows, autoColumns, autoRows, inline, ref, ...rest }) {
     const resolveTemplate = (value?: number | string) =>

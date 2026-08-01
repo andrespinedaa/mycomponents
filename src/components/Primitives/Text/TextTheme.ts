@@ -5,6 +5,7 @@ export type TextThemeComponent = ThemeComponentConfig<TextConfig>;
 
 export const TextTheme: TextThemeComponent = {
   variants: {
+    m: "0px",
     fontFamily: "sans",
   },
   sizes: {

@@ -17,6 +17,9 @@ export function getOptions(category: PropCategory, theme: Theme) {
     case "fontSize":
       return Object.keys(theme.fontSizes);
 
+    case "shadow":
+      return Object.keys(theme.shadows);
+
     default:
       return undefined;
   }

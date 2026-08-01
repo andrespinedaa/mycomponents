@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import type { ApplyProp } from "../factory/core/factories.types";
+import type { ApplyProp } from "../factory/factories.types";
 import {
   ALIGNS,
   FLEX_DISPLAYS,
