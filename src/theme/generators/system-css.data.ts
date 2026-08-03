@@ -1,7 +1,7 @@
+import type { CategoryTokens } from "../core/theme.types";
 import {
   STYLE_PROPS_OVERRIDES,
   type CSSPropertyName,
-  type PropCategory,
   type StylePropDef,
 } from "./system-css.types";
 
@@ -17,7 +17,7 @@ const CSS_PASSTHROUGH = [
 ] as const;
 
 // ─── CSS_PROP_TO_CATEGORY — lookup runtime para resolveStyle ─────────────────
-export const CSS_PROP_TO_CATEGORY: Partial<Record<string, PropCategory>> = Object.fromEntries(
+export const CSS_PROP_TO_CATEGORY: Partial<Record<string, CategoryTokens>> = Object.fromEntries(
   STYLE_PROPS_OVERRIDES.flatMap((o) => {
     const props = Array.isArray(o.cssProp) ? [...o.cssProp] : [o.cssProp];
     return props.map((p) => [p, o.category]);

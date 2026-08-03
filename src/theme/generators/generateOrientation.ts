@@ -1,5 +1,4 @@
 import type { OrientationProp } from "../../factory/core";
-import type { Theme } from "../core/theme.types";
 import {
   buildSlotSelector,
   generateTokensCSS,
@@ -17,13 +16,13 @@ function resolveSizeAwareBody(
   sizeAware: Record<string, string>,
   sizeTokens: Record<string, unknown>,
   prefix: string,
-  theme: Theme,
+  tokenVars: Record<string, string>,
 ): string {
   let body = "";
   for (const [key, dslValue] of Object.entries(sizeAware)) {
     const resolved = dslValue.replace(DOLLAR_PROP_RE, (_, prop) => {
       const raw = sizeTokens[prop];
-      return raw == null ? "" : resolveTokenValue(prop, String(raw), theme);
+      return raw == null ? "" : resolveTokenValue(prop, String(raw), tokenVars);
     });
     if (!resolved || resolved.includes("$")) continue;
     body += `${resolveVarName(key, prefix)}:${resolved};`;
@@ -34,7 +33,7 @@ function resolveSizeAwareBody(
 export function generateComponentOrientation(
   name: string,
   config: GeneratorConfig,
-  theme: Theme,
+  tokenVars: Record<string, string>,
 ): string {
   if (!config?.orientation) return "";
   const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(name, config);
@@ -61,13 +60,13 @@ export function generateComponentOrientation(
 
     const orientationSelector = `${base}[data-orientation="${orientationKey}"]`;
 
-    const flatBody = generateTokensCSS(flat, prefix, theme, parentPrefix);
+    const flatBody = generateTokensCSS(flat, prefix, tokenVars, parentPrefix);
     if (flatBody) css += `${orientationSelector}{${flatBody}}`;
 
     if (Object.keys(sizeAware).length > 0 && config.sizes) {
       for (const [sizeKey, sizeTokens] of Object.entries(config.sizes)) {
         if (!sizeTokens) continue;
-        const body = resolveSizeAwareBody(sizeAware, sizeTokens as Record<string, unknown>, prefix, theme);
+        const body = resolveSizeAwareBody(sizeAware, sizeTokens as Record<string, unknown>, prefix, tokenVars);
         if (body) css += `${orientationSelector}[data-size="${sizeKey}"]{${body}}`;
       }
     }

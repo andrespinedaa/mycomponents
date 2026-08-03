@@ -5,7 +5,7 @@ import { type Theme, defaultThemeMacros, defaultThemeComponents } from "../theme
 // Balanced radii (6/9/14px) · standard spacing · mid-height controls
 
 export const terraTheme: Theme = {
-  cssVarPrefix: "terra",
+  prefix: "terra",
 
   // ─── System Colors ────────────────────────────────────────────────────────
   colors: {
@@ -116,7 +116,7 @@ export const terraTheme: Theme = {
   },
 
   // ─── Radius Tokens ────────────────────────────────────────────────────────
-  radii: {
+  radius: {
     none: "0",
     xs: "3px",
     sm: "6px",
@@ -147,7 +147,7 @@ export const terraTheme: Theme = {
   },
 
   // ─── Shadows Tokens ───────────────────────────────────────────────────────
-  shadows: {
+  shadow: {
     xs: "0 1px 2px rgba(0,0,0,.45)",
     sm: "0 1px 2px rgba(0,0,0,.45)",
     md: "0 2px 6px rgba(0,0,0,.45), 0 6px 16px rgba(0,0,0,.40)",
@@ -194,7 +194,7 @@ export const terraTheme: Theme = {
 
   // ─── Dark mode — light shadows override ───────────────────────────────────
   dark: {
-    shadows: {
+    shadow: {
       sm: "0 1px 2px rgba(0,0,0,.45)",
       md: "0 2px 6px rgba(0,0,0,.45), 0 6px 16px rgba(0,0,0,.40)",
       lg: "0 10px 28px rgba(0,0,0,.50)",

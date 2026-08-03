@@ -127,13 +127,13 @@ export function mergeTheme(base: Theme, override: ThemeOverride): Theme {
   return {
     ...base,
 
-    cssVarPrefix: override.cssVarPrefix ?? base.cssVarPrefix,
+    prefix: override.prefix ?? base.prefix,
 
     colors: mergeColors(base.colors, override.colors),
 
     spacing: mergeRecord(base.spacing, override.spacing),
 
-    radii: mergeRecord(base.radii, override.radii),
+    radius: mergeRecord(base.radius, override.radius),
 
     fontSizes: mergeRecord(base.fontSizes, override.fontSizes),
 

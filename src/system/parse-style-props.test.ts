@@ -1,104 +1,106 @@
-// src/system/parse-style-props.test.ts
+﻿// src/system/parse-style-props.test.ts
 import { describe, it, expect } from "vitest";
 import { parseStyleProps } from "./parse-style-props";
 import { defaultTheme } from "../themes/default-theme";
+import { generateTokens } from "../theme/generators/generateTokens";
 
 function asVars(styles: React.CSSProperties): Record<string, unknown> {
   return styles as Record<string, unknown>;
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-// Shortcut para el tema default — lo reutilizamos en todos los tests
+// â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Shortcut para el tema default â€” lo reutilizamos en todos los tests
 const theme = defaultTheme;
+const { vars: tokenVars } = generateTokens(defaultTheme);
 
 describe("parseStyleProps", () => {
-  // ─── 1. Camino directo — valor plano, sin cambios ─────────────────────────
-  describe("camino directo — valor plano", () => {
+  // â”€â”€â”€ 1. Camino directo â€” valor plano, sin cambios â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  describe("camino directo â€” valor plano", () => {
     it("retorna hasResponsive: false cuando todos los valores son planos", () => {
       const { hasResponsive } = parseStyleProps(
         { p: "md", bg: "primary.500" },
-        theme,
+        tokenVars,
       );
       expect(hasResponsive).toBe(false);
     });
 
     it("resuelve token de spacing a CSS var", () => {
-      const { styles } = parseStyleProps({ p: "md" }, theme);
-      expect(styles.padding).toBe(`var(--${theme.cssVarPrefix}-spacing-md)`);
+      const { styles } = parseStyleProps({ p: "md" }, tokenVars);
+      expect(styles.padding).toBe(`var(--${theme.prefix}-spacing-md)`);
     });
 
     it("resuelve token de color a CSS var", () => {
-      const { styles } = parseStyleProps({ bg: "primary.500" }, theme);
-      expect(styles.background).toBe(`var(--${theme.cssVarPrefix}-color-primary-500)`);
+      const { styles } = parseStyleProps({ bg: "primary.500" }, tokenVars);
+      expect(styles.background).toBe(`var(--${theme.prefix}-colors-primary-500)`);
     });
 
     it("resuelve token de radius a CSS var", () => {
-      const { styles } = parseStyleProps({ rounded: "lg" }, theme);
-      expect(styles.borderRadius).toBe(`var(--${theme.cssVarPrefix}-radius-lg)`);
+      const { styles } = parseStyleProps({ rounded: "lg" }, tokenVars);
+      expect(styles.borderRadius).toBe(`var(--${theme.prefix}-radius-lg)`);
     });
 
     it("resuelve token de fontSize a CSS var", () => {
-      const { styles } = parseStyleProps({ fontSize: "xl" }, theme);
-      expect(styles.fontSize).toBe(`var(--${theme.cssVarPrefix}-font-size-xl)`);
+      const { styles } = parseStyleProps({ fontSize: "xl" }, tokenVars);
+      expect(styles.fontSize).toBe(`var(--${theme.prefix}-font-sizes-xl)`);
     });
 
     it("pasa valor raw sin transformar", () => {
-      const { styles } = parseStyleProps({ display: "flex" }, theme);
+      const { styles } = parseStyleProps({ display: "flex" }, tokenVars);
       expect(styles.display).toBe("flex");
     });
 
     it("pasa valor arbitrario como escape hatch", () => {
-      const { styles } = parseStyleProps({ p: "32px" }, theme);
+      const { styles } = parseStyleProps({ p: "32px" }, tokenVars);
       expect(styles.padding).toBe("32px");
     });
 
     it("resuelve mx a marginLeft y marginRight como CSS vars", () => {
-      const { styles } = parseStyleProps({ mx: "md" }, theme);
-      expect(styles.marginLeft).toBe(`var(--${theme.cssVarPrefix}-spacing-md)`);
-      expect(styles.marginRight).toBe(`var(--${theme.cssVarPrefix}-spacing-md)`);
+      const { styles } = parseStyleProps({ mx: "md" }, tokenVars);
+      expect(styles.marginLeft).toBe(`var(--${theme.prefix}-spacing-md)`);
+      expect(styles.marginRight).toBe(`var(--${theme.prefix}-spacing-md)`);
     });
 
     it("resuelve py a paddingTop y paddingBottom como CSS vars", () => {
-      const { styles } = parseStyleProps({ py: "sm" }, theme);
-      expect(styles.paddingTop).toBe(`var(--${theme.cssVarPrefix}-spacing-sm)`);
-      expect(styles.paddingBottom).toBe(`var(--${theme.cssVarPrefix}-spacing-sm)`);
+      const { styles } = parseStyleProps({ py: "sm" }, tokenVars);
+      expect(styles.paddingTop).toBe(`var(--${theme.prefix}-spacing-sm)`);
+      expect(styles.paddingBottom).toBe(`var(--${theme.prefix}-spacing-sm)`);
     });
 
     it("ignora valores undefined", () => {
-      const { styles } = parseStyleProps({ p: undefined }, theme);
+      const { styles } = parseStyleProps({ p: undefined }, tokenVars);
       expect(styles.padding).toBeUndefined();
     });
 
     it("ignora valores null", () => {
-      const { styles } = parseStyleProps({ p: null as any }, theme);
+      const { styles } = parseStyleProps({ p: null as any }, tokenVars);
       expect(styles.padding).toBeUndefined();
     });
 
-    it("retorna objeto vacío y hasResponsive false con styleProps vacío", () => {
-      const { styles, hasResponsive } = parseStyleProps({}, theme);
+    it("retorna objeto vacÃ­o y hasResponsive false con styleProps vacÃ­o", () => {
+      const { styles, hasResponsive } = parseStyleProps({}, tokenVars);
       expect(Object.keys(styles)).toHaveLength(0);
       expect(hasResponsive).toBe(false);
     });
 
-    it("combina múltiples props planas correctamente", () => {
+    it("combina mÃºltiples props planas correctamente", () => {
       const { styles, hasResponsive } = parseStyleProps(
         { p: "md", bg: "primary.500", rounded: "md", display: "flex" },
-        theme,
+        tokenVars,
       );
-      expect(styles.padding).toBe(`var(--${theme.cssVarPrefix}-spacing-md)`);
-      expect(styles.background).toBe(`var(--${theme.cssVarPrefix}-color-primary-500)`);
-      expect(styles.borderRadius).toBe(`var(--${theme.cssVarPrefix}-radius-md)`);
+      expect(styles.padding).toBe(`var(--${theme.prefix}-spacing-md)`);
+      expect(styles.background).toBe(`var(--${theme.prefix}-colors-primary-500)`);
+      expect(styles.borderRadius).toBe(`var(--${theme.prefix}-radius-md)`);
       expect(styles.display).toBe("flex");
       expect(hasResponsive).toBe(false);
     });
   });
 
-  // ─── 2. Camino responsive — objeto por breakpoint ─────────────────────────
-  describe("camino responsive — objeto { base, sm, md, lg, xl }", () => {
+  // â”€â”€â”€ 2. Camino responsive â€” objeto por breakpoint â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  describe("camino responsive â€” objeto { base, sm, md, lg, xl }", () => {
     it("retorna hasResponsive: true cuando hay objeto responsive", () => {
       const { hasResponsive } = parseStyleProps(
         { p: { base: "sm", md: "lg" } },
-        theme,
+        tokenVars,
       );
       expect(hasResponsive).toBe(true);
     });
@@ -106,17 +108,17 @@ describe("parseStyleProps", () => {
     it("genera CSS var por cada breakpoint declarado", () => {
       const { styles } = parseStyleProps(
         { p: { base: "sm", md: "lg" } },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
-      expect(vars["--padding-base" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-sm)`);
-      expect(vars["--padding-md" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-lg)`);
+      expect(vars["--padding-base" as any]).toBe(`var(--${theme.prefix}-spacing-sm)`);
+      expect(vars["--padding-md" as any]).toBe(`var(--${theme.prefix}-spacing-lg)`);
     });
 
     it("NO genera CSS var para breakpoints no declarados", () => {
       const { styles } = parseStyleProps(
         { p: { base: "sm", md: "lg" } },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
       expect(vars["--padding-sm" as any]).toBeUndefined();
@@ -127,40 +129,40 @@ describe("parseStyleProps", () => {
     it("genera vars para los 5 breakpoints si todos se declaran", () => {
       const { styles } = parseStyleProps(
         { p: { base: "xs", sm: "sm", md: "md", lg: "lg", xl: "xl" } },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
-      expect(vars["--padding-base" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-xs)`);
-      expect(vars["--padding-sm" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-sm)`);
-      expect(vars["--padding-md" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-md)`);
-      expect(vars["--padding-lg" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-lg)`);
-      expect(vars["--padding-xl" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-xl)`);
+      expect(vars["--padding-base" as any]).toBe(`var(--${theme.prefix}-spacing-xs)`);
+      expect(vars["--padding-sm" as any]).toBe(`var(--${theme.prefix}-spacing-sm)`);
+      expect(vars["--padding-md" as any]).toBe(`var(--${theme.prefix}-spacing-md)`);
+      expect(vars["--padding-lg" as any]).toBe(`var(--${theme.prefix}-spacing-lg)`);
+      expect(vars["--padding-xl" as any]).toBe(`var(--${theme.prefix}-spacing-xl)`);
     });
 
     it("resuelve tokens del tema dentro de cada breakpoint", () => {
       const { styles } = parseStyleProps(
         { p: { base: "sm", lg: "2xl" } },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
-      expect(vars["--padding-base" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-sm)`);
-      expect(vars["--padding-lg" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-2xl)`);
+      expect(vars["--padding-base" as any]).toBe(`var(--${theme.prefix}-spacing-sm)`);
+      expect(vars["--padding-lg" as any]).toBe(`var(--${theme.prefix}-spacing-2xl)`);
     });
 
     it("acepta valores arbitrarios en breakpoints", () => {
       const { styles } = parseStyleProps(
         { w: { base: "100%", md: "400px" } },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
       expect(vars["--width-base" as any]).toBe("100%");
       expect(vars["--width-md" as any]).toBe("400px");
     });
 
-    it("acepta números en breakpoints", () => {
+    it("acepta nÃºmeros en breakpoints", () => {
       const { styles } = parseStyleProps(
         { zIndex: { base: 1, md: 10 } },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
       expect(vars["--z-index-base" as any]).toBe("1");
@@ -170,7 +172,7 @@ describe("parseStyleProps", () => {
     it("alias 'full' se resuelve a 100% dentro del objeto responsive", () => {
       const { styles } = parseStyleProps(
         { w: { base: "full", lg: "400px" } },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
       expect(vars["--width-base" as any]).toBe("100%");
@@ -179,7 +181,7 @@ describe("parseStyleProps", () => {
     it("alias 'auto' se resuelve dentro del objeto responsive", () => {
       const { styles } = parseStyleProps(
         { w: { base: "auto", lg: "500px" } },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
       expect(vars["--width-base" as any]).toBe("auto");
@@ -188,37 +190,37 @@ describe("parseStyleProps", () => {
     it("ignora breakpoints con valor undefined dentro del objeto", () => {
       const { styles } = parseStyleProps(
         { p: { base: "sm", md: undefined } },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
-      expect(vars["--padding-base" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-sm)`);
+      expect(vars["--padding-base" as any]).toBe(`var(--${theme.prefix}-spacing-sm)`);
       expect(vars["--padding-md" as any]).toBeUndefined();
     });
 
-    it("prop con múltiples CSS targets genera var para cada una", () => {
-      // mx → marginLeft + marginRight, ambas deben tener sus vars
+    it("prop con mÃºltiples CSS targets genera var para cada una", () => {
+      // mx â†’ marginLeft + marginRight, ambas deben tener sus vars
       const { styles } = parseStyleProps(
         { mx: { base: "sm", md: "lg" } },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
-      expect(vars["--margin-left-base" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-sm)`);
-      expect(vars["--margin-right-base" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-sm)`);
-      expect(vars["--margin-left-md" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-lg)`);
-      expect(vars["--margin-right-md" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-lg)`);
+      expect(vars["--margin-left-base" as any]).toBe(`var(--${theme.prefix}-spacing-sm)`);
+      expect(vars["--margin-right-base" as any]).toBe(`var(--${theme.prefix}-spacing-sm)`);
+      expect(vars["--margin-left-md" as any]).toBe(`var(--${theme.prefix}-spacing-lg)`);
+      expect(vars["--margin-right-md" as any]).toBe(`var(--${theme.prefix}-spacing-lg)`);
     });
 
     it("hasResponsive es true incluso si solo UNA prop es responsive", () => {
       const { hasResponsive } = parseStyleProps(
         { p: "md", w: { base: "full", lg: "400px" } },
-        theme,
+        tokenVars,
       );
       expect(hasResponsive).toBe(true);
     });
   });
 
-  // ─── 3. Mezcla de planas y responsive en el mismo elemento ────────────────
-  describe("mezcla — planas y responsive juntas", () => {
+  // â”€â”€â”€ 3. Mezcla de planas y responsive en el mismo elemento â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  describe("mezcla â€” planas y responsive juntas", () => {
     it("las planas van directo a styles, las responsive generan vars", () => {
       const { styles, hasResponsive } = parseStyleProps(
         {
@@ -226,16 +228,16 @@ describe("parseStyleProps", () => {
           bg: "primary.500", // plana
           display: "flex", // plana
         },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
 
-      // responsive — genera vars
-      expect(vars["--padding-base" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-sm)`);
-      expect(vars["--padding-md" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-lg)`);
+      // responsive â€” genera vars
+      expect(vars["--padding-base" as any]).toBe(`var(--${theme.prefix}-spacing-sm)`);
+      expect(vars["--padding-md" as any]).toBe(`var(--${theme.prefix}-spacing-lg)`);
 
-      // planas — valores directos
-      expect(styles.background).toBe(`var(--${theme.cssVarPrefix}-color-primary-500)`);
+      // planas â€” valores directos
+      expect(styles.background).toBe(`var(--${theme.prefix}-colors-primary-500)`);
       expect(styles.display).toBe("flex");
 
       // hasResponsive refleja que hubo al menos una responsive
@@ -248,22 +250,22 @@ describe("parseStyleProps", () => {
           p: { base: "sm", lg: "xl" },
           rounded: "md", // plana, no responsive
         },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
 
-      expect(styles.borderRadius).toBe(`var(--${theme.cssVarPrefix}-radius-md)`);
-      expect(vars["--padding-base" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-sm)`);
-      expect(vars["--padding-lg" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-xl)`);
+      expect(styles.borderRadius).toBe(`var(--${theme.prefix}-radius-md)`);
+      expect(vars["--padding-base" as any]).toBe(`var(--${theme.prefix}-spacing-sm)`);
+      expect(vars["--padding-lg" as any]).toBe(`var(--${theme.prefix}-spacing-xl)`);
       // borderRadius no genera ninguna var responsive
       expect(vars["--border-radius-base" as any]).toBeUndefined();
     });
   });
 
-  // ─── 4. Salvaguarda — prop fuera de la lista cerrada responsive ───────────
-  describe("salvaguarda — prop fuera de RESPONSIVE_CSS_PROPERTIES", () => {
+  // â”€â”€â”€ 4. Salvaguarda â€” prop fuera de la lista cerrada responsive â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  describe("salvaguarda â€” prop fuera de RESPONSIVE_CSS_PROPERTIES", () => {
     it("prop responsive no elegible cae al valor de base", () => {
-      // shadow no está en RESPONSIVE_CSS_PROPERTIES
+      // shadow no estÃ¡ en RESPONSIVE_CSS_PROPERTIES
       const { styles, hasResponsive } = parseStyleProps(
         {
           shadow: {
@@ -271,17 +273,17 @@ describe("parseStyleProps", () => {
             md: "0 8px 24px rgba(0,0,0,0.2)",
           },
         } as any,
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
 
-      // cae al valor de base — no pierde el valor completamente
-      expect(styles.shadow).toBe("0 2px 4px rgba(0,0,0,0.1)");
+      // cae al valor de base â€” no pierde el valor completamente
+      expect(styles.boxShadow).toBe("0 2px 4px rgba(0,0,0,0.1)");
 
       // NO genera vars (no hay @media que las lea)
       expect(vars["--box-shadow-base" as any]).toBeUndefined();
 
-      // NO activa hasResponsive — no paga el costo del selector
+      // NO activa hasResponsive â€” no paga el costo del selector
       expect(hasResponsive).toBe(false);
     });
 
@@ -290,28 +292,28 @@ describe("parseStyleProps", () => {
         {
           shadow: { base: "0 2px 4px black", lg: "0 8px 24px black" },
         } as any,
-        theme,
+        tokenVars,
       );
-      // solo base — lg se descarta silenciosamente
-      expect(styles.shadow).toBe("0 2px 4px black");
+      // solo base â€” lg se descarta silenciosamente
+      expect(styles.boxShadow).toBe("0 2px 4px black");
     });
 
-    it("prop no elegible sin base no genera ningún valor", () => {
+    it("prop no elegible sin base no genera ningÃºn valor", () => {
       const { styles } = parseStyleProps(
         { shadow: { md: "0 8px 24px black" } } as any,
-        theme,
+        tokenVars,
       );
-      // md no es base, se descarta — sin valor
+      // md no es base, se descarta â€” sin valor
       expect(styles.shadow).toBeUndefined();
     });
   });
 
-  // ─── 5. Edge cases ────────────────────────────────────────────────────────
+  // â”€â”€â”€ 5. Edge cases â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   describe("edge cases", () => {
-    it("objeto responsive vacío no genera nada y hasResponsive es false", () => {
+    it("objeto responsive vacÃ­o no genera nada y hasResponsive es false", () => {
       const { styles, hasResponsive } = parseStyleProps(
         { p: {} as any },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
       expect(styles.padding).toBeUndefined();
@@ -322,7 +324,7 @@ describe("parseStyleProps", () => {
     it("prop desconocida en STYLE_PROPS_DATA se ignora silenciosamente", () => {
       const { styles } = parseStyleProps(
         { unknownProp: "value" } as any,
-        theme,
+        tokenVars,
       );
       expect(Object.keys(styles)).toHaveLength(0);
     });
@@ -330,19 +332,19 @@ describe("parseStyleProps", () => {
     it("solo base en objeto responsive sigue siendo responsive", () => {
       const { styles, hasResponsive } = parseStyleProps(
         { p: { base: "md" } },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
       // genera var --padding-base, no el valor directo
-      expect(vars["--padding-base" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-md)`);
+      expect(vars["--padding-base" as any]).toBe(`var(--${theme.prefix}-spacing-md)`);
       expect(styles.padding).toBeUndefined(); // no el valor plano
       expect(hasResponsive).toBe(true);
     });
 
-    it("opacity responsive acepta números", () => {
+    it("opacity responsive acepta nÃºmeros", () => {
       const { styles, hasResponsive } = parseStyleProps(
         { opacity: { base: 1, md: 0.5 } },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
       expect(vars["--opacity-base" as any]).toBe("1");
@@ -350,10 +352,10 @@ describe("parseStyleProps", () => {
       expect(hasResponsive).toBe(true);
     });
 
-    it("zIndex responsive acepta números", () => {
+    it("zIndex responsive acepta nÃºmeros", () => {
       const { styles } = parseStyleProps(
         { zIndex: { base: 1, lg: 100 } },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
       expect(vars["--z-index-base" as any]).toBe("1");
@@ -363,22 +365,23 @@ describe("parseStyleProps", () => {
     it("fontSize responsive resuelve tokens del tema", () => {
       const { styles } = parseStyleProps(
         { fontSize: { base: "sm", lg: "2xl" } },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
-      expect(vars["--font-size-base" as any]).toBe(`var(--${theme.cssVarPrefix}-font-size-sm)`);
-      expect(vars["--font-size-lg" as any]).toBe(`var(--${theme.cssVarPrefix}-font-size-2xl)`);
+      expect(vars["--font-size-base" as any]).toBe(`var(--${theme.prefix}-font-sizes-sm)`);
+      expect(vars["--font-size-lg" as any]).toBe(`var(--${theme.prefix}-font-sizes-2xl)`);
     });
 
     it("gap responsive con tokens del tema", () => {
       const { styles } = parseStyleProps(
         { gap: { base: "sm", md: "lg", xl: "2xl" } },
-        theme,
+        tokenVars,
       );
       const vars = asVars(styles);
-      expect(vars["--gap-base" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-sm)`);
-      expect(vars["--gap-md" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-lg)`);
-      expect(vars["--gap-xl" as any]).toBe(`var(--${theme.cssVarPrefix}-spacing-2xl)`);
+      expect(vars["--gap-base" as any]).toBe(`var(--${theme.prefix}-spacing-sm)`);
+      expect(vars["--gap-md" as any]).toBe(`var(--${theme.prefix}-spacing-lg)`);
+      expect(vars["--gap-xl" as any]).toBe(`var(--${theme.prefix}-spacing-2xl)`);
     });
   });
 });
+

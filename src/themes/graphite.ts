@@ -6,7 +6,7 @@ import { type Theme, defaultThemeMacros, defaultThemeComponents } from "../theme
 // Sharp radii (4/6/8px) · compact spacing · standard controls
 
 export const graphiteTheme: Theme = {
-  cssVarPrefix: "graphite",
+  prefix: "graphite",
 
   // ─── System Colors ────────────────────────────────────────────────────────
   colors: {
@@ -114,7 +114,7 @@ export const graphiteTheme: Theme = {
   },
 
   // ─── Radius Tokens ────────────────────────────────────────────────────────
-  radii: {
+  radius: {
     none: "0",
     xs: "2px",
     sm: "4px",
@@ -145,7 +145,7 @@ export const graphiteTheme: Theme = {
   },
 
   // ─── Shadows Tokens ───────────────────────────────────────────────────────
-  shadows: {
+  shadow: {
     xs: "0 1px 2px rgba(0,0,0,.45)",
     sm: "0 1px 2px rgba(0,0,0,.45)",
     md: "0 2px 6px rgba(0,0,0,.45), 0 6px 16px rgba(0,0,0,.40)",
@@ -192,7 +192,7 @@ export const graphiteTheme: Theme = {
 
   // ─── Dark mode — light shadows override ───────────────────────────────────
   dark: {
-    shadows: {
+    shadow: {
       sm: "0 1px 2px rgba(0,0,0,.45)",
       md: "0 2px 6px rgba(0,0,0,.45), 0 6px 16px rgba(0,0,0,.40)",
       lg: "0 10px 28px rgba(0,0,0,.50)",

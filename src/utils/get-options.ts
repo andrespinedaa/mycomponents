@@ -1,24 +1,23 @@
-import type { PropCategory } from "../theme/generators/system-css.types";
-import type { Theme } from "../theme/core/theme.types";
+import type { Theme, CategoryTokens } from "../theme/core/theme.types";
 
-export function getOptions(category: PropCategory, theme: Theme) {
+export function getOptions(category: CategoryTokens, theme: Theme) {
   switch (category) {
     case "spacing":
       return [...Object.keys(theme.spacing), "auto", "full", "screen", "fit"];
 
-    case "color":
+    case "colors":
       return Object.entries(theme.colors).flatMap(([color, shades]) =>
         Object.keys(shades).map((shade) => `${color}.${shade}`),
       );
 
     case "radius":
-      return Object.keys(theme.radii);
+      return Object.keys(theme.radius);
 
-    case "fontSize":
+    case "fontSizes":
       return Object.keys(theme.fontSizes);
 
     case "shadow":
-      return Object.keys(theme.shadows);
+      return Object.keys(theme.shadow);
 
     default:
       return undefined;

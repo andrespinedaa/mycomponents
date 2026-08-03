@@ -271,7 +271,7 @@ describe("ComponentFactory", () => {
         name: "NoRender",
         render: function ThemeRender({ ref, children, set, variant, ...rest }) {
           const { theme } = useTheme();
-          prefix = theme.cssVarPrefix;
+          prefix = theme.prefix;
           return (
             <Box ref={ref as any} {...rest}>
               {children}
@@ -280,7 +280,7 @@ describe("ComponentFactory", () => {
         },
       });
       render(<ThemeComponent>x</ThemeComponent>, { wrapper });
-      expect(prefix).toBe(defaultTheme.cssVarPrefix);
+      expect(prefix).toBe(defaultTheme.prefix);
     });
   });
 

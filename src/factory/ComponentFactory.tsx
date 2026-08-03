@@ -19,7 +19,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
 }: FactoryOptions<Config>): FactoryReturn<Config> {
   const Component = forwardRef<ElementRefType<Config["tag"]>, InternalProps<Config, Config["tag"]>>(
     function ComponentRender(props, ref) {
-      const { theme, sizeResponsive } = useThemeContext();
+      const { theme, tokenVars, sizeResponsive } = useThemeContext();
       const config = theme.components?.[name];
       const resolvedName = config?.name ?? name;
 
@@ -41,7 +41,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
         variant: resolvedVariant,
         orientation: resolvedOrientation,
       } = resolveLayout(sizeResponsive, { size, variant, set, orientation }, config);
-      const vars = resolveVars(varsRaw, camelToKebab(resolvedName), theme);
+      const vars = resolveVars(varsRaw, camelToKebab(resolvedName), tokenVars);
       const dataName = dataSlot || inheritedSlot || resolvedName || undefined;
 
       if (renderRoot) {
@@ -65,9 +65,10 @@ export function ComponentFactory<Config extends FactoryConfig>({
           vars,
           apply,
           theme,
+          tokenVars,
           unstyled,
           styleProps,
-          style: resolveStyle(theme, styleRaw),
+          style: resolveStyle(theme, styleRaw, tokenVars),
         });
         const elementModProps = getMod([
           mod,

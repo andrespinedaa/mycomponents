@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { defaultTheme } from "../../themes/default-theme";
 import type { Theme } from "../core/theme.types";
+import { generateTokens } from "./generateTokens";
 import { generateComponents } from "./generateComponents";
 
-const p = defaultTheme.cssVarPrefix;
+const p = defaultTheme.prefix;
+const { vars: tokenVars } = generateTokens(defaultTheme);
 
 // ─── generateComponents ──────────────────────────────────────────────────────
 
@@ -11,7 +13,7 @@ describe("generateComponents", () => {
   describe("guarda de salida temprana", () => {
     it("retorna vacío si components es objeto vacío", () => {
       const theme: Theme = { ...defaultTheme, components: {} as unknown as Theme["components"] };
-      expect(generateComponents(theme)).toBe("");
+      expect(generateComponents(theme, tokenVars)).toBe("");
     });
 
     it("retorna vacío si el único componente no tiene config de tokens", () => {
@@ -21,7 +23,7 @@ describe("generateComponents", () => {
           Empty: {},
         } as unknown as Theme["components"],
       };
-      expect(generateComponents(theme)).toBe("");
+      expect(generateComponents(theme, tokenVars)).toBe("");
     });
   });
 
@@ -35,7 +37,7 @@ describe("generateComponents", () => {
           },
         } as unknown as Theme["components"],
       };
-      const result = generateComponents(theme);
+      const result = generateComponents(theme, tokenVars);
       expect(result).toContain(`[data-slot="Card"]{`);
       expect(result).toContain(`var(--card-background,unset)`);
     });
@@ -49,9 +51,9 @@ describe("generateComponents", () => {
           },
         } as unknown as Theme["components"],
       };
-      const result = generateComponents(theme);
+      const result = generateComponents(theme, tokenVars);
       expect(result).toContain(`[data-variant="Filled"]`);
-      expect(result).toContain(`var(--${p}-color-neutral-50)`);
+      expect(result).toContain(`var(--${p}-colors-neutral-50)`);
     });
 
     it("incluye CSS de sizes en la salida", () => {
@@ -63,42 +65,41 @@ describe("generateComponents", () => {
           },
         } as unknown as Theme["components"],
       };
-      const result = generateComponents(theme);
+      const result = generateComponents(theme, tokenVars);
       expect(result).toContain(`[data-size="md"]`);
       expect(result).toContain(`@media(min-width:`);
       expect(result).toContain(`var(--${p}-spacing-md)`);
     });
 
-    it("entradas top-level con parentName son omitidas (se generan via slots del padre)", () => {
+    it("entrada con parentName genera CSS como componente top-level", () => {
       const theme: Theme = {
         ...defaultTheme,
         components: {
           CardSection: {
-            name: "Section",
+            name: "CardSection",
             parentName: "Card",
             sizes: { md: { p: "md" } },
           },
         } as unknown as Theme["components"],
       };
-      expect(generateComponents(theme)).toBe("");
+      const result = generateComponents(theme, tokenVars);
+      expect(result).toContain(`[data-slot="CardSection"]`);
+      expect(result).toContain(`--card-section-padding`);
     });
 
-    it("slot con parentName genera CSS cuando lo recursiona el padre", () => {
+    it("componente con parentName usa el prefix del padre en sus CSS vars", () => {
       const theme: Theme = {
         ...defaultTheme,
         components: {
-          Card: {
-            statics: {
-              Section: {
-                name: "CardSection",
-                parentName: "Card",
-                sizes: { md: { p: "md" } },
-              },
-            },
+          Card: {},
+          CardSection: {
+            name: "CardSection",
+            parentName: "Card",
+            sizes: { md: { p: "md" } },
           },
         } as unknown as Theme["components"],
       };
-      const result = generateComponents(theme);
+      const result = generateComponents(theme, tokenVars);
       expect(result).toContain(`[data-slot="CardSection"]`);
       expect(result).not.toContain(`data-slot-parent`);
       expect(result).toContain(`--card-section-padding`);
@@ -119,7 +120,7 @@ describe("generateComponents", () => {
           },
         } as unknown as Theme["components"],
       };
-      const result = generateComponents(theme);
+      const result = generateComponents(theme, tokenVars);
 
       const basesIdx   = result.indexOf(`var(--card-background,unset)`);
       const variantsIdx = result.indexOf(`[data-variant=`);
@@ -144,7 +145,7 @@ describe("generateComponents", () => {
           },
         } as unknown as Theme["components"],
       };
-      const result = generateComponents(theme);
+      const result = generateComponents(theme, tokenVars);
       expect(result).toContain(`[data-slot="Card"]`);
       expect(result).toContain(`[data-slot="Badge"]`);
       expect(result).toContain(`--card-background:`);
@@ -163,7 +164,7 @@ describe("generateComponents", () => {
           },
         } as unknown as Theme["components"],
       };
-      const result = generateComponents(theme);
+      const result = generateComponents(theme, tokenVars);
       expect(result).toContain(`--card-padding:var(--${p}-spacing-md);`);
       expect(result).toContain(`--badge-padding:var(--${p}-spacing-sm);`);
     });
@@ -178,7 +179,7 @@ describe("generateComponents", () => {
           },
         } as unknown as Theme["components"],
       };
-      const result = generateComponents(theme);
+      const result = generateComponents(theme, tokenVars);
       expect(result).not.toContain(`[data-slot="Empty"]`);
       expect(result).toContain(`[data-slot="Card"]`);
     });

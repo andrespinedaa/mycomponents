@@ -6,7 +6,7 @@ import { graphiteTheme, haloTheme, terraTheme } from "./themes";
 import bg1 from "./components/Card/background 2.jpg";
 import bg2 from "./components/Card/background.jpg";
 
-const theme = createTheme(terraTheme);
+const theme = createTheme(graphiteTheme);
 const badgeInfo = [{ data: "ice grey" }, { data: "3.2s" }, { data: "Manual" }];
 
 function App() {
@@ -21,7 +21,7 @@ function App() {
               type="button"
               shadow="md"
               rounded="xs"
-              style={(t) => ({ background: t.colors.primary[300] })}
+              /* style={(t) => ({ background: t.colors.secondary[300] })} */
             >
               Sign Up
             </Button>
@@ -35,7 +35,7 @@ function App() {
         <Card
           p="sm"
           flexDir="column"
-          variant="Outlined"
+          variant="Elevated"
           orientation="vertical"
           apply="@flexCenterEnd"
         >

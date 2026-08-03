@@ -5,12 +5,16 @@ import { describe, it, expect, vi } from "vitest";
 import { Box } from "./Box";
 import { ThemeContextProvider } from "../../../theme/ThemeContext";
 import { defaultTheme } from "../../../theme";
+import { generateTokens } from "../../../theme/generators/generateTokens";
+
+const { vars: tokenVars } = generateTokens(defaultTheme);
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <ThemeContextProvider
     value={{
       sizeResponsive: "md",
       theme: defaultTheme,
+      tokenVars,
       colorScheme: "light",
       setColorScheme: () => {},
       toggleColorScheme: () => {},

@@ -6,7 +6,7 @@ import { type Theme, defaultThemeMacros, defaultThemeComponents } from "../theme
 // Dark-first: neutral.950 = #09090b
 
 export const haloTheme: Theme = {
-  cssVarPrefix: "halo",
+  prefix: "halo",
 
   // ─── System Colors ────────────────────────────────────────────────────────
   colors: {
@@ -121,7 +121,7 @@ export const haloTheme: Theme = {
   },
 
   // ─── Radius Tokens ────────────────────────────────────────────────────────
-  radii: {
+  radius: {
     none: "0",
     xs:   "4px",
     sm:   "8px",
@@ -152,7 +152,7 @@ export const haloTheme: Theme = {
   },
 
   // ─── Shadows Tokens ───────────────────────────────────────────────────────
-  shadows: {
+  shadow: {
     xs: "0 1px 2px rgba(0,0,0,.45)",
     sm: "0 1px 2px rgba(0,0,0,.45)",
     md: "0 2px 6px rgba(0,0,0,.45), 0 6px 16px rgba(0,0,0,.40)",
@@ -199,7 +199,7 @@ export const haloTheme: Theme = {
 
   // ─── Dark mode — light shadows override ───────────────────────────────────
   dark: {
-    shadows: {
+    shadow: {
       sm: "0 1px 2px rgba(0,0,0,.45)",
       md: "0 2px 6px rgba(0,0,0,.45), 0 6px 16px rgba(0,0,0,.40)",
       lg: "0 10px 28px rgba(0,0,0,.50)",

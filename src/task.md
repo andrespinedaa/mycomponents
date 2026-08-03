@@ -49,7 +49,7 @@ w?: SpacingResponsive;
 h?: SpacingResponsive;
 p?: SpacingResponsive;
 gap?: SpacingResponsive;
-fontSize?: Responsive<FontSizeValue | number>;
+fontSize?: Responsive<FontSizesValue | number>;
 
 // Grupo 2 — string puro, sin number
 display?: Responsive<DisplayValue>;

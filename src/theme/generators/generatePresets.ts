@@ -1,4 +1,4 @@
-import type { ComponentStates, Theme } from "../core/theme.types";
+import type { ComponentStates } from "../core/theme.types";
 import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames, type GeneratorConfig } from "./css-gen-utils";
 import { emitStateRules, isStateKey } from "./generateVariants";
 
@@ -32,7 +32,7 @@ function emitPresetOrientation(
   selector: string,
   orientationMap: Record<string, unknown> | undefined,
   prefix: string,
-  theme: Theme,
+  tokenVars: Record<string, string>,
   parentPrefix: string | undefined,
 ): string {
   if (!orientationMap) return "";
@@ -41,9 +41,9 @@ function emitPresetOrientation(
     if (!block || typeof block !== "object") continue;
     const orientationSelector = `${selector}[data-orientation="${orientationKey}"]`;
     const { flat, states } = partitionEntry(block as Record<string, unknown>);
-    const body = generateTokensCSS(flat, prefix, theme, parentPrefix);
+    const body = generateTokensCSS(flat, prefix, tokenVars, parentPrefix);
     if (body) css += `${orientationSelector}{${body}}`;
-    css += emitStateRules(orientationSelector, states, prefix, theme, parentPrefix);
+    css += emitStateRules(orientationSelector, states, prefix, tokenVars, parentPrefix);
   }
   return css;
 }
@@ -54,19 +54,19 @@ function emitPreset(
   selector: string,
   tokens: Record<string, unknown>,
   prefix: string,
-  theme: Theme,
+  tokenVars: Record<string, string>,
   parentPrefix: string | undefined,
 ): string {
   const { flat, states } = partitionEntry(tokens, ["orientation"]);
   let css = "";
-  const body = generateTokensCSS(flat, prefix, theme, parentPrefix);
+  const body = generateTokensCSS(flat, prefix, tokenVars, parentPrefix);
   if (body) css += `${selector}{${body}}`;
-  css += emitStateRules(selector, states, prefix, theme, parentPrefix);
+  css += emitStateRules(selector, states, prefix, tokenVars, parentPrefix);
   css += emitPresetOrientation(
     selector,
     tokens["orientation"] as Record<string, unknown> | undefined,
     prefix,
-    theme,
+    tokenVars,
     parentPrefix,
   );
   return css;
@@ -75,7 +75,7 @@ function emitPreset(
 export function generateComponentPresets(
   name: string,
   config: GeneratorConfig,
-  theme: Theme,
+  tokenVars: Record<string, string>,
 ): string {
   const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(name, config);
   const base = buildSlotSelector(resolvedName);
@@ -89,7 +89,7 @@ export function generateComponentPresets(
         `${base}[data-set="${presetName}"]`,
         tokens as Record<string, unknown>,
         prefix,
-        theme,
+        tokenVars,
         parentPrefix,
       );
     }
@@ -103,9 +103,9 @@ export function generateComponentPresets(
       const slotSelector = `${base}[data-slots="${slotName}"]`;
 
       const { flat: slotFlat, states: slotStates } = partitionEntry(slotObj, ["presets"]);
-      const slotBody = generateTokensCSS(slotFlat, prefix, theme, parentPrefix);
+      const slotBody = generateTokensCSS(slotFlat, prefix, tokenVars, parentPrefix);
       if (slotBody) css += `${slotSelector}{${slotBody}}`;
-      css += emitStateRules(slotSelector, slotStates, prefix, theme, parentPrefix);
+      css += emitStateRules(slotSelector, slotStates, prefix, tokenVars, parentPrefix);
 
       // Presets del slot → [data-slot="X"][data-slots="Y"][data-set="Z"]
       const presetsMap = slotObj["presets"] as Record<string, unknown> | undefined;
@@ -116,7 +116,7 @@ export function generateComponentPresets(
             `${slotSelector}[data-set="${presetName}"]`,
             presetVal as Record<string, unknown>,
             prefix,
-            theme,
+            tokenVars,
             parentPrefix,
           );
         }

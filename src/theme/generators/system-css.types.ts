@@ -4,12 +4,13 @@ import type { CaseFormat, ConvertFormat } from "./cases.types";
 import type {
   PartialBreakPointKey,
   CSSLength,
-  ColorValue,
-  FontSizeValue,
+  ColorsValue,
+  FontSizesValue,
   FontValue,
   RadiusValue,
   SpacingValue,
   ShadowValue,
+  CategoryTokens,
 } from "../core/theme.types";
 
 // ─── CSSMultiFormat ─────────────────────────────────────────────────────────────
@@ -18,7 +19,6 @@ export type CSSMultiFormat<Format extends CaseFormat = "camel"> = {
 };
 
 // ─── PropOverride ─────────────────────────────────────────────────────────────
-export type PropCategory = "spacing" | "color" | "radius" | "fontSize" | "font" | "raw" | "shadow";
 export type CSSPropertyName = Extract<keyof CSSProperties, string>;
 export type PropOverride<
   CSSProp extends CSSPropertyName,
@@ -28,7 +28,7 @@ export type PropOverride<
   cssProp: CSSProp | CSSProp[];
   alias: Alias;
   responsive?: IsResponsive;
-  category: PropCategory;
+  category: CategoryTokens;
 };
 
 // ─── STYLE_PROPS_OVERRIDES — fuente de verdad de aliases ─────────────────────
@@ -61,9 +61,9 @@ export const STYLE_PROPS_OVERRIDES = [
   { cssProp: "maxHeight",                        alias: "maxH",        responsive: true,  category: "spacing" },
 
   // Colores
-  { cssProp: "background",                       alias: "bg",          responsive: false, category: "color"   },
-  { cssProp: "color",                            alias: "color",       responsive: false, category: "color"   },
-  { cssProp: "borderColor",                      alias: "borderColor", responsive: false, category: "color"   },
+  { cssProp: "background",                       alias: "bg",          responsive: false, category: "colors"  },
+  { cssProp: "color",                            alias: "color",       responsive: false, category: "colors"  },
+  { cssProp: "borderColor",                      alias: "borderColor", responsive: false, category: "colors"  },
 
   // Bordes
   { cssProp: "borderRadius",                     alias: "rounded",     responsive: false, category: "radius"  },
@@ -87,7 +87,7 @@ export const STYLE_PROPS_OVERRIDES = [
   { cssProp: "inset",                            alias: "inset",       responsive: true,  category: "spacing" },
 
   // Tipografía
-  { cssProp: "fontSize",                         alias: "fontSize",    responsive: true,  category: "fontSize"},
+  { cssProp: "fontSize",                         alias: "fontSize",    responsive: true,  category: "fontSizes"},
   { cssProp: "fontFamily",                       alias: "fontFamily",  responsive: false, category: "font"    },
 
   // Responsive sin token
@@ -125,17 +125,17 @@ export type WithTokens<T extends string> = T | CSSLength | (string & {});
 // ─── CategoryToToken — fuente de verdad: categoría → tipo de token ────────────
 export type CategoryToToken = {
   font: FontValue;
-  color: ColorValue;
+  color: ColorsValue;
   shadow: ShadowValue;
   radius: RadiusValue;
   spacing: SpacingValue;
-  fontSize: FontSizeValue;
+  fontSize: FontSizesValue;
 };
 
 // ─── StylePropDef ─────────────────────────────────────────────────────────────
 export type StylePropDef = {
   properties: CSSPropertyName[];
-  category: PropCategory;
+  category: CategoryTokens;
   responsive: boolean;
 };
 
@@ -154,10 +154,10 @@ type ExcludedProps = "animation" | "animationName" | "counterReset" | "counterIn
 type BaseStyleProps = SystemStyleProps<typeof STYLE_PROPS_OVERRIDES, ExcludedProps, "camel">;
 
 // ─── SystemCSS — CSS properties con tokens del tema ──────────────────────────
-type CSSPropCategoryPair = {
+type CSSCategoryTokensPair = {
   [I in keyof typeof STYLE_PROPS_OVERRIDES]: (typeof STYLE_PROPS_OVERRIDES)[I] extends {
     cssProp: infer P;
-    category: infer C extends Exclude<PropCategory, "raw">;
+    category: infer C extends Exclude<CategoryTokens, "raw">;
   }
     ? P extends readonly (infer PS extends CSSPropertyName)[]
       ? { prop: PS; cat: C }
@@ -167,7 +167,7 @@ type CSSPropCategoryPair = {
     : never;
 }[number];
 
-type CSSPropToCategory = { [K in CSSPropCategoryPair as K["prop"]]: K["cat"] };
+type CSSPropToCategory = { [K in CSSCategoryTokensPair as K["prop"]]: K["cat"] };
 
 export type SystemCSS = {
   [K in keyof CSSProperties]?: K extends keyof CSSPropToCategory

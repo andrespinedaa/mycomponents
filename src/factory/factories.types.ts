@@ -9,6 +9,7 @@ import type {
   Theme,
   ThemeBreakpoints,
   ThemeMacros,
+  VarsCss,
 } from "../theme";
 import type { Prettify } from "../utils/utils.types";
 
@@ -33,7 +34,6 @@ export type ComponentConfig<Config extends FactoryConfig> = Config;
 // ─── Public System Props ───────
 // ════════════════════════════════════════════════════════════════════════════════════════
 
-export type VarsProp = Record<string, string>;
 export type ModProp = Record<string, unknown> | string;
 export type OrientationProp = "horizontal" | "vertical";
 export type ApplyProp = keyof ThemeMacros | BuiltInMacros;
@@ -43,7 +43,7 @@ type SlotSets<Config extends FactoryConfig> = NonNullable<Config["slots"]>[keyof
 >];
 
 type BaseProps = {
-  vars?: VarsProp;
+  vars?: VarsCss;
   style?: StyleProp;
   dataSlot?: string;
   unstyled?: boolean;

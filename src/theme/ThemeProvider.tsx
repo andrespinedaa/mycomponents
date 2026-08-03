@@ -15,8 +15,8 @@ import { useBreakPoint } from "../hooks/useBreakpoint";
 
 export interface ThemeProviderProps {
   theme: Theme;
-  defaultColorScheme?: ColorScheme;
   children: ReactNode;
+  defaultColorScheme?: ColorScheme;
 }
 
 function injectStyle(id: string, css: string): void {
@@ -45,17 +45,19 @@ export function ThemeProvider({
     () => setColorScheme((s) => (s === "light" ? "dark" : "light")),
     [],
   );
-  const p = theme.cssVarPrefix;
+  const p = theme.prefix;
+
+  const { css: tokensCss, vars: tokenVars } = useMemo(() => generateTokens(theme), [theme]);
 
   useInsertionEffect(() => {
-    injectStyle(`${p}-tokens`, generateTokens(theme));
-    injectStyle(`${p}-components`, generateComponents(theme));
+    injectStyle(`${p}-tokens`, tokensCss);
+    injectStyle(`${p}-components`, generateComponents(theme, tokenVars));
     injectStyle(`${p}-responsive`, generateResponsive(theme));
 
     return () => {
       [`${p}-tokens`, `${p}-components`, `${p}-responsive`].forEach(removeStyle);
     };
-  }, [theme]);
+  }, [theme, tokensCss, tokenVars]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -67,8 +69,8 @@ export function ThemeProvider({
 
   const sizeResponsive = useBreakPoint(theme);
   const ctxValue = useMemo<ThemeContextValue>(
-    () => ({ theme, sizeResponsive, colorScheme, setColorScheme, toggleColorScheme }),
-    [theme, sizeResponsive, colorScheme, toggleColorScheme],
+    () => ({ theme, tokenVars, sizeResponsive, colorScheme, setColorScheme, toggleColorScheme }),
+    [theme, tokenVars, sizeResponsive, colorScheme, toggleColorScheme],
   );
 
   return <ThemeContextProvider value={ctxValue}>{children}</ThemeContextProvider>;

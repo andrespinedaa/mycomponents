@@ -1,14 +1,21 @@
 import { camelToKebab } from "../../utils/string";
 import { STYLE_PROPS_DATA } from "./system-css.data";
 import type { Theme } from "../core/theme.types";
+import type { ComponentName } from "../core/theme.components.types";
 import { resolveTokenValue } from "./generateVariants";
 
-export type GeneratorConfig = Partial<NonNullable<Theme["components"]>[string]>;
+export type GeneratorConfig = NonNullable<NonNullable<Theme["components"]>[ComponentName]>;
+
+type resolveGeneratorNamesReturn = {
+  resolvedName: string;
+  prefix: string;
+  parentPrefix: string | undefined;
+};
 
 export function resolveGeneratorNames(
   name: string,
   config: GeneratorConfig,
-): { resolvedName: string; prefix: string; parentPrefix: string | undefined } {
+): resolveGeneratorNamesReturn {
   const resolvedName = config?.name ?? name;
   const parentPrefix = config?.parentName ? camelToKebab(config.parentName) : undefined;
   const prefix = camelToKebab(resolvedName);
@@ -30,7 +37,11 @@ export function getCssProp(key: string): string {
   return STYLE_PROPS_DATA[key]?.properties[0] ?? camelToKebab(key);
 }
 
-function resolveDollarProps(value: string, prefix: string, prefixParent: string | undefined): string {
+function resolveDollarProps(
+  value: string,
+  prefix: string,
+  prefixParent: string | undefined,
+): string {
   const target = prefixParent ?? prefix;
   return value.replace(/\$(\w+)/g, (_, prop) => `var(${resolveVarName(prop, target)})`);
 }
@@ -38,7 +49,7 @@ function resolveDollarProps(value: string, prefix: string, prefixParent: string 
 export function generateTokensCSS(
   tokens: Record<string, unknown>,
   prefix: string,
-  theme: Theme,
+  tokenVars: Record<string, string>,
   prefixParent?: string,
 ): string {
   let css = "";
@@ -55,7 +66,7 @@ export function generateTokensCSS(
       continue;
     }
 
-    const resolved = resolveTokenValue(key, strValue, theme);
+    const resolved = resolveTokenValue(key, strValue, tokenVars);
     for (const prop of properties) {
       css += `--${prefix}-${camelToKebab(prop)}:${resolved};`;
     }

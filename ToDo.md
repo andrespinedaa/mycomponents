@@ -8,7 +8,7 @@
 
 **Lo que falta para que funcionen:**
 
-1. Extender `ColorValue` con `keyof ThemeSemanticColors` para que `bg="surface"` sea válido en TypeScript.
+1. Extender `ColorsValue` con `keyof ThemeSemanticColors` para que `bg="surface"` sea válido en TypeScript.
 2. En `resolveValue` (`src/system/resolve-value.ts`) — si el valor es una semantic key, emitir `var(--prefix-semantic-surface)` en lugar de buscar en color scales.
 3. En el generador de tokens — emitir las CSS custom properties semánticas bajo `:root` (light) y `.dark` (o `[data-theme="dark"]`) selectors.
 

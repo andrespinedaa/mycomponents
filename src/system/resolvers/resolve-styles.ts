@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
-import type { ApplyProp, VarsProp, StyleProp } from "../../factory/factories.types";
-import { type Theme, type StyleProps, CSS_PROP_TO_CATEGORY } from "../../theme";
+import type { ApplyProp, StyleProp } from "../../factory/factories.types";
+import { type Theme, type StyleProps, type VarsCss, CSS_PROP_TO_CATEGORY } from "../../theme";
 import { parseStyleProps } from "../parse-style-props";
 import { resolveMacros } from "../parse-macros";
 import { resolveValue } from "./resolve-value";
@@ -8,7 +8,8 @@ import { resolveValue } from "./resolve-value";
 interface ResolveStylesOptions {
   styleProps: StyleProps;
   theme: Theme;
-  vars?: VarsProp;
+  tokenVars: Record<string, string>;
+  vars?: VarsCss;
   style?: CSSProperties;
   unstyled?: boolean;
   apply?: ApplyProp | ApplyProp[];
@@ -19,7 +20,11 @@ interface ResolvedStylesResult {
   hasResponsive: boolean;
 }
 
-export function resolveStyle(theme: Theme, style?: StyleProp): CSSProperties | undefined {
+export function resolveStyle(
+  theme: Theme,
+  style: StyleProp | undefined,
+  tokenVars: Record<string, string>,
+): CSSProperties | undefined {
   if (!style) return undefined;
   const css = typeof style === "function" ? style(theme) : style;
   const result: CSSProperties = {};
@@ -27,10 +32,10 @@ export function resolveStyle(theme: Theme, style?: StyleProp): CSSProperties | u
     if (value == null) continue;
     const category = CSS_PROP_TO_CATEGORY[key];
     (result as Record<string, unknown>)[key] = category
-      ? resolveValue(value as string | number, category, theme)
+      ? resolveValue(value as string | number, category, tokenVars)
       : value;
   }
-  return result;
+  return Object.keys(result).length > 0 ? result : undefined;
 }
 
 export function resolveSystemStyles({
@@ -38,13 +43,14 @@ export function resolveSystemStyles({
   style,
   apply,
   theme,
+  tokenVars,
   styleProps,
   unstyled = false,
 }: ResolveStylesOptions): ResolvedStylesResult {
   const macroStyles = resolveMacros(apply, theme.macros);
   const { styles: systemStyles, hasResponsive } = unstyled
     ? { styles: {}, hasResponsive: false }
-    : parseStyleProps(styleProps, theme);
+    : parseStyleProps(styleProps, tokenVars);
 
   const stylesMerged: CSSProperties = {
     ...macroStyles,

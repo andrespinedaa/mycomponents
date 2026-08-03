@@ -10,28 +10,20 @@ function generateComponent(
   name: string,
   config: GeneratorConfig,
   theme: Theme,
+  tokenVars: Record<string, string>,
 ): string {
-  let css =
+  return (
     generateComponentBases(name, config) +
-    generateComponentVariants(name, config, theme) +
-    generateComponentSizes(name, config, theme) +
-    generateComponentPresets(name, config, theme) +
-    generateComponentOrientation(name, config, theme);
-
-  if (config?.statics) {
-    for (const [slotKey, slotConfig] of Object.entries(config.statics)) {
-      if (!slotConfig) continue;
-      css += generateComponent(slotKey, slotConfig as GeneratorConfig, theme);
-    }
-  }
-
-  return css;
+    generateComponentVariants(name, config, tokenVars) +
+    generateComponentSizes(name, config, theme, tokenVars) +
+    generateComponentPresets(name, config, tokenVars) +
+    generateComponentOrientation(name, config, tokenVars)
+  );
 }
 
-export function generateComponents(theme: Theme): string {
+export function generateComponents(theme: Theme, tokenVars: Record<string, string>): string {
   if (!theme.components) return "";
   return Object.entries(theme.components)
-    .filter(([, config]) => !config?.parentName)
-    .map(([name, config]) => generateComponent(name, config, theme))
+    .map(([name, config]) => generateComponent(name, config, theme, tokenVars))
     .join("");
 }

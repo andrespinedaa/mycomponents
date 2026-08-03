@@ -1,12 +1,12 @@
-import type { ComponentStates, Theme } from "../";
+import type { ComponentStates } from "../";
 import { resolveValue } from "../../system/resolvers/resolve-value";
 import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames, type GeneratorConfig } from "./css-gen-utils";
 import { STYLE_PROPS_DATA } from "./system-css.data";
 
-export function resolveTokenValue(key: string, value: string, theme: Theme): string {
+export function resolveTokenValue(key: string, value: string, tokenVars: Record<string, string>): string {
   const def = STYLE_PROPS_DATA[key];
   if (!def || def.category === "raw") return value;
-  return resolveValue(value, def.category, theme);
+  return resolveValue(value, def.category, tokenVars);
 }
 
 export function isStateKey(key: string): key is ComponentStates {
@@ -70,7 +70,7 @@ export function emitStateRules(
   selector: string,
   states: Array<[ComponentStates, Record<string, unknown>]>,
   prefix: string,
-  theme: Theme,
+  tokenVars: Record<string, string>,
   parentPrefix: string | undefined,
 ): string {
   let css = "";
@@ -78,7 +78,7 @@ export function emitStateRules(
     const stateSel = STATE_SELECTORS[stateKey];
     const { flat, nested } = partitionStateNode(stateNode);
 
-    const body = generateTokensCSS(flat, prefix, theme, parentPrefix);
+    const body = generateTokensCSS(flat, prefix, tokenVars, parentPrefix);
     if (body) css += `${selector}${stateSel}{${body}}`;
 
     for (const [nestedKey, nestedTokens] of nested) {
@@ -87,7 +87,7 @@ export function emitStateRules(
       for (const [k, v] of Object.entries(nestedTokens)) {
         if (typeof v !== "object") nestedFlat[k] = v;
       }
-      const nestedBody = generateTokensCSS(nestedFlat, prefix, theme, parentPrefix);
+      const nestedBody = generateTokensCSS(nestedFlat, prefix, tokenVars, parentPrefix);
       if (nestedBody) css += `${selector}${stateSel}${nestedSel}{${nestedBody}}`;
     }
   }
@@ -97,7 +97,7 @@ export function emitStateRules(
 export function generateComponentVariants(
   name: string,
   config: GeneratorConfig,
-  theme: Theme,
+  tokenVars: Record<string, string>,
 ): string {
   if (!config?.variants) return "";
   const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(name, config);
@@ -107,21 +107,21 @@ export function generateComponentVariants(
   const { flat, states, variants } = partitionBlock(config.variants as Record<string, unknown>);
 
   // Flat base tokens → [data-slot="X"] { --vars }
-  const flatBody = generateTokensCSS(flat, prefix, theme, parentPrefix);
+  const flatBody = generateTokensCSS(flat, prefix, tokenVars, parentPrefix);
   if (flatBody) css += `${baseSelector}{${flatBody}}`;
 
   // State tokens at root → [data-slot="X"]:hover { --vars }
-  css += emitStateRules(baseSelector, states, prefix, theme, parentPrefix);
+  css += emitStateRules(baseSelector, states, prefix, tokenVars, parentPrefix);
 
   // Variant tokens → [data-slot="X"][data-variant="Y"] { --vars } + states
   for (const [variantName, variantBlock] of variants) {
     const variantSelector = `${baseSelector}[data-variant="${variantName}"]`;
     const { flat: vFlat, states: vStates } = partitionBlock(variantBlock);
 
-    const vFlatBody = generateTokensCSS(vFlat, prefix, theme, parentPrefix);
+    const vFlatBody = generateTokensCSS(vFlat, prefix, tokenVars, parentPrefix);
     if (vFlatBody) css += `${variantSelector}{${vFlatBody}}`;
 
-    css += emitStateRules(variantSelector, vStates, prefix, theme, parentPrefix);
+    css += emitStateRules(variantSelector, vStates, prefix, tokenVars, parentPrefix);
   }
 
   return css;

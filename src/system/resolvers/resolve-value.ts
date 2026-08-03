@@ -1,5 +1,5 @@
-import type { PropCategory, Theme } from "../../theme";
-
+import { camelToKebab, dotToKebab } from "../../utils/string";
+import type { CategoryTokens } from "../../theme/core/theme.types";
 
 const SIZE_ALIASES: Record<string, string> = {
   full: "100%",
@@ -8,49 +8,18 @@ const SIZE_ALIASES: Record<string, string> = {
   auto: "auto",
 };
 
-export function resolveValue(value: string | number, category: PropCategory, theme: Theme): string {
+export function resolveValue(
+  value: string | number,
+  category: CategoryTokens,
+  tokenVars: Record<string, string>,
+): string {
   const v = String(value);
-  const p = theme.cssVarPrefix;
 
   if (category === "raw") return v;
+  if (category === "spacing" && v in SIZE_ALIASES) return SIZE_ALIASES[v];
 
-  if (category === "spacing") {
-    if (v in SIZE_ALIASES) return SIZE_ALIASES[v];
-    if (v in theme.spacing) return `var(--${p}-spacing-${v})`;
-    return v;
-  }
+  const prefix = camelToKebab(category);
+  const key = category === "colors" ? `${prefix}-${dotToKebab(v)}` : `${prefix}-${v}`;
 
-  if (category === "color") {
-    const match = v.match(/^([a-z]+)\.(\d+)$/);
-    if (match) {
-      const [, name, shade] = match;
-      if ((theme.colors[name as keyof typeof theme.colors] as Record<string, unknown>)?.[shade]) {
-        return `var(--${p}-color-${name}-${shade})`;
-      }
-    }
-    return v;
-  }
-
-  if (category === "radius") {
-    if (v in theme.radii) return `var(--${p}-radius-${v})`;
-    return v;
-  }
-
-  if (category === "fontSize") {
-    if (v in theme.fontSizes) return `var(--${p}-font-size-${v})`;
-    return v;
-  }
-
-  if (category === "font") {
-    if (v === "sans") return `var(--${p}-font-sans)`;
-    if (v === "mono") return `var(--${p}-font-mono)`;
-    return v;
-  }
-
-  if(category === "shadow"){
-    if (v in theme.shadows) return `var(--${p}-box-shadow-${v})`;
-    return v
-  }
-
-  return v;
+  return tokenVars[key] ?? v;
 }

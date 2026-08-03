@@ -10,13 +10,13 @@ export function useTheme() {
 
   const vars = {
     color: (name: keyof typeof theme.colors, stop: number) =>
-      cssVar(theme.cssVarPrefix, `color-${name}-${stop}`),
+      cssVar(theme.prefix, `color-${name}-${stop}`),
     spacing: (key: keyof typeof theme.spacing) =>
-      cssVar(theme.cssVarPrefix, `spacing-${key}`),
-    radius: (key: keyof typeof theme.radii) =>
-      cssVar(theme.cssVarPrefix, `radius-${key}`),
+      cssVar(theme.prefix, `spacing-${key}`),
+    radius: (key: keyof typeof theme.radius) =>
+      cssVar(theme.prefix, `radius-${key}`),
     fontSize: (key: keyof typeof theme.fontSizes) =>
-      cssVar(theme.cssVarPrefix, `font-size-${key}`),
+      cssVar(theme.prefix, `font-size-${key}`),
   };
 
   return { theme, vars, colorScheme, setColorScheme, toggleColorScheme };

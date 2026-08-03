@@ -5,6 +5,7 @@ export function generateComponentSizes(
   name: string,
   config: GeneratorConfig,
   theme: Theme,
+  tokenVars: Record<string, string>,
 ): string {
   if (!config?.sizes) return "";
   const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(name, config);
@@ -13,7 +14,7 @@ export function generateComponentSizes(
   for (const [sizeKey, tokens] of Object.entries(config.sizes)) {
     if (!tokens || Object.keys(tokens).length === 0) continue;
 
-    const body = generateTokensCSS(tokens as Record<string, unknown>, prefix, theme, parentPrefix);
+    const body = generateTokensCSS(tokens as Record<string, unknown>, prefix, tokenVars, parentPrefix);
     if (!body) continue;
 
     const base = buildSlotSelector(resolvedName);

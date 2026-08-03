@@ -1,6 +1,5 @@
 import type { CSSProperties } from "react";
 import {
-  type Theme,
   type StyleProps,
   STYLE_PROPS_DATA,
   type Responsive,
@@ -18,7 +17,7 @@ function isResponsiveObject<T>(value: Responsive<T> | undefined): value is Parti
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-export function parseStyleProps(styleProps: StyleProps, theme: Theme): ParsedStyleProps {
+export function parseStyleProps(styleProps: StyleProps, tokenVars: Record<string, string>): ParsedStyleProps {
   const result: Record<string, string | number> = {};
   let hasResponsive = false;
 
@@ -34,7 +33,7 @@ export function parseStyleProps(styleProps: StyleProps, theme: Theme): ParsedSty
       if (!isResponsiveProp) {
         const baseValue = (value as Record<string, unknown>).base;
         if (baseValue !== undefined && baseValue !== null) {
-          const resolved = resolveValue(baseValue as string | number, category, theme);
+          const resolved = resolveValue(baseValue as string | number, category, tokenVars);
           for (const cssProp of properties) {
             result[cssProp] = resolved;
           }
@@ -44,7 +43,7 @@ export function parseStyleProps(styleProps: StyleProps, theme: Theme): ParsedSty
 
       for (const [breakpoint, bpValue] of Object.entries(value)) {
         if (bpValue === undefined || bpValue === null) continue;
-        const resolved = resolveValue(bpValue as string | number, category, theme);
+        const resolved = resolveValue(bpValue as string | number, category, tokenVars);
         for (const cssProp of properties) {
           result[`--${camelToKebab(cssProp)}-${breakpoint}`] = resolved;
         }
@@ -54,7 +53,7 @@ export function parseStyleProps(styleProps: StyleProps, theme: Theme): ParsedSty
     }
 
     // ── Camino directo ─────────────────────────────────────────────────────
-    const resolved = resolveValue(value as string | number, category, theme);
+    const resolved = resolveValue(value as string | number, category, tokenVars);
     for (const cssProp of properties) {
       result[cssProp] = resolved;
     }
