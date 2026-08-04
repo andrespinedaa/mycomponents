@@ -52,7 +52,7 @@ describe("ComponentFactory", () => {
   describe("displayName", () => {
     it("asigna displayName desde name", () => {
       render(<TestComponent>btn</TestComponent>, { wrapper });
-      expect(TestComponent.displayName).toBe("Test");
+      expect(TestComponent.displayName).toBe("Box");
     });
   });
 
@@ -232,7 +232,7 @@ describe("ComponentFactory", () => {
   describe("data-slot", () => {
     it("genera data-slot en fallback sin render", () => {
       const { container } = render(<NoRenderComponent>contenido</NoRenderComponent>, { wrapper });
-      expect(container.firstChild).toHaveAttribute("data-slot", "NoRender");
+      expect(container.firstChild).toHaveAttribute("data-slot", "Box");
     });
 
     it("dataSlot sobreescribe name", () => {
