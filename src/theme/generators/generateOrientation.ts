@@ -1,12 +1,11 @@
-import type { OrientationProp } from "../../factory/core";
 import {
   buildSlotSelector,
   generateTokensCSS,
-  resolveGeneratorNames,
+  resolveTokenValue,
   resolveVarName,
-  type GeneratorConfig,
+  type GeneratorNames,
 } from "./css-gen-utils";
-import { resolveTokenValue } from "./generateVariants";
+import type { ParsedOrientationEntry } from "./parseComponentConfig";
 
 const DOLLAR_PROP_RE = /\$(\w+)/g;
 
@@ -24,6 +23,7 @@ function resolveSizeAwareBody(
       const raw = sizeTokens[prop];
       return raw == null ? "" : resolveTokenValue(prop, String(raw), tokenVars);
     });
+    DOLLAR_PROP_RE.lastIndex = 0;
     if (!resolved || resolved.includes("$")) continue;
     body += `${resolveVarName(key, prefix)}:${resolved};`;
   }
@@ -31,42 +31,25 @@ function resolveSizeAwareBody(
 }
 
 export function generateComponentOrientation(
-  name: string,
-  config: GeneratorConfig,
+  names: GeneratorNames,
+  orientation: Record<string, ParsedOrientationEntry> | undefined,
+  sizes: Record<string, Record<string, unknown>> | undefined,
   tokenVars: Record<string, string>,
 ): string {
-  if (!config?.orientation) return "";
-  const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(name, config);
+  if (!orientation) return "";
+  const { resolvedName, prefix, parentPrefix } = names;
   const base = buildSlotSelector(resolvedName);
   let css = "";
 
-  for (const [orientationKey, tokens] of Object.entries(config.orientation) as Array<
-    [OrientationProp, Record<string, unknown> | undefined]
-  >) {
-    if (!tokens || Object.keys(tokens).length === 0) continue;
-
-    const flat: Record<string, unknown> = {};
-    const sizeAware: Record<string, string> = {};
-
-    for (const [key, value] of Object.entries(tokens)) {
-      if (value == null) continue;
-      if (typeof value === "string" && config.sizes && DOLLAR_PROP_RE.test(value)) {
-        sizeAware[key] = value;
-      } else {
-        flat[key] = value;
-      }
-      DOLLAR_PROP_RE.lastIndex = 0; // reset — .test() con /g muta lastIndex
-    }
-
+  for (const [orientationKey, { flat, sizeAware }] of Object.entries(orientation)) {
     const orientationSelector = `${base}[data-orientation="${orientationKey}"]`;
 
     const flatBody = generateTokensCSS(flat, prefix, tokenVars, parentPrefix);
     if (flatBody) css += `${orientationSelector}{${flatBody}}`;
 
-    if (Object.keys(sizeAware).length > 0 && config.sizes) {
-      for (const [sizeKey, sizeTokens] of Object.entries(config.sizes)) {
-        if (!sizeTokens) continue;
-        const body = resolveSizeAwareBody(sizeAware, sizeTokens as Record<string, unknown>, prefix, tokenVars);
+    if (Object.keys(sizeAware).length > 0 && sizes) {
+      for (const [sizeKey, sizeTokens] of Object.entries(sizes)) {
+        const body = resolveSizeAwareBody(sizeAware, sizeTokens, prefix, tokenVars);
         if (body) css += `${orientationSelector}[data-size="${sizeKey}"]{${body}}`;
       }
     }

@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { defaultTheme } from "../../themes/default-theme";
 import type { Theme } from "../core/theme.types";
+import { resolveGeneratorNames } from "./css-gen-utils";
 import { generateTokens } from "./generateTokens";
+import { parseComponentConfig } from "./parseComponentConfig";
 import { generateComponentVariants } from "./generateVariants";
 
 const p = defaultTheme.prefix;
@@ -10,25 +12,33 @@ const { vars: tokenVars } = generateTokens(defaultTheme);
 // Partial — estos fixtures aíslan un solo generador a la vez, sin necesidad de `sizes`.
 type TestConfig = Partial<NonNullable<Theme["components"]>[string]>;
 
+function callVariants(name: string, config: TestConfig): string {
+  return generateComponentVariants(
+    resolveGeneratorNames(name, config),
+    parseComponentConfig(config).variants,
+    tokenVars,
+  );
+}
+
 // --- generateComponentVariants -----------------------------------------------
 
 describe("generateComponentVariants", () => {
   describe("guarda de salida temprana", () => {
     it("retorna vacío si no hay variants", () => {
       const config: TestConfig = {};
-      expect(generateComponentVariants("Card", config, defaultTheme)).toBe("");
+      expect(callVariants("Card", config)).toBe("");
     });
 
     it("retorna vacío si variants es objeto vacío", () => {
       const config: TestConfig = { variants: {} };
-      expect(generateComponentVariants("Card", config, defaultTheme)).toBe("");
+      expect(callVariants("Card", config)).toBe("");
     });
 
     it("omite variante con objeto vacío — no genera regla para ella", () => {
       const config: TestConfig = {
         variants: { Filled: {} },
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toBe("");
     });
 
@@ -36,7 +46,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { hover: { bg: "neutral.100" } } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       // no hay flat tokens → no genera `[data-slot="Card"]{`
       expect(result).not.toContain(`[data-slot="Card"]{`);
       expect(result).toContain(`[data-slot="Card"]:hover{`);
@@ -48,7 +58,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { bg: "neutral.50" } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"]{`);
       expect(result).not.toContain(`data-variant`);
     });
@@ -57,7 +67,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { bg: "neutral.50" } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).not.toContain(":hover");
       expect(result).not.toContain(":focus");
     });
@@ -68,7 +78,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { hover: { bg: "neutral.100" } } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"]:hover{`);
     });
 
@@ -76,7 +86,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { focusVisible: { bg: "neutral.100" } } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"]:focus-visible{`);
     });
 
@@ -84,7 +94,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { focusWithin: { borderColor: "primary.500" } } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"]:focus-within{`);
     });
 
@@ -92,7 +102,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { active: { bg: "neutral.200" } } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"]:active{`);
     });
 
@@ -100,7 +110,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { disabled: { bg: "neutral.200" } } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"][data-disabled]{`);
     });
 
@@ -108,7 +118,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { invalid: { borderColor: "danger.500" } } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"][data-invalid]{`);
     });
 
@@ -116,7 +126,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { loading: { bg: "neutral.100" } } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"][data-loading]{`);
     });
 
@@ -124,7 +134,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { selected: { bg: "primary.100" } } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"][data-selected]{`);
     });
 
@@ -132,7 +142,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { before: { content: '""' } } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"]::before{`);
     });
 
@@ -140,7 +150,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { placeholder: { color: "neutral.400" } } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"]::placeholder{`);
     });
   });
@@ -152,7 +162,7 @@ describe("generateComponentVariants", () => {
           Filled: { bg: "primary.500", color: "neutral.50" },
         },
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"][data-variant="Filled"]{`);
     });
 
@@ -165,7 +175,7 @@ describe("generateComponentVariants", () => {
           },
         },
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"][data-variant="Filled"]{`);
       expect(result).toContain(`[data-slot="Card"][data-variant="Filled"]:hover{`);
     });
@@ -177,7 +187,7 @@ describe("generateComponentVariants", () => {
           Outlined: { border: "1px solid" },
         },
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-variant="Filled"]`);
       expect(result).toContain(`[data-variant="Outlined"]`);
     });
@@ -193,7 +203,7 @@ describe("generateComponentVariants", () => {
           },
         } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"]{`);
       expect(result).toContain(`[data-slot="Card"]:hover{`);
       expect(result).toContain(`[data-slot="Card"][data-variant="Outlined"]{`);
@@ -211,7 +221,7 @@ describe("generateComponentVariants", () => {
           },
         } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"]:focus-within{`);
       expect(result).toContain(`[data-slot="Card"]:focus-within[data-disabled]{`);
     });
@@ -228,7 +238,7 @@ describe("generateComponentVariants", () => {
           },
         },
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`[data-slot="Card"][data-variant="Filled"]:hover{`);
       expect(result).toContain(`[data-slot="Card"][data-variant="Filled"]:hover[data-disabled]{`);
     });
@@ -239,7 +249,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { bg: "neutral.50" } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`--card-background:var(--${p}-colors-neutral-50);`);
     });
 
@@ -247,7 +257,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { p: "md" } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`--card-padding:var(--${p}-spacing-md);`);
     });
 
@@ -255,7 +265,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { rounded: "lg" } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`--card-border-radius:var(--${p}-radius-lg);`);
     });
 
@@ -263,7 +273,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { border: "1px solid" } as any,
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`--card-border:1px solid;`);
     });
 
@@ -273,7 +283,7 @@ describe("generateComponentVariants", () => {
           Outlined: { hover: { borderColor: "primary.400" } },
         },
       };
-      const result = generateComponentVariants("Card", config, tokenVars);
+      const result = callVariants("Card", config);
       expect(result).toContain(`--card-border-color:var(--${p}-colors-primary-400);`);
     });
   });
@@ -283,7 +293,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { bg: "primary.500" } as any,
       };
-      const result = generateComponentVariants("Button", config, tokenVars);
+      const result = callVariants("Button", config);
       expect(result).toContain(`--button-background:`);
     });
 
@@ -291,7 +301,7 @@ describe("generateComponentVariants", () => {
       const config: TestConfig = {
         variants: { bg: "primary.500" } as any,
       };
-      const result = generateComponentVariants("myButton", config, tokenVars);
+      const result = callVariants("myButton", config);
       expect(result).toContain(`--my-button-background:`);
     });
   });
@@ -306,7 +316,7 @@ describe("generateComponentVariants — DSL $prop", () => {
       name: "CardSection",
       variants: { color: "$color" } as any,
     };
-    const result = generateComponentVariants("CardSection", config, tokenVars);
+    const result = callVariants("CardSection", config);
     expect(result).toContain(`--card-section-color:var(--card-color);`);
   });
 
@@ -316,7 +326,7 @@ describe("generateComponentVariants — DSL $prop", () => {
       name: "CardSection",
       variants: { Filled: { outline: "2px solid $borderColor" } },
     };
-    const result = generateComponentVariants("CardSection", config, tokenVars);
+    const result = callVariants("CardSection", config);
     expect(result).toContain(`--card-section-outline:2px solid var(--card-border-color);`);
   });
 
@@ -326,7 +336,7 @@ describe("generateComponentVariants — DSL $prop", () => {
       name: "CardSection",
       variants: { hover: { bg: "$background" } } as any,
     };
-    const result = generateComponentVariants("CardSection", config, tokenVars);
+    const result = callVariants("CardSection", config);
     expect(result).toContain(`:hover`);
     expect(result).toContain(`--card-section-background:var(--card-background);`);
   });
@@ -340,7 +350,7 @@ describe("generateComponentVariants — DSL $prop", () => {
         color: "$color",
       } as any,
     };
-    const result = generateComponentVariants("CardSection", config, tokenVars);
+    const result = callVariants("CardSection", config);
     expect(result).toContain(`--card-section-background:var(--${p}-colors-neutral-50);`);
     expect(result).toContain(`--card-section-color:var(--card-color);`);
   });
@@ -349,7 +359,7 @@ describe("generateComponentVariants — DSL $prop", () => {
     const config: TestConfig = {
       variants: { color: "$color" } as any,
     };
-    const result = generateComponentVariants("Card", config, tokenVars);
+    const result = callVariants("Card", config);
     expect(result).toContain(`--card-color:var(--card-color);`);
   });
 });

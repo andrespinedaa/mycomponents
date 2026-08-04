@@ -41,14 +41,14 @@ export function ComponentFactory<Config extends FactoryConfig>({
         variant: resolvedVariant,
         orientation: resolvedOrientation,
       } = resolveLayout(sizeResponsive, { size, variant, set, orientation }, config);
-      const vars = resolveVars(varsRaw, camelToKebab(resolvedName), tokenVars);
+      const resolvedVars = resolveVars(camelToKebab(resolvedName), varsRaw, tokenVars);
       const dataName = dataSlot || inheritedSlot || resolvedName || undefined;
 
       if (renderRoot) {
         return renderRoot({
           ref,
-          vars,
           set: resolvedSet,
+          vars: resolvedVars,
           size: resolvedSize,
           dataSlot: dataName,
           variant: resolvedVariant,
@@ -62,12 +62,12 @@ export function ComponentFactory<Config extends FactoryConfig>({
         const Element = (as ?? render) as ElementType;
         const { styleProps, elementProps } = extractStyleProps(rest);
         const { styles, hasResponsive } = resolveSystemStyles({
-          vars,
           apply,
           theme,
           tokenVars,
           unstyled,
           styleProps,
+          vars: resolvedVars,
           style: resolveStyle(theme, styleRaw, tokenVars),
         });
         const elementModProps = getMod([
@@ -85,8 +85,8 @@ export function ComponentFactory<Config extends FactoryConfig>({
 
       return render({
         ref,
-        vars,
         set: resolvedSet,
+        vars: resolvedVars,
         size: resolvedSize,
         dataSlot: dataName,
         variant: resolvedVariant,

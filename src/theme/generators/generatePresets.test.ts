@@ -1,9 +1,19 @@
 import { describe, expect, it } from "vitest";
 import { defaultTheme } from "../../themes/default-theme";
 import type { Theme } from "../core/theme.types";
+import { resolveGeneratorNames } from "./css-gen-utils";
+import { generateTokens } from "./generateTokens";
+import { parseComponentConfig } from "./parseComponentConfig";
 import { generateComponentPresets } from "./generatePresets";
 
+const { vars: tokenVars } = generateTokens(defaultTheme);
+
 type TestConfig = Partial<NonNullable<Theme["components"]>[string]>;
+
+function callPresets(name: string, config: TestConfig): string {
+  const { presets, slots } = parseComponentConfig(config);
+  return generateComponentPresets(resolveGeneratorNames(name, config), presets, slots, tokenVars);
+}
 
 // --- generateComponentPresets --------------------------------------------------
 
@@ -13,7 +23,7 @@ describe("generateComponentPresets", () => {
       const config: TestConfig = {
         presets: { cover: { objectFit: "cover", display: "block" } as any },
       };
-      const result = generateComponentPresets("Image", config, defaultTheme);
+      const result = callPresets("Image", config);
       expect(result).toContain(
         `[data-slot="Image"][data-set="cover"]{--image-object-fit:cover;--image-display:block;}`,
       );
@@ -21,7 +31,7 @@ describe("generateComponentPresets", () => {
 
     it("omite presets con tokens vacíos", () => {
       const config: TestConfig = { presets: { empty: {} } };
-      const result = generateComponentPresets("Card", config, defaultTheme);
+      const result = callPresets("Card", config);
       expect(result).not.toContain(`[data-set="empty"]`);
     });
   });
@@ -39,7 +49,7 @@ describe("generateComponentPresets", () => {
           } as any,
         },
       };
-      const result = generateComponentPresets("Card", config, defaultTheme);
+      const result = callPresets("Card", config);
 
       // flat compartido — sin orientation
       expect(result).toContain(`[data-slot="Card"][data-set="background"]{--card-background-size:cover;}`);
@@ -60,7 +70,7 @@ describe("generateComponentPresets", () => {
           } as any,
         },
       };
-      const result = generateComponentPresets("Card", config, defaultTheme);
+      const result = callPresets("Card", config);
       expect(result).not.toContain(`--card-orientation:`);
     });
 
@@ -72,7 +82,7 @@ describe("generateComponentPresets", () => {
           } as any,
         },
       };
-      const result = generateComponentPresets("Card", config, defaultTheme);
+      const result = callPresets("Card", config);
       expect(result).not.toContain(`[data-set="background"]{}`);
       expect(result).toContain(
         `[data-set="background"][data-orientation="vertical"]{--card-color:red;}`,
@@ -98,7 +108,7 @@ describe("generateComponentPresets", () => {
           },
         } as any,
       };
-      const result = generateComponentPresets("CardSection", config, defaultTheme);
+      const result = callPresets("CardSection", config);
 
       expect(result).toContain(
         `[data-slot="CardSection"][data-slots="media"][data-set="background"]{--card-section-object-fit:cover;}`,

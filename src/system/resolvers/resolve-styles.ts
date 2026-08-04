@@ -8,7 +8,7 @@ import { resolveValue } from "./resolve-value";
 interface ResolveStylesOptions {
   styleProps: StyleProps;
   theme: Theme;
-  tokenVars: Record<string, string>;
+  tokenVars: VarsCss;
   vars?: VarsCss;
   style?: CSSProperties;
   unstyled?: boolean;
@@ -52,15 +52,8 @@ export function resolveSystemStyles({
     ? { styles: {}, hasResponsive: false }
     : parseStyleProps(styleProps, tokenVars);
 
-  const stylesMerged: CSSProperties = {
-    ...macroStyles,
-    ...systemStyles,
-    ...vars,
-    ...style,
-  };
-
   return {
-    styles: stylesMerged,
+    styles: { ...macroStyles, ...systemStyles, ...vars, ...style },
     hasResponsive,
   };
 }

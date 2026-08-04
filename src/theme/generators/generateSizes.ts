@@ -1,23 +1,23 @@
 import type { Theme, ThemeBreakpoints } from "../core/theme.types";
-import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames, type GeneratorConfig } from "./css-gen-utils";
+import { buildSlotSelector, generateTokensCSS, type GeneratorNames } from "./css-gen-utils";
 
 export function generateComponentSizes(
-  name: string,
-  config: GeneratorConfig,
+  names: GeneratorNames,
+  sizes: Record<string, Record<string, unknown>> | undefined,
   theme: Theme,
   tokenVars: Record<string, string>,
 ): string {
-  if (!config?.sizes) return "";
-  const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(name, config);
+  if (!sizes) return "";
+  const { resolvedName, prefix, parentPrefix } = names;
+  const base = buildSlotSelector(resolvedName);
   let css = "";
 
-  for (const [sizeKey, tokens] of Object.entries(config.sizes)) {
-    if (!tokens || Object.keys(tokens).length === 0) continue;
+  for (const [sizeKey, tokens] of Object.entries(sizes)) {
+    if (Object.keys(tokens).length === 0) continue;
 
-    const body = generateTokensCSS(tokens as Record<string, unknown>, prefix, tokenVars, parentPrefix);
+    const body = generateTokensCSS(tokens, prefix, tokenVars, parentPrefix);
     if (!body) continue;
 
-    const base = buildSlotSelector(resolvedName);
     css += `${base}[data-size="${sizeKey}"]{${body}}`;
 
     for (const bp of Object.keys(theme.breakpoints) as (keyof ThemeBreakpoints)[]) {

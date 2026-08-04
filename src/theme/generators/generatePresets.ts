@@ -1,123 +1,55 @@
-import type { ComponentStates } from "../core/theme.types";
-import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames, type GeneratorConfig } from "./css-gen-utils";
-import { emitStateRules, isStateKey } from "./generateVariants";
+import { buildSlotSelector, type GeneratorNames } from "./css-gen-utils";
+import { emitBlock } from "./generateVariants";
+import type { ParsedPreset, ParsedSlot } from "./parseComponentConfig";
 
-// Partitions an object into: flat CSS tokens, state entries, and named structural keys (skipped).
-function partitionEntry(
-  obj: Record<string, unknown>,
-  skipKeys: string[] = [],
-): {
-  flat: Record<string, unknown>;
-  states: Array<[ComponentStates, Record<string, unknown>]>;
-} {
-  const flat: Record<string, unknown> = {};
-  const states: Array<[ComponentStates, Record<string, unknown>]> = [];
-
-  for (const [key, value] of Object.entries(obj)) {
-    if (skipKeys.includes(key)) continue;
-    if (value == null) continue;
-    if (typeof value !== "object") {
-      flat[key] = value;
-    } else if (isStateKey(key)) {
-      states.push([key as ComponentStates, value as Record<string, unknown>]);
-    }
-    // non-state objects not in skipKeys are ignored here (handled by caller)
-  }
-  return { flat, states };
-}
-
-// Overrides por orientation dentro de un preset → [selector][data-orientation="X"] { ... }
-// Cada bloque de orientation es un StyledBlock completo (flat + estados), igual que el preset base.
-function emitPresetOrientation(
-  selector: string,
-  orientationMap: Record<string, unknown> | undefined,
-  prefix: string,
-  tokenVars: Record<string, string>,
-  parentPrefix: string | undefined,
-): string {
-  if (!orientationMap) return "";
-  let css = "";
-  for (const [orientationKey, block] of Object.entries(orientationMap)) {
-    if (!block || typeof block !== "object") continue;
-    const orientationSelector = `${selector}[data-orientation="${orientationKey}"]`;
-    const { flat, states } = partitionEntry(block as Record<string, unknown>);
-    const body = generateTokensCSS(flat, prefix, tokenVars, parentPrefix);
-    if (body) css += `${orientationSelector}{${body}}`;
-    css += emitStateRules(orientationSelector, states, prefix, tokenVars, parentPrefix);
-  }
-  return css;
-}
-
-// Un preset completo (PresetEntry: StyledBlock + orientation opcional) → selector base + estados +
-// overrides por orientation. Compartido por presets de nivel componente y de nivel slot.
 function emitPreset(
   selector: string,
-  tokens: Record<string, unknown>,
+  preset: ParsedPreset,
   prefix: string,
   tokenVars: Record<string, string>,
   parentPrefix: string | undefined,
 ): string {
-  const { flat, states } = partitionEntry(tokens, ["orientation"]);
-  let css = "";
-  const body = generateTokensCSS(flat, prefix, tokenVars, parentPrefix);
-  if (body) css += `${selector}{${body}}`;
-  css += emitStateRules(selector, states, prefix, tokenVars, parentPrefix);
-  css += emitPresetOrientation(
-    selector,
-    tokens["orientation"] as Record<string, unknown> | undefined,
-    prefix,
-    tokenVars,
-    parentPrefix,
-  );
+  let css = emitBlock(selector, preset, prefix, tokenVars, parentPrefix);
+  if (preset.orientation) {
+    for (const [orientationKey, block] of Object.entries(preset.orientation)) {
+      css += emitBlock(
+        `${selector}[data-orientation="${orientationKey}"]`,
+        block, prefix, tokenVars, parentPrefix,
+      );
+    }
+  }
   return css;
 }
 
 export function generateComponentPresets(
-  name: string,
-  config: GeneratorConfig,
+  names: GeneratorNames,
+  presets: Record<string, ParsedPreset> | undefined,
+  slots: Record<string, ParsedSlot> | undefined,
   tokenVars: Record<string, string>,
 ): string {
-  const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(name, config);
+  if (!presets && !slots) return "";
+  const { resolvedName, prefix, parentPrefix } = names;
   const base = buildSlotSelector(resolvedName);
   let css = "";
 
   // ── presets de nivel componente: [data-slot="X"][data-set="Y"] ────────────────────
-  if (config.presets) {
-    for (const [presetName, tokens] of Object.entries(config.presets)) {
-      if (!tokens || Object.keys(tokens).length === 0) continue;
-      css += emitPreset(
-        `${base}[data-set="${presetName}"]`,
-        tokens as Record<string, unknown>,
-        prefix,
-        tokenVars,
-        parentPrefix,
-      );
+  if (presets) {
+    for (const [presetName, preset] of Object.entries(presets)) {
+      css += emitPreset(`${base}[data-set="${presetName}"]`, preset, prefix, tokenVars, parentPrefix);
     }
   }
 
-  // ── slots: mapa directo nombre → SlotEntry → [data-slot="X"][data-slots="Y"] ────
-  if (config.slots) {
-    for (const [slotName, slotVal] of Object.entries(config.slots)) {
-      if (!slotVal || typeof slotVal !== "object") continue;
-      const slotObj = slotVal as Record<string, unknown>;
+  // ── slots: [data-slot="X"][data-slots="Y"] ────────────────────────────────────────
+  if (slots) {
+    for (const [slotName, slot] of Object.entries(slots)) {
       const slotSelector = `${base}[data-slots="${slotName}"]`;
+      css += emitBlock(slotSelector, slot, prefix, tokenVars, parentPrefix);
 
-      const { flat: slotFlat, states: slotStates } = partitionEntry(slotObj, ["presets"]);
-      const slotBody = generateTokensCSS(slotFlat, prefix, tokenVars, parentPrefix);
-      if (slotBody) css += `${slotSelector}{${slotBody}}`;
-      css += emitStateRules(slotSelector, slotStates, prefix, tokenVars, parentPrefix);
-
-      // Presets del slot → [data-slot="X"][data-slots="Y"][data-set="Z"]
-      const presetsMap = slotObj["presets"] as Record<string, unknown> | undefined;
-      if (presetsMap) {
-        for (const [presetName, presetVal] of Object.entries(presetsMap)) {
-          if (!presetVal || typeof presetVal !== "object") continue;
+      if (slot.presets) {
+        for (const [presetName, preset] of Object.entries(slot.presets)) {
           css += emitPreset(
             `${slotSelector}[data-set="${presetName}"]`,
-            presetVal as Record<string, unknown>,
-            prefix,
-            tokenVars,
-            parentPrefix,
+            preset, prefix, tokenVars, parentPrefix,
           );
         }
       }

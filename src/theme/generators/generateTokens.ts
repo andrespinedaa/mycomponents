@@ -6,20 +6,25 @@ interface TokenRecord {
 }
 type TokenValue = string | number | TokenRecord;
 
+interface createTokensReturn {
+  css: string;
+  vars: VarsCss;
+}
+
 function createTokens(
   prefix: string,
   tokens: Record<string, TokenValue>,
-  suffix = "",
-): { css: string; vars: VarsCss } {
+  suffix: string = "",
+): createTokensReturn {
   let css = "";
   const vars: VarsCss = {};
 
   for (const [k, value] of Object.entries(tokens)) {
     const key = suffix ? `${suffix}-${camelToKebab(k)}` : camelToKebab(k);
     if (typeof value === "object") {
-      const child = createTokens(prefix, value as Record<string, TokenValue>, key);
-      css += child.css;
-      Object.assign(vars, child.vars);
+      const subTokens = createTokens(prefix, value, key);
+      css += subTokens.css;
+      Object.assign(vars, subTokens.vars);
     } else {
       css += `--${prefix}-${key}:${value};`;
       vars[key] = `var(--${prefix}-${key})`;
@@ -44,23 +49,23 @@ function createSemanticTokens(prefix: string, tokens: Record<string, string | un
   return css;
 }
 
-export function generateTokens(theme: Theme): { css: string; vars: VarsCss } {
+export function generateTokens(theme: Theme): { tokens: string; vars: VarsCss } {
   const allVars: VarsCss = {};
   let css = ":root{";
 
-  const collect = (tokens: Record<string, TokenValue>): string => {
-    const { css: c, vars } = createTokens(theme.prefix, tokens);
-    Object.assign(allVars, vars);
-    return c;
-  };
-
-  css += collect(theme.motion);
-  css += collect(theme.typography);
-  css += collect({ colors: theme.colors });
-  css += collect({ radius: theme.radius });
-  css += collect({ shadow: theme.shadow });
-  css += collect({ spacing: theme.spacing });
-  css += collect({ fontSizes: theme.fontSizes });
+  for (const category of [
+    theme.motion,
+    theme.typography,
+    { colors: theme.colors },
+    { radius: theme.radius },
+    { shadow: theme.shadow },
+    { spacing: theme.spacing },
+    { fontSizes: theme.fontSizes },
+  ]) {
+    const tokens = createTokens(theme.prefix, category as Record<string, TokenValue>);
+    css += tokens.css;
+    Object.assign(allVars, tokens.vars);
+  }
 
   if (theme.semantic?.dark) css += createSemanticTokens(theme.prefix, theme.semantic.dark);
 
@@ -90,5 +95,5 @@ export function generateTokens(theme: Theme): { css: string; vars: VarsCss } {
     css += "}";
   }
 
-  return { css, vars: allVars };
+  return { tokens: css, vars: allVars };
 }

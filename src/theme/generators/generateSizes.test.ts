@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { defaultTheme } from "../../themes/default-theme";
 import type { Theme } from "../core/theme.types";
+import { resolveGeneratorNames } from "./css-gen-utils";
 import { generateTokens } from "./generateTokens";
+import { parseComponentConfig } from "./parseComponentConfig";
 import { generateComponentSizes } from "./generateSizes";
 
 const p = defaultTheme.prefix;
@@ -10,36 +12,45 @@ const { vars: tokenVars } = generateTokens(defaultTheme);
 // Partial — estos fixtures aíslan un solo generador a la vez, sin necesidad de `sizes`.
 type TestConfig = Partial<NonNullable<Theme["components"]>[string]>;
 
+function callSizes(name: string, config: TestConfig, theme: Theme = defaultTheme): string {
+  return generateComponentSizes(
+    resolveGeneratorNames(name, config),
+    parseComponentConfig(config).sizes,
+    theme,
+    tokenVars,
+  );
+}
+
 // --- generateComponentSizes --------------------------------------------------
 
 describe("generateComponentSizes", () => {
   describe("guarda de salida temprana", () => {
-    it("retorna vac�o si no hay sizes", () => {
+    it("retorna vacío si no hay sizes", () => {
       const config: TestConfig = {};
-      expect(generateComponentSizes("Card", config, defaultTheme, tokenVars)).toBe("");
+      expect(callSizes("Card", config)).toBe("");
     });
 
-    it("retorna vac�o si sizes es objeto vac�o", () => {
+    it("retorna vacío si sizes es objeto vacío", () => {
       const config: TestConfig = { sizes: {} };
-      expect(generateComponentSizes("Card", config, defaultTheme, tokenVars)).toBe("");
+      expect(callSizes("Card", config)).toBe("");
     });
 
-    it("omite sizes con tokens vac�os", () => {
+    it("omite sizes con tokens vacíos", () => {
       const config: TestConfig = {
         sizes: { sm: {}, md: { p: "md" } },
       };
-      const result = generateComponentSizes("Card", config, defaultTheme, tokenVars);
+      const result = callSizes("Card", config);
       expect(result).not.toContain(`[data-size="sm"]`);
       expect(result).toContain(`[data-size="md"]`);
     });
   });
 
-  describe("selector est�tico", () => {
-    it("genera selector [data-slot][data-size] para el tama�o est�tico", () => {
+  describe("selector estático", () => {
+    it("genera selector [data-slot][data-size] para el tamaño estático", () => {
       const config: TestConfig = {
         sizes: { md: { p: "md" } },
       };
-      const result = generateComponentSizes("Card", config, defaultTheme, tokenVars);
+      const result = callSizes("Card", config);
       expect(result).toContain(`[data-slot="Card"][data-size="md"]`);
     });
 
@@ -47,7 +58,7 @@ describe("generateComponentSizes", () => {
       const config: TestConfig = {
         sizes: { md: { p: "md" } },
       };
-      const result = generateComponentSizes("Card", config, defaultTheme, tokenVars);
+      const result = callSizes("Card", config);
       expect(result).toContain(`--card-padding:var(--${p}-spacing-md);`);
     });
 
@@ -55,7 +66,7 @@ describe("generateComponentSizes", () => {
       const config: TestConfig = {
         sizes: { md: { bg: "primary.50" } },
       };
-      const result = generateComponentSizes("Card", config, defaultTheme, tokenVars);
+      const result = callSizes("Card", config);
       expect(result).toContain(`--card-background:var(--${p}-colors-primary-50);`);
     });
 
@@ -63,7 +74,7 @@ describe("generateComponentSizes", () => {
       const config: TestConfig = {
         sizes: { md: { w: "240px" } },
       };
-      const result = generateComponentSizes("Card", config, defaultTheme, tokenVars);
+      const result = callSizes("Card", config);
       expect(result).toContain(`--card-width:240px;`);
     });
   });
@@ -73,7 +84,7 @@ describe("generateComponentSizes", () => {
       const config: TestConfig = {
         sizes: { md: { p: "md" } },
       };
-      const result = generateComponentSizes("Card", config, defaultTheme, tokenVars);
+      const result = callSizes("Card", config);
       for (const [bp, bpValue] of Object.entries(defaultTheme.breakpoints)) {
         expect(result).toContain(`@media(min-width:${bpValue})`);
         expect(result).toContain(`[data-size-${bp}="md"]`);
@@ -84,7 +95,7 @@ describe("generateComponentSizes", () => {
       const config: TestConfig = {
         sizes: { md: { p: "md" } },
       };
-      const result = generateComponentSizes("Card", config, defaultTheme, tokenVars);
+      const result = callSizes("Card", config);
       const bpCount = Object.keys(defaultTheme.breakpoints).length;
       const mediaQueryCount = (result.match(/@media\(min-width:/g) ?? []).length;
       expect(mediaQueryCount).toBe(bpCount);
@@ -94,8 +105,8 @@ describe("generateComponentSizes", () => {
       const config: TestConfig = {
         sizes: { md: { p: "md" } },
       };
-      const result = generateComponentSizes("Card", config, defaultTheme, tokenVars);
-      // El @media no debe contener el selector est�tico [data-size="md"]
+      const result = callSizes("Card", config);
+      // El @media no debe contener el selector estático [data-size="md"]
       const mediaMatch = result.match(/@media\(min-width:[^)]+\)\{([^}]+)\}/g)?.[0] ?? "";
       expect(mediaMatch).not.toContain(`[data-size="md"]`);
       expect(mediaMatch).toContain(`[data-size-`);
@@ -109,7 +120,7 @@ describe("generateComponentSizes", () => {
       const config: TestConfig = {
         sizes: { md: { p: "md" } },
       };
-      const result = generateComponentSizes("Card", config, theme, tokenVars);
+      const result = callSizes("Card", config, theme);
       expect(result).toContain(`@media(min-width:1536px)`);
       expect(result).toContain(`[data-size-2xl="md"]`);
     });
@@ -122,13 +133,13 @@ describe("generateComponentSizes", () => {
       const config: TestConfig = {
         sizes: { md: { p: "md" } },
       };
-      const result = generateComponentSizes("Card", config, theme, tokenVars);
+      const result = callSizes("Card", config, theme);
       expect(result).not.toContain("@media");
       expect(result).toContain(`[data-size="md"]`);
     });
   });
 
-  describe("m�ltiples sizes", () => {
+  describe("múltiples sizes", () => {
     it("genera bloques independientes para cada size", () => {
       const config: TestConfig = {
         sizes: {
@@ -137,18 +148,18 @@ describe("generateComponentSizes", () => {
           lg: { p: "lg" },
         },
       };
-      const result = generateComponentSizes("Card", config, defaultTheme, tokenVars);
+      const result = callSizes("Card", config);
       expect(result).toContain(`[data-size="sm"]`);
       expect(result).toContain(`[data-size="md"]`);
       expect(result).toContain(`[data-size="lg"]`);
     });
 
-    it("cada size genera exactamente 1 bloque est�tico + N breakpoints media queries", () => {
+    it("cada size genera exactamente 1 bloque estático + N breakpoints media queries", () => {
       const bpCount = Object.keys(defaultTheme.breakpoints).length;
       const config: TestConfig = {
         sizes: { sm: { p: "sm" } },
       };
-      const result = generateComponentSizes("Card", config, defaultTheme, tokenVars);
+      const result = callSizes("Card", config);
       const staticCount = (result.match(/\[data-size="sm"\]/g) ?? []).length;
       const responsiveCount = (result.match(/\[data-size-[a-z0-9]+="sm"\]/g) ?? []).length;
       expect(staticCount).toBe(1);
@@ -159,14 +170,14 @@ describe("generateComponentSizes", () => {
 
 // --- DSL $prop en sizes -------------------------------------------------------
 
-describe("generateComponentSizes � DSL $prop", () => {
+describe("generateComponentSizes — DSL $prop", () => {
   it("$prop standalone en size resuelve var del padre", () => {
     const config: TestConfig = {
       parentName: "Card",
       name: "CardSection",
       sizes: { md: { gap: "$gap" } },
     };
-    const result = generateComponentSizes("CardSection", config, defaultTheme, tokenVars);
+    const result = callSizes("CardSection", config);
     expect(result).toContain(`--card-section-gap:var(--card-gap);`);
   });
 
@@ -176,17 +187,17 @@ describe("generateComponentSizes � DSL $prop", () => {
       name: "CardSection",
       sizes: { md: { rounded: "0 0 $rounded $rounded" } },
     };
-    const result = generateComponentSizes("CardSection", config, defaultTheme, tokenVars);
+    const result = callSizes("CardSection", config);
     expect(result).toContain(`--card-section-border-radius:0 0 var(--card-border-radius) var(--card-border-radius);`);
   });
 
-  it("$prop en size tambi�n se repite en media queries responsive", () => {
+  it("$prop en size también se repite en media queries responsive", () => {
     const config: TestConfig = {
       parentName: "Card",
       name: "CardSection",
       sizes: { md: { gap: "$gap" } },
     };
-    const result = generateComponentSizes("CardSection", config, defaultTheme, tokenVars);
+    const result = callSizes("CardSection", config);
     const mediaBlocks = result.match(/@media\([^)]+\)\{[^}]+\}/g) ?? [];
     expect(mediaBlocks.length).toBeGreaterThan(0);
     expect(mediaBlocks[0]).toContain(`var(--card-gap)`);
@@ -196,7 +207,7 @@ describe("generateComponentSizes � DSL $prop", () => {
     const config: TestConfig = {
       sizes: { md: { gap: "$gap" } },
     };
-    const result = generateComponentSizes("Card", config, defaultTheme, tokenVars);
+    const result = callSizes("Card", config);
     expect(result).toContain(`--card-gap:var(--card-gap);`);
   });
 });

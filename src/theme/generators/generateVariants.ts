@@ -1,92 +1,21 @@
 import type { ComponentStates } from "../";
-import { resolveValue } from "../../system/resolvers/resolve-value";
-import { buildSlotSelector, generateTokensCSS, resolveGeneratorNames, type GeneratorConfig } from "./css-gen-utils";
-import { STYLE_PROPS_DATA } from "./system-css.data";
-
-export function resolveTokenValue(key: string, value: string, tokenVars: Record<string, string>): string {
-  const def = STYLE_PROPS_DATA[key];
-  if (!def || def.category === "raw") return value;
-  return resolveValue(value, def.category, tokenVars);
-}
-
-export function isStateKey(key: string): key is ComponentStates {
-  return key in STATE_SELECTORS;
-}
-
-// prettier-ignore
-export const STATE_SELECTORS: Record<ComponentStates, string> = {
-  hover:      ":hover",           focus:        ":focus",             focusVisible: ":focus-visible",
-  focusWithin:":focus-within",    active:       ":active",            disabled:     "[data-disabled]",
-  checked:    ":checked",         indeterminate:":indeterminate",     required:     ":required",
-  invalid:    "[data-invalid]",   valid:        ":valid",             readOnly:     ":read-only",
-  placeholder:"::placeholder",    autofill:     ":-webkit-autofill",  loading:      "[data-loading]",
-  selected:   "[data-selected]",  before:       "::before",           after:        "::after",
-  marker:     "::marker",         firstChild:   ":first-child",       lastChild:    ":last-child",
-  empty:      ":empty",           selection:    "::selection",
-};
-
-function partitionBlock(block: Record<string, unknown>): {
-  flat: Record<string, unknown>;
-  states: Array<[ComponentStates, Record<string, unknown>]>;
-  variants: Array<[string, Record<string, unknown>]>;
-} {
-  const flat: Record<string, unknown> = {};
-  const states: Array<[ComponentStates, Record<string, unknown>]> = [];
-  const variants: Array<[string, Record<string, unknown>]> = [];
-
-  for (const [key, value] of Object.entries(block)) {
-    if (value == null) continue;
-    if (typeof value !== "object") {
-      flat[key] = value;
-    } else if (isStateKey(key)) {
-      states.push([key as ComponentStates, value as Record<string, unknown>]);
-    } else {
-      // PascalCase → variant
-      variants.push([key, value as Record<string, unknown>]);
-    }
-  }
-  return { flat, states, variants };
-}
-
-function partitionStateNode(node: Record<string, unknown>): {
-  flat: Record<string, unknown>;
-  nested: Array<[ComponentStates, Record<string, unknown>]>;
-} {
-  const flat: Record<string, unknown> = {};
-  const nested: Array<[ComponentStates, Record<string, unknown>]> = [];
-
-  for (const [key, value] of Object.entries(node)) {
-    if (value == null) continue;
-    if (typeof value === "object" && isStateKey(key)) {
-      nested.push([key as ComponentStates, value as Record<string, unknown>]);
-    } else {
-      flat[key] = value;
-    }
-  }
-  return { flat, nested };
-}
+import { buildSlotSelector, generateTokensCSS, STATE_SELECTORS, type GeneratorNames } from "./css-gen-utils";
+import type { ParsedBlock, ParsedStateNode, ParsedVariants } from "./parseComponentConfig";
 
 export function emitStateRules(
   selector: string,
-  states: Array<[ComponentStates, Record<string, unknown>]>,
+  states: Array<[ComponentStates, ParsedStateNode]>,
   prefix: string,
   tokenVars: Record<string, string>,
   parentPrefix: string | undefined,
 ): string {
   let css = "";
-  for (const [stateKey, stateNode] of states) {
+  for (const [stateKey, { flat, nested }] of states) {
     const stateSel = STATE_SELECTORS[stateKey];
-    const { flat, nested } = partitionStateNode(stateNode);
-
     const body = generateTokensCSS(flat, prefix, tokenVars, parentPrefix);
     if (body) css += `${selector}${stateSel}{${body}}`;
-
-    for (const [nestedKey, nestedTokens] of nested) {
+    for (const [nestedKey, nestedFlat] of nested) {
       const nestedSel = STATE_SELECTORS[nestedKey];
-      const nestedFlat: Record<string, unknown> = {};
-      for (const [k, v] of Object.entries(nestedTokens)) {
-        if (typeof v !== "object") nestedFlat[k] = v;
-      }
       const nestedBody = generateTokensCSS(nestedFlat, prefix, tokenVars, parentPrefix);
       if (nestedBody) css += `${selector}${stateSel}${nestedSel}{${nestedBody}}`;
     }
@@ -94,35 +23,33 @@ export function emitStateRules(
   return css;
 }
 
+export function emitBlock(
+  selector: string,
+  block: ParsedBlock,
+  prefix: string,
+  tokenVars: Record<string, string>,
+  parentPrefix: string | undefined,
+): string {
+  const body = generateTokensCSS(block.flat, prefix, tokenVars, parentPrefix);
+  return (body ? `${selector}{${body}}` : "") +
+    emitStateRules(selector, block.states, prefix, tokenVars, parentPrefix);
+}
+
 export function generateComponentVariants(
-  name: string,
-  config: GeneratorConfig,
+  names: GeneratorNames,
+  variants: ParsedVariants | undefined,
   tokenVars: Record<string, string>,
 ): string {
-  if (!config?.variants) return "";
-  const { resolvedName, prefix, parentPrefix } = resolveGeneratorNames(name, config);
+  if (!variants) return "";
+  const { resolvedName, prefix, parentPrefix } = names;
   const baseSelector = buildSlotSelector(resolvedName);
-  let css = "";
 
-  const { flat, states, variants } = partitionBlock(config.variants as Record<string, unknown>);
-
-  // Flat base tokens → [data-slot="X"] { --vars }
-  const flatBody = generateTokensCSS(flat, prefix, tokenVars, parentPrefix);
-  if (flatBody) css += `${baseSelector}{${flatBody}}`;
-
-  // State tokens at root → [data-slot="X"]:hover { --vars }
-  css += emitStateRules(baseSelector, states, prefix, tokenVars, parentPrefix);
-
-  // Variant tokens → [data-slot="X"][data-variant="Y"] { --vars } + states
-  for (const [variantName, variantBlock] of variants) {
-    const variantSelector = `${baseSelector}[data-variant="${variantName}"]`;
-    const { flat: vFlat, states: vStates } = partitionBlock(variantBlock);
-
-    const vFlatBody = generateTokensCSS(vFlat, prefix, tokenVars, parentPrefix);
-    if (vFlatBody) css += `${variantSelector}{${vFlatBody}}`;
-
-    css += emitStateRules(variantSelector, vStates, prefix, tokenVars, parentPrefix);
+  let css = emitBlock(baseSelector, variants, prefix, tokenVars, parentPrefix);
+  for (const [variantName, block] of variants.entries) {
+    css += emitBlock(
+      `${baseSelector}[data-variant="${variantName}"]`,
+      block, prefix, tokenVars, parentPrefix,
+    );
   }
-
   return css;
 }

@@ -1,32 +1,33 @@
+import type { VarsCss } from "../../theme";
+import { camelToKebab, dotToKebab } from "../../utils/string";
 import { resolveVarName } from "../../theme/generators/css-gen-utils";
 
-export function resolveVars(
-  vars: Record<string, string> | undefined,
-  prefix: string,
-  tokenVars?: Record<string, string>,
-): Record<string, string> | undefined {
-  if (!vars) return vars;
-  const result: Record<string, string> = {};
+function resolveTokenValue(value: string, tokenVars: VarsCss): string | undefined {
+  // Regla 2 — color: "primary.500" → colors-primary-500
+  if (/^[a-z]\w*\.\d+$/.test(value)) {
+    return tokenVars[`colors-${dotToKebab(value)}`];
+  }
+  // Regla 3 — categoría: "spacing.md", "fontSizes.xl" → lookup en tokenVars
+  if (/^[a-z]\w*\.[a-z]/i.test(value)) {
+    return tokenVars[dotToKebab(camelToKebab(value))];
+  }
+  return undefined;
+}
+
+export function resolveVars(prefix: string, varsRaw?: VarsCss, tokenVars?: VarsCss): VarsCss | undefined {
+  if (!varsRaw) return undefined;
+  const result: VarsCss = {};
   let changed = false;
-  for (const [key, value] of Object.entries(vars)) {
+  for (const [key, value] of Object.entries(varsRaw)) {
+    // Regla 1 — auto-referencia: "$borderColor" → var(--prefix-border-color)
     if (value.includes("$")) {
       result[key] = value.replace(/\$(\w+)/g, (_, prop) => `var(${resolveVarName(prop, prefix)})`);
       changed = true;
-    } else if (tokenVars) {
-      const colorMatch = value.match(/^([a-z]+)\.(\d+)$/);
-      if (colorMatch) {
-        const [, name, shade] = colorMatch;
-        const varKey = `colors-${name}-${shade}`;
-        if (tokenVars[varKey]) {
-          result[key] = tokenVars[varKey];
-          changed = true;
-          continue;
-        }
-      }
-      result[key] = value;
-    } else {
-      result[key] = value;
+      continue;
     }
+    const resolved = tokenVars ? resolveTokenValue(value, tokenVars) : undefined;
+    result[key] = resolved ?? value;
+    if (resolved) changed = true;
   }
-  return changed ? result : vars;
+  return changed ? result : varsRaw;
 }

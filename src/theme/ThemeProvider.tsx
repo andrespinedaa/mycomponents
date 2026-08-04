@@ -45,19 +45,22 @@ export function ThemeProvider({
     () => setColorScheme((s) => (s === "light" ? "dark" : "light")),
     [],
   );
-  const p = theme.prefix;
 
-  const { css: tokensCss, vars: tokenVars } = useMemo(() => generateTokens(theme), [theme]);
+  const tokensResult = useMemo(() => generateTokens(theme), [theme]);
 
   useInsertionEffect(() => {
-    injectStyle(`${p}-tokens`, tokensCss);
-    injectStyle(`${p}-components`, generateComponents(theme, tokenVars));
-    injectStyle(`${p}-responsive`, generateResponsive(theme));
+    injectStyle(`${theme.prefix}-tokens`, tokensResult.tokens);
+    injectStyle(`${theme.prefix}-components`, generateComponents(theme, tokensResult.vars));
+    injectStyle(`${theme.prefix}-responsive`, generateResponsive(theme));
 
     return () => {
-      [`${p}-tokens`, `${p}-components`, `${p}-responsive`].forEach(removeStyle);
+      [
+        `${theme.prefix}-tokens`,
+        `${theme.prefix}-components`,
+        `${theme.prefix}-responsive`,
+      ].forEach(removeStyle);
     };
-  }, [theme, tokensCss, tokenVars]);
+  }, [theme, tokensResult]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -69,8 +72,15 @@ export function ThemeProvider({
 
   const sizeResponsive = useBreakPoint(theme);
   const ctxValue = useMemo<ThemeContextValue>(
-    () => ({ theme, tokenVars, sizeResponsive, colorScheme, setColorScheme, toggleColorScheme }),
-    [theme, tokenVars, sizeResponsive, colorScheme, toggleColorScheme],
+    () => ({
+      theme,
+      tokenVars: tokensResult.vars,
+      sizeResponsive,
+      colorScheme,
+      setColorScheme,
+      toggleColorScheme,
+    }),
+    [theme, tokensResult, sizeResponsive, colorScheme, toggleColorScheme],
   );
 
   return <ThemeContextProvider value={ctxValue}>{children}</ThemeContextProvider>;
