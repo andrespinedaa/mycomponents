@@ -1,13 +1,13 @@
 import type { CSSProperties } from "react";
-import type { ApplyProp } from "../factory/factories.types";
+import type { ApplyProp } from "../factories.types";
 import {
   ALIGNS,
   FLEX_DISPLAYS,
   GRID_DISPLAYS,
   JUSTIFY_CONTENTS,
   JUSTIFY_ITEMS,
-} from "../theme/core/macros/theme.macros.data";
-import type { FlexMacros, GridMacros, Macros, ThemeMacros } from "../theme/core/macros/theme.macros.types";
+} from "../../theme/core/macros/theme.macros.data";
+import type { FlexMacros, GridMacros, Macros, ThemeMacros } from "../../theme/core/macros/theme.macros.types";
 
 function macroToCssValue<T extends string>(value: T): string {
   return value

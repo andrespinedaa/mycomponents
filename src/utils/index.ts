@@ -1,4 +1,4 @@
 export * from './createStylePropsArgTypes';
-export * from '../system/get-mod';
+export * from '../factory/extractors/extract-mod';
 export * from './get-options';
 export * from './string';

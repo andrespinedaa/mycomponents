@@ -87,7 +87,7 @@ export type ComponentName = keyof ComponentConfigs;
 type AnyComponentConfig = ComponentConfigs[ComponentName];
 
 export type ThemeComponents = {
-  [K in ComponentName]?: ThemeComponentOptions<AnyComponentConfig>;
+  [K in ComponentName]?: ThemeComponentOptions<ComponentConfigs[K]>;
 };
 
 // helpers

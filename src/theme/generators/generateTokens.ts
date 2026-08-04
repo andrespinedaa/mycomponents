@@ -6,32 +6,32 @@ interface TokenRecord {
 }
 type TokenValue = string | number | TokenRecord;
 
-interface createTokensReturn {
-  css: string;
+interface TokensVarsReturn {
+  tokens: string;
   vars: VarsCss;
 }
 
 function createTokens(
   prefix: string,
-  tokens: Record<string, TokenValue>,
+  category: Record<string, TokenValue>,
   suffix: string = "",
-): createTokensReturn {
-  let css = "";
+): TokensVarsReturn {
   const vars: VarsCss = {};
+  let tokens = "";
 
-  for (const [k, value] of Object.entries(tokens)) {
+  for (const [k, value] of Object.entries(category)) {
     const key = suffix ? `${suffix}-${camelToKebab(k)}` : camelToKebab(k);
     if (typeof value === "object") {
       const subTokens = createTokens(prefix, value, key);
-      css += subTokens.css;
+      tokens += subTokens.tokens;
       Object.assign(vars, subTokens.vars);
     } else {
-      css += `--${prefix}-${key}:${value};`;
+      tokens += `--${prefix}-${key}:${value};`;
       vars[key] = `var(--${prefix}-${key})`;
     }
   }
 
-  return { css, vars };
+  return { tokens, vars };
 }
 
 function resolveSemanticRef(value: string, prefix: string): string {
@@ -49,9 +49,9 @@ function createSemanticTokens(prefix: string, tokens: Record<string, string | un
   return css;
 }
 
-export function generateTokens(theme: Theme): { tokens: string; vars: VarsCss } {
-  const allVars: VarsCss = {};
-  let css = ":root{";
+export function generateTokens(theme: Theme): TokensVarsReturn {
+  const vars: VarsCss = {};
+  let tokens = ":root{";
 
   for (const category of [
     theme.motion,
@@ -62,38 +62,36 @@ export function generateTokens(theme: Theme): { tokens: string; vars: VarsCss } 
     { spacing: theme.spacing },
     { fontSizes: theme.fontSizes },
   ]) {
-    const tokens = createTokens(theme.prefix, category as Record<string, TokenValue>);
-    css += tokens.css;
-    Object.assign(allVars, tokens.vars);
+    const tokenVars = createTokens(theme.prefix, category as Record<string, TokenValue>);
+    tokens += tokenVars.tokens;
+    Object.assign(vars, tokenVars.vars);
   }
 
-  if (theme.semantic?.dark) css += createSemanticTokens(theme.prefix, theme.semantic.dark);
+  if (theme.semantic?.dark) tokens += createSemanticTokens(theme.prefix, theme.semantic.dark);
 
-  css += "}";
+  tokens += "}";
 
   if (theme.dark?.colors || theme.dark?.shadow || theme.dark?.semantic) {
-    css += "[data-color-scheme=dark]{";
+    tokens += "[data-color-scheme=dark]{";
     if (theme.dark.colors) {
-      const { css: c } = createTokens(theme.prefix, {
+      tokens += createTokens(theme.prefix, {
         colors: theme.dark.colors as Record<string, TokenValue>,
-      });
-      css += c;
+      }).tokens;
     }
     if (theme.dark.shadow) {
-      const { css: c } = createTokens(theme.prefix, {
+      tokens += createTokens(theme.prefix, {
         shadow: theme.dark.shadow as Record<string, string>,
-      });
-      css += c;
+      }).tokens;
     }
-    if (theme.dark.semantic) css += createSemanticTokens(theme.prefix, theme.dark.semantic);
-    css += "}";
+    if (theme.dark.semantic) tokens += createSemanticTokens(theme.prefix, theme.dark.semantic);
+    tokens += "}";
   }
 
   if (theme.semantic?.light) {
-    css += "[data-color-scheme=light]{";
-    css += createSemanticTokens(theme.prefix, theme.semantic.light);
-    css += "}";
+    tokens += "[data-color-scheme=light]{";
+    tokens += createSemanticTokens(theme.prefix, theme.semantic.light);
+    tokens += "}";
   }
 
-  return { tokens: css, vars: allVars };
+  return { tokens, vars };
 }

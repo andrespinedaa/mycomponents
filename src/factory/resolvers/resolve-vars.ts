@@ -1,4 +1,4 @@
-import type { VarsCss } from "../../theme";
+import { DOLLAR_DSL, type VarsCss } from "../../theme";
 import { camelToKebab, dotToKebab } from "../../utils/string";
 import { resolveVarName } from "../../theme/generators/css-gen-utils";
 
@@ -14,14 +14,18 @@ function resolveTokenValue(value: string, tokenVars: VarsCss): string | undefine
   return undefined;
 }
 
-export function resolveVars(prefix: string, varsRaw?: VarsCss, tokenVars?: VarsCss): VarsCss | undefined {
+export function resolveVars(
+  prefix: string,
+  varsRaw?: VarsCss,
+  tokenVars?: VarsCss,
+): VarsCss | undefined {
   if (!varsRaw) return undefined;
   const result: VarsCss = {};
   let changed = false;
   for (const [key, value] of Object.entries(varsRaw)) {
     // Regla 1 — auto-referencia: "$borderColor" → var(--prefix-border-color)
     if (value.includes("$")) {
-      result[key] = value.replace(/\$(\w+)/g, (_, prop) => `var(${resolveVarName(prop, prefix)})`);
+      result[key] = value.replace(DOLLAR_DSL, (_, prop) => `var(${resolveVarName(prop, prefix)})`);
       changed = true;
       continue;
     }

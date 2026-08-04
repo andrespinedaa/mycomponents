@@ -1,16 +1,17 @@
 import { describe, expect, it } from "vitest";
 import type { Theme } from "../core/theme.types";
-import { resolveGeneratorNames } from "./css-gen-utils";
 import { generateComponentBases } from "./generateBases";
 import { parseComponentConfig } from "./parseComponentConfig";
+import { resolveGeneratorNames } from "./generateComponents";
+import type { GeneratorConfig } from "./css-gen-utils";
+import type { ComponentName } from "../core";
 
-// Partial — estos fixtures aíslan un solo generador a la vez, sin necesidad de `sizes`.
-type TestConfig = Partial<NonNullable<Theme["components"]>[string]>;
+type TestConfig = Partial<NonNullable<Theme["components"]>[ComponentName]>;
 
 function callBases(name: string, config: TestConfig): string {
   return generateComponentBases(
-    resolveGeneratorNames(name, config),
-    parseComponentConfig(config).usedKeys,
+    resolveGeneratorNames(name, config as GeneratorConfig),
+    parseComponentConfig(config as GeneratorConfig).usedKeys,
   );
 }
 
@@ -31,7 +32,7 @@ describe("generateComponentBases", () => {
     });
 
     it("retorna vacío si sizes existe pero todos los tokens están vacíos", () => {
-      const config: TestConfig = { sizes: { md: {} } };
+      const config: TestConfig = { sizes: { md: {} } as any };
       expect(callBases("Card", config)).toBe("");
     });
 
@@ -98,7 +99,7 @@ describe("generateComponentBases", () => {
 
     it("resuelve alias a CSS prop correctamente — p → padding (desde sizes)", () => {
       const config: TestConfig = {
-        sizes: { md: { p: "md" } },
+        sizes: { md: { p: "md" } } as any,
       };
       expect(callBases("Card", config)).toBe(
         `[data-slot="Card"]{padding:var(--card-padding,unset);}`,
@@ -139,7 +140,7 @@ describe("generateComponentBases", () => {
     it("deduplica keys que aparecen en flat base y sizes — bg aparece una sola vez", () => {
       const config: TestConfig = {
         variants: { bg: "neutral.50" } as any,
-        sizes: { md: { bg: "primary.500" } },
+        sizes: { md: { bg: "primary.500" } } as any,
       };
       const result = callBases("Card", config);
       expect(result).toBe(
@@ -150,7 +151,7 @@ describe("generateComponentBases", () => {
     it("deduplica keys que aparecen en variants, sizes y presets", () => {
       const config: TestConfig = {
         variants: { w: "100%" } as any,
-        sizes: { md: { w: "100%" } },
+        sizes: { md: { w: "100%" } } as any,
         presets: { horizontal: { w: "100%" } },
       };
       const result = callBases("Divider", config);

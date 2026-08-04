@@ -1,20 +1,13 @@
 import type { CategoryTokens } from "../core/theme.types";
 import {
+  CSS_PASSTHROUGH,
   STYLE_PROPS_OVERRIDES,
   type CSSPropertyName,
   type StylePropDef,
 } from "./system-css.types";
 
-// ─── CSS_PASSTHROUGH — props sin alias, sin tokens, sin responsive ────────────
-// prettier-ignore
-const CSS_PASSTHROUGH = [
-  "display", "flex", "flexWrap", "flexBasis", "position", "overflow", "overflowX", "overflowY",
-  "fontWeight", "textAlign", "whiteSpace", "lineHeight", "justifyItems", "alignContent", "placeItems",
-  "placeContent", "gridTemplateColumns", "gridTemplateRows", "gridTemplateAreas","border", "borderTop", 
-  "borderRight", "borderBottom", "borderLeft", "cursor", "pointerEvents", "userSelect", "transition",
-  "justifyContent", "gridColumn", "gridRow", "gridArea", "gridAutoColumns", "gridAutoRows",
-  "gridAutoFlow", "objectFit", "objectPosition",
-] as const;
+
+export const DOLLAR_DSL = /\$(\w+)/g;
 
 // ─── CSS_PROP_TO_CATEGORY — lookup runtime para resolveStyle ─────────────────
 export const CSS_PROP_TO_CATEGORY: Partial<Record<string, CategoryTokens>> = Object.fromEntries(

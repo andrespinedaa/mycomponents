@@ -1,8 +1,8 @@
 ﻿// src/system/parse-style-props.test.ts
 import { describe, it, expect } from "vitest";
 import { parseStyleProps } from "./parse-style-props";
-import { defaultTheme } from "../themes/default-theme";
-import { generateTokens } from "../theme/generators/generateTokens";
+import { defaultTheme } from "../../themes/default-theme";
+import { generateTokens } from "../../theme/generators/generateTokens";
 
 function asVars(styles: React.CSSProperties): Record<string, unknown> {
   return styles as Record<string, unknown>;
@@ -304,7 +304,7 @@ describe("parseStyleProps", () => {
         tokenVars,
       );
       // md no es base, se descarta â€” sin valor
-      expect(styles.shadow).toBeUndefined();
+      expect(styles.boxShadow).toBeUndefined();
     });
   });
 

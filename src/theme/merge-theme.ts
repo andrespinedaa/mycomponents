@@ -1,14 +1,6 @@
-import type {
-  ColorScale,
-  Theme,
-  ThemeColors,
-  ThemeOverride,
-} from "./core/theme.types";
+import type { ColorScale, Theme, ThemeColors, ThemeOverride } from "./core/theme.types";
 
-export function mergeColors(
-  base: ThemeColors,
-  override: ThemeOverride["colors"],
-): ThemeColors {
+export function mergeColors(base: ThemeColors, override: ThemeOverride["colors"]): ThemeColors {
   if (!override) return base;
 
   return Object.keys(override).reduce(
@@ -43,7 +35,12 @@ function mergeVariants(
   if (!base) return override;
   const result: Record<string, unknown> = { ...base };
   for (const [key, value] of Object.entries(override)) {
-    if (value != null && typeof value === "object" && typeof base[key] === "object" && base[key] != null) {
+    if (
+      value != null &&
+      typeof value === "object" &&
+      typeof base[key] === "object" &&
+      base[key] != null
+    ) {
       result[key] = { ...(base[key] as object), ...(value as object) };
     } else {
       result[key] = value;
@@ -58,9 +55,20 @@ function mergeSlotEntry(
 ): Record<string, unknown> {
   const result: Record<string, unknown> = { ...base };
   for (const [key, value] of Object.entries(override)) {
-    if (key === "presets" && value != null && typeof value === "object" && typeof base[key] === "object" && base[key] != null) {
+    if (
+      key === "presets" &&
+      value != null &&
+      typeof value === "object" &&
+      typeof base[key] === "object" &&
+      base[key] != null
+    ) {
       result[key] = { ...(base[key] as object), ...(value as object) };
-    } else if (value != null && typeof value === "object" && typeof base[key] === "object" && base[key] != null) {
+    } else if (
+      value != null &&
+      typeof value === "object" &&
+      typeof base[key] === "object" &&
+      base[key] != null
+    ) {
       result[key] = { ...(base[key] as object), ...(value as object) };
     } else {
       result[key] = value;
@@ -88,7 +96,12 @@ function mergeSlots(
         mergedSlots[slotName] = mergeSlotEntry(baseSlot, slotOverride as Record<string, unknown>);
       }
       result["slots"] = mergedSlots;
-    } else if (value != null && typeof value === "object" && typeof base[key] === "object" && base[key] != null) {
+    } else if (
+      value != null &&
+      typeof value === "object" &&
+      typeof base[key] === "object" &&
+      base[key] != null
+    ) {
       result[key] = { ...(base[key] as object), ...(value as object) };
     } else {
       result[key] = value;
@@ -112,10 +125,9 @@ export function mergeComponents(
     (result as any)[key] = {
       ...baseEntry,
       ...overrideEntry,
-      defaultProps: { ...(baseEntry?.defaultProps ?? {}), ...(overrideEntry.defaultProps ?? {}) },
-      variants:     mergeVariants(baseEntry?.variants, overrideEntry.variants),
-      sizes:        { ...(baseEntry?.sizes ?? {}),         ...(overrideEntry.sizes ?? {}) },
-      presets:      { ...(baseEntry?.presets ?? {}),       ...(overrideEntry.presets ?? {}) },
+      variants: mergeVariants(baseEntry?.variants, overrideEntry.variants),
+      sizes: { ...(baseEntry?.sizes ?? {}), ...(overrideEntry.sizes ?? {}) },
+      presets: { ...(baseEntry?.presets ?? {}), ...(overrideEntry.presets ?? {}) },
       slots: mergeSlots(baseEntry?.slots, overrideEntry.slots),
     };
   }

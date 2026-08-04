@@ -1,4 +1,4 @@
-import type { ModProp } from "../factory";
+import type { ModProp } from "..";
 
 export type ModProps = Record<`data-${string}`, string | boolean>;
 export type ModEntry = boolean | null | undefined | ModProp;
@@ -28,7 +28,7 @@ function processEntry(entry: ModEntry, result: ModProps): void {
   }
 }
 
-export function getMod(mod?: ModInput): ModProps {
+export function extractMod(mod?: ModInput): ModProps {
   const result: ModProps = {};
   const entries = Array.isArray(mod) ? mod.flat() : [mod];
   for (const entry of entries) processEntry(entry, result);

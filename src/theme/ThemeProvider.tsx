@@ -46,11 +46,11 @@ export function ThemeProvider({
     [],
   );
 
-  const tokensResult = useMemo(() => generateTokens(theme), [theme]);
+  const tokensVars = useMemo(() => generateTokens(theme), [theme]);
 
   useInsertionEffect(() => {
-    injectStyle(`${theme.prefix}-tokens`, tokensResult.tokens);
-    injectStyle(`${theme.prefix}-components`, generateComponents(theme, tokensResult.vars));
+    injectStyle(`${theme.prefix}-tokens`, tokensVars.tokens);
+    injectStyle(`${theme.prefix}-components`, generateComponents(theme, tokensVars.vars));
     injectStyle(`${theme.prefix}-responsive`, generateResponsive(theme));
 
     return () => {
@@ -60,7 +60,7 @@ export function ThemeProvider({
         `${theme.prefix}-responsive`,
       ].forEach(removeStyle);
     };
-  }, [theme, tokensResult]);
+  }, [theme, tokensVars]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -74,13 +74,13 @@ export function ThemeProvider({
   const ctxValue = useMemo<ThemeContextValue>(
     () => ({
       theme,
-      tokenVars: tokensResult.vars,
+      tokenVars: tokensVars.vars,
       sizeResponsive,
       colorScheme,
       setColorScheme,
       toggleColorScheme,
     }),
-    [theme, tokensResult, sizeResponsive, colorScheme, toggleColorScheme],
+    [theme, tokensVars, sizeResponsive, colorScheme, toggleColorScheme],
   );
 
   return <ThemeContextProvider value={ctxValue}>{children}</ThemeContextProvider>;

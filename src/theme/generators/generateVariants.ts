@@ -1,12 +1,12 @@
-import type { ComponentStates } from "../";
-import { buildSlotSelector, generateTokensCSS, STATE_SELECTORS, type GeneratorNames } from "./css-gen-utils";
+import { STATE_SELECTORS, type ComponentStates, type GeneratorNames, type VarsCss } from "../";
+import { generateTokensCSS } from "./css-gen-utils";
 import type { ParsedBlock, ParsedStateNode, ParsedVariants } from "./parseComponentConfig";
 
 export function emitStateRules(
   selector: string,
   states: Array<[ComponentStates, ParsedStateNode]>,
   prefix: string,
-  tokenVars: Record<string, string>,
+  tokenVars: VarsCss,
   parentPrefix: string | undefined,
 ): string {
   let css = "";
@@ -31,24 +31,27 @@ export function emitBlock(
   parentPrefix: string | undefined,
 ): string {
   const body = generateTokensCSS(block.flat, prefix, tokenVars, parentPrefix);
-  return (body ? `${selector}{${body}}` : "") +
-    emitStateRules(selector, block.states, prefix, tokenVars, parentPrefix);
+  return (
+    (body ? `${selector}{${body}}` : "") +
+    emitStateRules(selector, block.states, prefix, tokenVars, parentPrefix)
+  );
 }
 
 export function generateComponentVariants(
   names: GeneratorNames,
   variants: ParsedVariants | undefined,
-  tokenVars: Record<string, string>,
+  tokenVars: VarsCss,
 ): string {
   if (!variants) return "";
-  const { resolvedName, prefix, parentPrefix } = names;
-  const baseSelector = buildSlotSelector(resolvedName);
 
-  let css = emitBlock(baseSelector, variants, prefix, tokenVars, parentPrefix);
+  let css = emitBlock(names.selector, variants, names.prefix, tokenVars, names.parentPrefix);
   for (const [variantName, block] of variants.entries) {
     css += emitBlock(
-      `${baseSelector}[data-variant="${variantName}"]`,
-      block, prefix, tokenVars, parentPrefix,
+      `${names.selector}[data-variant="${variantName}"]`,
+      block,
+      names.prefix,
+      tokenVars,
+      names.parentPrefix,
     );
   }
   return css;

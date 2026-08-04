@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveVars } from "../../system/resolvers/resolve-vars";
+import { resolveVars } from "../../factory/resolvers/resolve-vars";
 import { generateTokens } from "./generateTokens";
 import { defaultTheme } from "../../themes/default-theme";
 

@@ -3,8 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { Box } from "../components/Primitives/Box/Box";
-import { useTheme } from "../hooks";
-import { ThemeProvider } from "../theme";
+import { ThemeProvider, useThemeContext } from "../theme";
 import { defaultTheme } from "../themes/default-theme";
 import { ComponentFactory } from "./ComponentFactory";
 import type { ComponentConfig } from "./factories.types";
@@ -15,31 +14,27 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
 
 // ─── Configs de prueba ────────────────────────────────────────
 type TestConfig = ComponentConfig<{
-  name: "Test";
+  name: "Box";
   tag: "button";
   ownProps: {
     label?: string;
   };
   sizes: "sm" | "md" | "lg";
-  defaultProps: {
-    variant: "Outlined";
-  };
   presets: string;
   variants: "Outlined";
 }>;
 
 type NoRenderConfig = ComponentConfig<{
-  name: "NoRender";
+  name: "Box";
   tag: "section";
   ownProps: {};
-  defaultProps: {};
   sizes: never;
   presets: string;
 }>;
 
 // ─── Componentes de prueba ────────────────────────────────────
 const TestComponent = ComponentFactory<TestConfig>({
-  name: "Test",
+  name: "Box",
   render: ({ variant = "Outlined", children, ref, set, ...rest }) => (
     <Box as="button" ref={ref} mod={{ variant }} {...rest}>
       {children}
@@ -49,7 +44,7 @@ const TestComponent = ComponentFactory<TestConfig>({
 
 const NoRenderComponent = ComponentFactory<NoRenderConfig>({
   render: "section",
-  name: "NoRender",
+  name: "Box",
 });
 
 describe("ComponentFactory", () => {
@@ -246,21 +241,7 @@ describe("ComponentFactory", () => {
         { wrapper },
       );
       expect(container.firstChild).toHaveAttribute("data-slot", "custom");
-    });
-
-    it("sin name ni dataSlot no genera data-slot", () => {
-      type AnonConfig = ComponentConfig<{
-        name: "";
-        tag: "div";
-        ownProps: {};
-        defaultProps: {};
-        sizes: never;
-        presets: string;
-      }>;
-      const Anon = ComponentFactory<AnonConfig>({ name: "", render: "div" });
-      const { container } = render(<Anon>contenido</Anon>, { wrapper });
-      expect(container.firstChild).not.toHaveAttribute("data-slot");
-    });
+    })
   });
 
   // ─── theme en render ──────────────────────────────────────────
@@ -268,9 +249,9 @@ describe("ComponentFactory", () => {
     it("theme accesible via useTheme en renders que lo necesitan", () => {
       let prefix: string | undefined;
       const ThemeComponent = ComponentFactory<NoRenderConfig>({
-        name: "NoRender",
+        name: "Box",
         render: function ThemeRender({ ref, children, set, variant, ...rest }) {
-          const { theme } = useTheme();
+          const { theme } = useThemeContext();
           prefix = theme.prefix;
           return (
             <Box ref={ref as any} {...rest}>
@@ -296,22 +277,21 @@ describe("ComponentFactory", () => {
   // ─── statics ──────────────────────────────────────────────────
   describe("statics", () => {
     const SubComponent = ComponentFactory<TestConfig>({
-      name: "Test",
+      name: "Box",
       render: ({ children, ref }) => <Box ref={ref as any}>{children}</Box>,
     });
 
     type WithStaticsConfig = ComponentConfig<{
-      name: "WithStatics";
+      name: "Box";
       tag: "div";
       ownProps: {};
       statics: { Sub: typeof SubComponent };
-      defaultProps: {};
       sizes: never;
       presets: string;
     }>;
 
     const WithStatics = ComponentFactory<WithStaticsConfig>({
-      name: "WithStatics",
+      name: "Box",
       render: ({ children, ref }) => <Box ref={ref as any}>{children}</Box>,
       statics: { Sub: SubComponent },
     });
@@ -335,7 +315,7 @@ describe("ComponentFactory", () => {
   describe("edge cases", () => {
     it("render que retorna null no lanza error", () => {
       const NullComponent = ComponentFactory<NoRenderConfig>({
-        name: "NoRender",
+        name: "Box",
         render: () => null,
       });
       expect(() => render(<NullComponent />, { wrapper })).not.toThrow();

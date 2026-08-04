@@ -11,6 +11,7 @@ import type {
   SpacingValue,
   ShadowValue,
   CategoryTokens,
+  ComponentStates,
 } from "../core/theme.types";
 
 // ─── CSSMultiFormat ─────────────────────────────────────────────────────────────
@@ -30,6 +31,29 @@ export type PropOverride<
   responsive?: IsResponsive;
   category: CategoryTokens;
 };
+
+// prettier-ignore
+export const STATE_SELECTORS: Record<ComponentStates, string> = {
+  hover:      ":hover",           focus:        ":focus",             focusVisible: ":focus-visible",
+  focusWithin:":focus-within",    active:       ":active",            disabled:     "[data-disabled]",
+  checked:    ":checked",         indeterminate:":indeterminate",     required:     ":required",
+  invalid:    "[data-invalid]",   valid:        ":valid",             readOnly:     ":read-only",
+  placeholder:"::placeholder",    autofill:     ":-webkit-autofill",  loading:      "[data-loading]",
+  selected:   "[data-selected]",  before:       "::before",           after:        "::after",
+  marker:     "::marker",         firstChild:   ":first-child",       lastChild:    ":last-child",
+  empty:      ":empty",           selection:    "::selection",
+};
+
+// ─── CSS_PASSTHROUGH — props sin alias, sin tokens, sin responsive ────────────
+// prettier-ignore
+export const CSS_PASSTHROUGH = [
+  "display", "flex", "flexWrap", "flexBasis", "position", "overflow", "overflowX", "overflowY",
+  "fontWeight", "textAlign", "whiteSpace", "lineHeight", "justifyItems", "alignContent", "placeItems",
+  "placeContent", "gridTemplateColumns", "gridTemplateRows", "gridTemplateAreas","border", "borderTop", 
+  "borderRight", "borderBottom", "borderLeft", "cursor", "pointerEvents", "userSelect", "transition",
+  "justifyContent", "gridColumn", "gridRow", "gridArea", "gridAutoColumns", "gridAutoRows",
+  "gridAutoFlow", "objectFit", "objectPosition",
+] as const;
 
 // ─── STYLE_PROPS_OVERRIDES — fuente de verdad de aliases ─────────────────────
 // prettier-ignore

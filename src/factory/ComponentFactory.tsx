@@ -1,7 +1,6 @@
 import { type ElementType, forwardRef } from "react";
-import { extractStyleProps, getMod, resolveSystemStyles } from "../system";
-import { resolveLayout, resolveStyle, resolveVars } from "../system/resolvers";
-import { useThemeContext } from "../theme";
+import { resolveLayout, resolveStyle, resolveSystemStyles, resolveVars } from "./resolvers";
+import { useThemeContext, type GeneratorConfig } from "../theme";
 import { camelToKebab } from "../utils";
 import type {
   ElementRefType,
@@ -11,6 +10,7 @@ import type {
   InternalProps,
   PolymorphicProps,
 } from "./factories.types";
+import { extractStyleProps, extractMod } from "./extractors";
 
 export function ComponentFactory<Config extends FactoryConfig>({
   name,
@@ -40,7 +40,11 @@ export function ComponentFactory<Config extends FactoryConfig>({
         size: resolvedSize,
         variant: resolvedVariant,
         orientation: resolvedOrientation,
-      } = resolveLayout(sizeResponsive, { size, variant, set, orientation }, config);
+      } = resolveLayout(
+        sizeResponsive,
+        { size, variant, set, orientation },
+        config as GeneratorConfig,
+      );
       const resolvedVars = resolveVars(camelToKebab(resolvedName), varsRaw, tokenVars);
       const dataName = dataSlot || inheritedSlot || resolvedName || undefined;
 
@@ -70,7 +74,7 @@ export function ComponentFactory<Config extends FactoryConfig>({
           vars: resolvedVars,
           style: resolveStyle(theme, styleRaw, tokenVars),
         });
-        const elementModProps = getMod([
+        const elementModProps = extractMod([
           mod,
           { slots },
           { slot: dataName },

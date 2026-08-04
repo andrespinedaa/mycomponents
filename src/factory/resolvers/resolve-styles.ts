@@ -1,8 +1,8 @@
 import type { CSSProperties } from "react";
-import type { ApplyProp, StyleProp } from "../../factory/factories.types";
+import type { ApplyProp, StyleProp } from "../factories.types";
 import { type Theme, type StyleProps, type VarsCss, CSS_PROP_TO_CATEGORY } from "../../theme";
-import { parseStyleProps } from "../parse-style-props";
-import { resolveMacros } from "../parse-macros";
+import { parseStyleProps } from "../parsers/parse-style-props";
+import { resolveMacros } from "../parsers/parse-macros";
 import { resolveValue } from "./resolve-value";
 
 interface ResolveStylesOptions {

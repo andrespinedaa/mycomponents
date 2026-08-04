@@ -1,21 +1,29 @@
 import { describe, expect, it } from "vitest";
 import { defaultTheme } from "../../themes/default-theme";
 import type { Theme } from "../core/theme.types";
-import { resolveGeneratorNames } from "./css-gen-utils";
 import { generateTokens } from "./generateTokens";
 import { parseComponentConfig } from "./parseComponentConfig";
 import { generateComponentSizes } from "./generateSizes";
+import { resolveGeneratorNames } from "./generateComponents";
+import type { GeneratorConfig } from "./css-gen-utils";
+import type { ComponentName } from "../core";
 
 const p = defaultTheme.prefix;
 const { vars: tokenVars } = generateTokens(defaultTheme);
 
 // Partial — estos fixtures aíslan un solo generador a la vez, sin necesidad de `sizes`.
-type TestConfig = Partial<NonNullable<Theme["components"]>[string]>;
+// sizes se sobreescribe suelto: Record<Config["sizes"], ...> exige TODAS las keys de tamaño
+// de TODOS los componentes cuando Config es la unión ComponentName — inmanejable en fixtures.
+type TestConfig = Omit<Partial<NonNullable<Theme["components"]>[ComponentName]>, "sizes"> & {
+  sizes?: Record<string, any>;
+  name?: string;
+  parentName?: string;
+};
 
 function callSizes(name: string, config: TestConfig, theme: Theme = defaultTheme): string {
   return generateComponentSizes(
-    resolveGeneratorNames(name, config),
-    parseComponentConfig(config).sizes,
+    resolveGeneratorNames(name, config as GeneratorConfig),
+    parseComponentConfig(config as GeneratorConfig).sizes,
     theme,
     tokenVars,
   );

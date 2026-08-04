@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useLayoutContext, type LayoutContextValue } from "../../context/LayoutContext";
-import type { OrientationProp } from "../../factory";
+import type { OrientationProp } from "..";
 import { type ComponentVariants, type Scales } from "../../theme";
 import type { GeneratorConfig } from "../../theme/generators/css-gen-utils";
 

@@ -1,6 +1,7 @@
 import type { ComponentStates } from "../core/theme.types";
-import { isStateKey } from "./css-gen-utils";
-import type { GeneratorConfig } from "./css-gen-utils";
+import { type GeneratorConfig } from "./css-gen-utils";
+import { DOLLAR_DSL } from "./system-css.data";
+import { STATE_SELECTORS } from "./system-css.types";
 
 // ── IR types ──────────────────────────────────────────────────────────────────
 
@@ -60,8 +61,6 @@ function parseStateNode(node: Record<string, unknown>): ParsedStateNode {
   return { flat, nested };
 }
 
-// Splits a raw object into flat CSS tokens + state entries.
-// Non-state objects and skipKeys are ignored — caller handles them separately.
 function parseBlock(obj: Record<string, unknown>, skipKeys?: string[]): ParsedBlock {
   const flat: Record<string, unknown> = {};
   const states: Array<[ComponentStates, ParsedStateNode]> = [];
@@ -108,9 +107,11 @@ function parseSlot(slotObj: Record<string, unknown>): ParsedSlot {
   return { ...block, presets };
 }
 
-// ── Main parser ───────────────────────────────────────────────────────────────
+function isStateKey(key: string): key is ComponentStates {
+  return key in STATE_SELECTORS;
+}
 
-const DOLLAR_RE = /\$(\w+)/g;
+// ── Main parser ───────────────────────────────────────────────────────────────
 
 export function parseComponentConfig(config: GeneratorConfig): ParsedComponentConfig {
   const usedKeys = new Set<string>();
@@ -192,8 +193,8 @@ export function parseComponentConfig(config: GeneratorConfig): ParsedComponentCo
       const sizeAware: Record<string, string> = {};
       for (const [k, v] of Object.entries(tokens as Record<string, unknown>)) {
         if (v == null) continue;
-        DOLLAR_RE.lastIndex = 0;
-        if (typeof v === "string" && hasSizes && DOLLAR_RE.test(v)) {
+        DOLLAR_DSL.lastIndex = 0;
+        if (typeof v === "string" && hasSizes && DOLLAR_DSL.test(v)) {
           sizeAware[k] = v;
         } else {
           flat[k] = v;

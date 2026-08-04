@@ -4,9 +4,9 @@ import {
   STYLE_PROPS_DATA,
   type Responsive,
   type PartialBreakPointKey,
-} from "../theme";
-import { resolveValue } from "./resolvers/resolve-value";
-import { camelToKebab } from "../utils/string";
+} from "../../theme";
+import { resolveValue } from "../resolvers/resolve-value";
+import { camelToKebab } from "../../utils/string";
 
 export type ParsedStyleProps = {
   styles: CSSProperties;

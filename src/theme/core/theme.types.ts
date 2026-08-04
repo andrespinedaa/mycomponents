@@ -52,20 +52,17 @@ export type ComponentStates =
   // Structural
   | "firstChild" | "lastChild" | "empty";
 
-// ─── Merge ──────────────────────────────────────────────────────────
-/** Fusiona `Base` con `Custom` — las keys de `Custom` sobreescriben las de `Base`. */
+// ─── Helpers ──────────────────────────────────────────────────────────
 export type MergeBaseCustoms<Base, Custom> = Prettify<
   Base & {
     [K in keyof Custom]: Custom[K];
   }
 >;
 
-/** Versión parcial de `MergeBaseCustoms` — para overrides opcionales. */
 export type MergeBaseCustomsOverride<Base, Custom> = Prettify<
   Partial<Base> & Partial<{ [K in keyof Custom]: Custom[K] }>
 >;
 
-/** Override parcial de colores — permite sobreescribir matices individuales sin dar toda la escala. */
 export type MergeColorsOverride<Base, Custom> = Prettify<
   { [K in keyof Base]?: DeepPartial<Base[K]> } & {
     [K in keyof Custom]?: Custom[K];

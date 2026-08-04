@@ -1,4 +1,4 @@
-import { type StyleProps, STYLE_PROPS_KEYS } from "../theme/generators";
+import { type StyleProps, STYLE_PROPS_KEYS } from "../../theme/generators";
 
 export type ExtractedStyleProps = {
   styleProps: StyleProps;
