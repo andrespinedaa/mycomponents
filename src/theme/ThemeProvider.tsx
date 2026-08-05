@@ -47,6 +47,7 @@ export function ThemeProvider({
   );
 
   const tokensVars = useMemo(() => generateTokens(theme), [theme]);
+  console.log(tokensVars);
 
   useInsertionEffect(() => {
     injectStyle(`${theme.prefix}-tokens`, tokensVars.tokens);

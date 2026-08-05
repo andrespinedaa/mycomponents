@@ -1,6 +1,5 @@
 import type { CSSProperties } from "react";
 import type { Prettify } from "../../utils/utils.types";
-import type { CaseFormat, ConvertFormat } from "./cases.types";
 import type {
   PartialBreakPointKey,
   CSSLength,
@@ -13,11 +12,6 @@ import type {
   CategoryTokens,
   ComponentStates,
 } from "../core/theme.types";
-
-// ─── CSSMultiFormat ─────────────────────────────────────────────────────────────
-export type CSSMultiFormat<Format extends CaseFormat = "camel"> = {
-  [K in keyof CSSProperties as ConvertFormat<K & string, "camel", Format>]?: CSSProperties[K];
-};
 
 // ─── PropOverride ─────────────────────────────────────────────────────────────
 export type CSSPropertyName = Extract<keyof CSSProperties, string>;
@@ -122,27 +116,6 @@ export const STYLE_PROPS_OVERRIDES = [
   
 ] as const satisfies readonly PropOverride<keyof CSSProperties, string, boolean>[];
 
-// ─── SystemStyleProps Core ─────────────────────────────────────────────────────────
-export type SystemStyleProps<
-  Overrides extends readonly PropOverride<any, any, any>[],
-  Excluded extends keyof CSSProperties = never,
-  Format extends CaseFormat = "camel",
-> = {
-  [O in Overrides[number] as O["alias"]]?: O["cssProp"] extends (infer P extends keyof CSSProperties)[]
-    ? O["responsive"] extends true
-      ? Responsive<CSSProperties[P]>
-      : CSSProperties[P]
-    : O["cssProp"] extends keyof CSSProperties
-    ? O["responsive"] extends true
-      ? Responsive<CSSProperties[O["cssProp"]]>
-      : CSSProperties[O["cssProp"]]
-    : never;
-} & Omit<
-  CSSMultiFormat<Format>,
-  | Extract<keyof CSSMultiFormat<Format>, Overrides[number]["cssProp"]>
-  | ConvertFormat<Excluded & string, "camel", Format>
->;
-
 // ─── WithTokens — preserva literales de token en autocomplete ─────────────────
 export type WithTokens<T extends string> = T | CSSLength | (string & {});
 
@@ -163,19 +136,73 @@ export type StylePropDef = {
   responsive: boolean;
 };
 
-// ─── TokenizedStyleProps — derivado de STYLE_PROPS_OVERRIDES + CategoryToToken ─
 export type Responsive<T> = T | PartialBreakPointKey<T>;
 
-export type TokenizedStyleProps = Prettify<{
-  [O in (typeof STYLE_PROPS_OVERRIDES)[number] as O["category"] extends keyof CategoryToToken
-    ? O["alias"]
-    : never]?: O["responsive"] extends true
-    ? Responsive<WithTokens<CategoryToToken[O["category"] & keyof CategoryToToken]>>
-    : WithTokens<CategoryToToken[O["category"] & keyof CategoryToToken]>;
-}>;
+// ─── TokenStyleProps ─
+// prettier-ignore
+export type TokenStyleProps = {
+  // ─── margin ──────────────────────────────
+  m?: Responsive<WithTokens<CategoryToToken["spacing"]>>;       mx?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
+  my?: Responsive<WithTokens<CategoryToToken["spacing"]>>;      mt?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
+  mr?: Responsive<WithTokens<CategoryToToken["spacing"]>>;      mb?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
+  ml?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
 
-type ExcludedProps = "animation" | "animationName" | "counterReset" | "counterIncrement" | "quotes" | "content";
-type BaseStyleProps = SystemStyleProps<typeof STYLE_PROPS_OVERRIDES, ExcludedProps, "camel">;
+  // ─── padding ─────────────────────────────
+  p?: Responsive<WithTokens<CategoryToToken["spacing"]>>;       px?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
+  py?: Responsive<WithTokens<CategoryToToken["spacing"]>>;      pt?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
+  pr?: Responsive<WithTokens<CategoryToToken["spacing"]>>;      pb?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
+  pl?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
+
+  // ─── dimensiones ─────────────────────────
+  w?: Responsive<WithTokens<CategoryToToken["spacing"]>>;       h?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
+  minW?: Responsive<WithTokens<CategoryToToken["spacing"]>>;    maxW?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
+  minH?: Responsive<WithTokens<CategoryToToken["spacing"]>>;    maxH?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
+
+  // ─── colores ─────────────────────────────
+  bg?: WithTokens<CategoryToToken["color"]>;                    color?: WithTokens<CategoryToToken["color"]>;
+  borderColor?: WithTokens<CategoryToToken["color"]>;
+
+  // ─── bordes ──────────────────────────────
+  rounded?: WithTokens<CategoryToToken["radius"]>;
+
+  // ─── shadows ─────────────────────────────
+  shadow?: WithTokens<CategoryToToken["shadow"]>;
+
+  // ─── flexbox ─────────────────────────────
+  flexDir?: Responsive<CSSProperties["flexDirection"]>;         align?: Responsive<CSSProperties["alignItems"]>;
+  justify?: Responsive<CSSProperties["justifyContent"]>;        gap?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
+  rowGap?: Responsive<WithTokens<CategoryToToken["spacing"]>>;  columnGap?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
+
+  // ─── posicionamiento ─────────────────────
+  top?: Responsive<WithTokens<CategoryToToken["spacing"]>>;     right?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
+  bottom?: Responsive<WithTokens<CategoryToToken["spacing"]>>;  left?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
+  inset?: Responsive<WithTokens<CategoryToToken["spacing"]>>;
+
+  // ─── tipografía ──────────────────────────
+  fontSize?: Responsive<WithTokens<CategoryToToken["fontSize"]>>;
+  fontFamily?: WithTokens<CategoryToToken["font"]>;
+
+  // ─── responsive sin token ────────────────
+  opacity?: Responsive<CSSProperties["opacity"]>;               zIndex?: Responsive<CSSProperties["zIndex"]>;
+  flexGrow?: Responsive<CSSProperties["flexGrow"]>;             flexShrink?: Responsive<CSSProperties["flexShrink"]>;
+};
+
+// prettier-ignore
+type OverriddenRawProps =
+  | "margin" | "marginLeft" | "marginRight" | "marginTop" | "marginBottom"
+  | "padding" | "paddingLeft" | "paddingRight" | "paddingTop" | "paddingBottom"
+  | "width" | "height" | "minWidth" | "maxWidth" | "minHeight" | "maxHeight"
+  | "background" | "borderRadius" | "boxShadow"
+  | "flexDirection" | "alignItems" | "justifyContent";
+
+// ─── StylePropsPassthrough — CSSProperties crudo, sin tokens ni alias ─────────
+type StylePropsPassthrough = Omit<
+  CSSProperties,
+  keyof TokenStyleProps | OverriddenRawProps | ExcludedProps
+>;
+
+type ExcludedProps =
+  "animation" | "animationName" | "counterReset" | "counterIncrement" | "quotes" | "content";
 
 // ─── SystemCSS — CSS properties con tokens del tema ──────────────────────────
 type CSSCategoryTokensPair = {
@@ -186,8 +213,8 @@ type CSSCategoryTokensPair = {
     ? P extends readonly (infer PS extends CSSPropertyName)[]
       ? { prop: PS; cat: C }
       : P extends CSSPropertyName
-      ? { prop: P; cat: C }
-      : never
+        ? { prop: P; cat: C }
+        : never
     : never;
 }[number];
 
@@ -199,7 +226,7 @@ export type SystemCSS = {
     : CSSProperties[K];
 };
 
-export type StyleProps = Omit<BaseStyleProps, keyof TokenizedStyleProps> & TokenizedStyleProps;
+export type StyleProps = Prettify<TokenStyleProps & StylePropsPassthrough>;
 
 // ─── StylePropsTokens — StyleProps aplanados (sin Responsive) para variants/sizes/slots ──
 export type StylePropsTokens = {

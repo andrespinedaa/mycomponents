@@ -31,6 +31,7 @@ export function emitBlock(
   parentPrefix: string | undefined,
 ): string {
   const body = generateTokensCSS(block.flat, prefix, tokenVars, parentPrefix);
+  console.log(body);
   return (
     (body ? `${selector}{${body}}` : "") +
     emitStateRules(selector, block.states, prefix, tokenVars, parentPrefix)
