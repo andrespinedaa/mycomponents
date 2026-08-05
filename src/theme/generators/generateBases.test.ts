@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { Theme } from "../core/theme.types";
 import { generateComponentBases } from "./generateBases";
 import { parseComponentConfig } from "./parseComponentConfig";
-import { resolveGeneratorNames } from "./generateComponents";
+import { generateNames } from "./generateComponents";
 import type { GeneratorConfig } from "./css-gen-utils";
 import type { ComponentName } from "../core";
 
@@ -10,7 +10,7 @@ type TestConfig = Partial<NonNullable<Theme["components"]>[ComponentName]>;
 
 function callBases(name: string, config: TestConfig): string {
   return generateComponentBases(
-    resolveGeneratorNames(name, config as GeneratorConfig),
+    generateNames(name, config as GeneratorConfig),
     parseComponentConfig(config as GeneratorConfig).usedKeys,
   );
 }

@@ -14,12 +14,12 @@ export type GeneratorNames = {
   parentPrefix?: string;
 };
 
-export function resolveGeneratorNames(name: string, config: GeneratorConfig): GeneratorNames {
-  const resolvedName = config?.name ?? name;
-  const selector = `[data-slot="${resolvedName}"]`;
-  const parentPrefix = config?.parentName ? camelToKebab(config.parentName) : undefined;
-  const prefix = camelToKebab(resolvedName);
-  return { selector, prefix, parentPrefix };
+export function generateNames(name: string, config: GeneratorConfig): GeneratorNames {
+  return {
+    prefix: camelToKebab(config?.name ?? name),
+    selector: `[data-slot="${config?.name ?? name}"]`,
+    parentPrefix: config?.parentName ? camelToKebab(config.parentName) : undefined,
+  };
 }
 
 function generateComponent(
@@ -28,7 +28,7 @@ function generateComponent(
   theme: Theme,
   tokenVars: VarsCss,
 ): string {
-  const names = resolveGeneratorNames(name, config);
+  const names = generateNames(name, config);
   const parsed = parseComponentConfig(config);
   return (
     generateComponentBases(names, parsed.usedKeys) +

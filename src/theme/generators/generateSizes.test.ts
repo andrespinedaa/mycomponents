@@ -4,7 +4,7 @@ import type { Theme } from "../core/theme.types";
 import { generateTokens } from "./generateTokens";
 import { parseComponentConfig } from "./parseComponentConfig";
 import { generateComponentSizes } from "./generateSizes";
-import { resolveGeneratorNames } from "./generateComponents";
+import { generateNames } from "./generateComponents";
 import type { GeneratorConfig } from "./css-gen-utils";
 import type { ComponentName } from "../core";
 
@@ -22,7 +22,7 @@ type TestConfig = Omit<Partial<NonNullable<Theme["components"]>[ComponentName]>,
 
 function callSizes(name: string, config: TestConfig, theme: Theme = defaultTheme): string {
   return generateComponentSizes(
-    resolveGeneratorNames(name, config as GeneratorConfig),
+    generateNames(name, config as GeneratorConfig),
     parseComponentConfig(config as GeneratorConfig).sizes,
     theme,
     tokenVars,

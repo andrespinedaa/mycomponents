@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { defaultTheme } from "../../themes/default-theme";
 import type { Theme } from "../core/theme.types";
-import { resolveGeneratorNames } from "./generateComponents";
+import { generateNames } from "./generateComponents";
 import type { GeneratorConfig } from "./css-gen-utils";
 import { generateTokens } from "./generateTokens";
 import { parseComponentConfig } from "./parseComponentConfig";
@@ -17,7 +17,7 @@ type TestConfig = Partial<NonNullable<Theme["components"]>[ComponentName]>;
 
 function callVariants(name: string, config: TestConfig): string {
   return generateComponentVariants(
-    resolveGeneratorNames(name, config as GeneratorConfig),
+    generateNames(name, config as GeneratorConfig),
     parseComponentConfig(config as GeneratorConfig).variants,
     tokenVars,
   );

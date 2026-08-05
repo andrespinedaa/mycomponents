@@ -4,7 +4,7 @@ import type { Theme } from "../core/theme.types";
 import { generateTokens } from "./generateTokens";
 import { parseComponentConfig } from "./parseComponentConfig";
 import { generateComponentPresets } from "./generatePresets";
-import { resolveGeneratorNames } from "./generateComponents";
+import { generateNames } from "./generateComponents";
 import type { GeneratorConfig } from "./css-gen-utils";
 import type { ComponentName } from "../core";
 
@@ -18,7 +18,7 @@ type TestConfig = Partial<NonNullable<Theme["components"]>[ComponentName]> & {
 function callPresets(name: string, config: TestConfig): string {
   const { presets, slots } = parseComponentConfig(config as GeneratorConfig);
   return generateComponentPresets(
-    resolveGeneratorNames(name, config as GeneratorConfig),
+    generateNames(name, config as GeneratorConfig),
     presets,
     slots,
     tokenVars,
