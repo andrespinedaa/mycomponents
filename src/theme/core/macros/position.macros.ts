@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { Macros } from "./theme.macros.types";
 
 // prettier-ignore
 export const positionMacros = {
@@ -9,4 +9,4 @@ export const positionMacros = {
   "@pushTop":      { marginBottom: "auto" },
   "@pushBottom":   { marginTop:   "auto" },
   "@pushCenter":   { margin: "auto" },
-} satisfies Record<`@${string}`, CSSProperties>;
+} satisfies Macros;

@@ -1,11 +1,11 @@
 import type { ArgTypes } from "@storybook/react";
 import type { Theme } from "../theme/core/theme.types";
-import { STYLE_PROPS_DATA } from "../theme/generators/system-css.data";
+import { STYLE_PROPS_LOOKUP } from "../theme/generators/system-css.data";
 import { getOptions } from "./get-options";
 
 export function createStylePropsArgTypes(theme: Theme): ArgTypes {
   return Object.fromEntries(
-    Object.entries(STYLE_PROPS_DATA).map(([key, value]) => {
+    Object.entries(STYLE_PROPS_LOOKUP).map(([key, value]) => {
       const options = getOptions(value.category, theme);
       return [
         key,

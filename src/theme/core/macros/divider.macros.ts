@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { Macros } from "./theme.macros.types";
 
 export const dividerMacros = {
   "@dividerLineH": {
@@ -13,4 +13,4 @@ export const dividerMacros = {
     borderLeftStyle: "solid",
     borderLeftWidth: "var(--divider-thickness, 1px)",
   },
-} satisfies Record<`@${string}`, CSSProperties>;
+} satisfies Macros;

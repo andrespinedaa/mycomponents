@@ -321,12 +321,14 @@ describe("parseStyleProps", () => {
       expect(hasResponsive).toBe(false);
     });
 
-    it("prop desconocida en STYLE_PROPS_DATA se ignora silenciosamente", () => {
+    it("prop sin def en STYLE_PROPS_DATA se resuelve como CSS raw (pass-through)", () => {
+      // parseStyleProps ya no filtra — confía en que extractStyleProps (vía
+      // STYLE_PROPS_KEYS) solo le pase props que son estilo real.
       const { styles } = parseStyleProps(
         { unknownProp: "value" } as any,
         tokenVars,
       );
-      expect(Object.keys(styles)).toHaveLength(0);
+      expect(styles).toHaveProperty("unknownProp", "value");
     });
 
     it("solo base en objeto responsive sigue siendo responsive", () => {

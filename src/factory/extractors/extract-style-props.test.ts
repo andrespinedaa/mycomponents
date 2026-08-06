@@ -35,13 +35,19 @@ describe("extractStyleProps", () => {
       const { styleProps } = extractStyleProps({
         display: "flex",
         align: "center",
-        justifyContent: "space-between",
+        justify: "space-between",
         gap: "sm",
       });
       expect(styleProps).toHaveProperty("display", "flex");
       expect(styleProps).toHaveProperty("align", "center");
-      expect(styleProps).toHaveProperty("justifyContent", "space-between");
+      expect(styleProps).toHaveProperty("justify", "space-between");
       expect(styleProps).toHaveProperty("gap", "sm");
+    });
+
+    it("no trata como estilo el nombre CSS real cuando ya tiene alias con nombre distinto", () => {
+      const { styleProps, elementProps } = extractStyleProps({ justifyContent: "center" });
+      expect(styleProps).not.toHaveProperty("justifyContent");
+      expect(elementProps).toHaveProperty("justifyContent", "center");
     });
 
     it("separa dimensiones a styleProps", () => {

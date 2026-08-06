@@ -1,7 +1,7 @@
 import type { ComponentStates } from "../core/theme.types";
 import { type GeneratorConfig } from "./css-gen-utils";
 import { DOLLAR_DSL } from "./system-css.data";
-import { STATE_SELECTORS } from "./system-css.types";
+import { STATE_SELECTORS } from "./system-css.data";
 
 // ── IR types ──────────────────────────────────────────────────────────────────
 
@@ -33,11 +33,11 @@ export type ParsedOrientationEntry = {
 };
 
 export type ParsedComponentConfig = {
-  usedKeys:     Set<string>;
-  variants?:    ParsedVariants;
-  sizes?:       Record<string, Record<string, unknown>>;
-  presets?:     Record<string, ParsedPreset>;
-  slots?:       Record<string, ParsedSlot>;
+  usedKeys: Set<string>;
+  variants?: ParsedVariants;
+  sizes?: Record<string, Record<string, unknown>>;
+  presets?: Record<string, ParsedPreset>;
+  slots?: Record<string, ParsedSlot>;
   orientation?: Record<string, ParsedOrientationEntry>;
 };
 
@@ -175,7 +175,8 @@ export function parseComponentConfig(config: GeneratorConfig): ParsedComponentCo
         for (const preset of Object.values(slot.presets)) {
           collectBlockKeys(preset, usedKeys);
           if (preset.orientation) {
-            for (const block of Object.values(preset.orientation)) collectBlockKeys(block, usedKeys);
+            for (const block of Object.values(preset.orientation))
+              collectBlockKeys(block, usedKeys);
           }
         }
       }

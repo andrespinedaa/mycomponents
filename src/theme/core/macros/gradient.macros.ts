@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { Macros } from "./theme.macros.types";
 
 // prettier-ignore
 export const gradientMacros = {
@@ -6,4 +6,4 @@ export const gradientMacros = {
   "@fadeUp":    { background: "linear-gradient(to top,    var(--gradient-from, currentColor) var(--gradient-stop, 0%), transparent)" },
   "@fadeRight": { background: "linear-gradient(to right,  var(--gradient-from, currentColor) var(--gradient-stop, 0%), transparent)" },
   "@fadeLeft":  { background: "linear-gradient(to left,   var(--gradient-from, currentColor) var(--gradient-stop, 0%), transparent)" },
-} satisfies Record<`@${string}`, CSSProperties>;
+} satisfies Macros;

@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { DeepPartial, Prettify } from "../../utils/utils.types";
 import type { Macros } from "./macros/theme.macros.types";
 import type { ThemeComponents } from "./theme.components.types";
@@ -8,6 +9,7 @@ export type SystemStatus<Allowed extends ComponentStates> = Allowed;
 export type ScaleRange<Allowed extends Scales> = Allowed;
 export type BreakpointKey = "base" | keyof ThemeBreakpoints;
 export type PartialBreakPointKey<T> = Partial<Record<BreakpointKey, T>>;
+export type CSSPropertyName = Extract<keyof CSSProperties, string>;
 
 // ─── CSS Value Types ──────────────────────────────────────────────────────────
 // prettier-ignore
@@ -158,10 +160,17 @@ export type FontValue = "sans" | "mono";
 export type RadiusValue = keyof ThemeRadii;
 export type ShadowValue = keyof ThemeShadows;
 export type FontSizesValue = keyof ThemeFontSizes;
-export type ColorScaleKeys = BaseColors[keyof BaseColors];
-export type ColorsValue = `${keyof BaseColors}.${keyof ColorScaleKeys}`;
+export type ColorsValue = `${keyof ThemeColors}.${keyof ThemeColors[keyof ThemeColors]}`;
 export type SpacingValue = keyof ThemeSpacing | "auto" | "full" | "screen" | "fit" | "inherit";
-export type CategoryTokens = "spacing" | "colors" | "radius" | "fontSizes" | "font" | "raw" | "shadow";
+export type CategoryTokens = {
+  font: FontValue;
+  colors: ColorsValue;
+  shadow: ShadowValue;
+  radius: RadiusValue;
+  spacing: SpacingValue;
+  fontSizes: FontSizesValue;
+  raw: unknown;
+};
 
 // ─── Tipos finales ────────────────────────────────────────────────────────────
 export type ThemeRadii = MergeBaseCustoms<BaseRadius, ConsumerRadius>;
@@ -194,7 +203,7 @@ export type ThemeOverride = {
   radius?: MergeBaseCustomsOverride<BaseRadius, ConsumerRadius>;
   spacing?: MergeBaseCustomsOverride<BaseSpacing, ConsumerSpacing>;
   fontSizes?: MergeBaseCustomsOverride<BaseFontSizes, ConsumerFontSizes>;
-  components?: ThemeComponents
+  components?: ThemeComponents;
 };
 
 export interface Theme extends ConsumerTheme {

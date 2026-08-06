@@ -1,6 +1,12 @@
 import type { CSSProperties } from "react";
 import type { ApplyProp, StyleProp } from "../factories.types";
-import { type Theme, type StyleProps, type VarsCss, CSS_PROP_TO_CATEGORY } from "../../theme";
+import {
+  type Theme,
+  type StyleProps,
+  type VarsCss,
+  type CategoryTokens,
+  STYLE_PROPS_FLAT,
+} from "../../theme";
 import { parseStyleProps } from "../parsers/parse-style-props";
 import { resolveMacros } from "../parsers/parse-macros";
 import { resolveValue } from "./resolve-value";
@@ -19,6 +25,10 @@ interface ResolvedStylesResult {
   styles: CSSProperties | undefined;
   hasResponsive: boolean;
 }
+
+const CSS_PROP_TO_CATEGORY: Partial<Record<string, keyof CategoryTokens>> = Object.fromEntries(
+  STYLE_PROPS_FLAT.map((entry) => [entry.prop, entry.category]),
+);
 
 export function resolveStyle(
   theme: Theme,

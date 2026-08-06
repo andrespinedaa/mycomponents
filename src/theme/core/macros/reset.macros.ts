@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { Macros } from "./theme.macros.types";
 
 export const resetMacros = {
   "@noMargin": { margin: 0 },
@@ -33,4 +33,4 @@ export const resetMacros = {
     whiteSpace: "nowrap",
     border: 0,
   },
-} satisfies Record<`@${string}`, CSSProperties>;
+} satisfies Macros;

@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import {
   type StyleProps,
-  STYLE_PROPS_DATA,
+  STYLE_PROPS_LOOKUP,
   type Responsive,
   type PartialBreakPointKey,
 } from "../../theme";
@@ -17,15 +17,21 @@ function isResponsiveObject<T>(value: Responsive<T> | undefined): value is Parti
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-export function parseStyleProps(styleProps: StyleProps, tokenVars: Record<string, string>): ParsedStyleProps {
+export function parseStyleProps(
+  styleProps: StyleProps,
+  tokenVars: Record<string, string>,
+): ParsedStyleProps {
   const result: Record<string, string | number> = {};
   let hasResponsive = false;
 
   for (const [prop, value] of Object.entries(styleProps)) {
     if (value === undefined || value === null) continue;
 
-    const def = STYLE_PROPS_DATA[prop];
-    if (!def) continue;
+    const def = STYLE_PROPS_LOOKUP[prop] ?? {
+      properties: [prop],
+      category: "raw" as const,
+      responsive: false,
+    };
     const { properties, category, responsive: isResponsiveProp } = def;
 
     // ── Camino responsive ──────────────────────────────────────────────────

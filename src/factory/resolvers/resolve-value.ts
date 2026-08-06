@@ -1,5 +1,5 @@
-import { camelToKebab, dotToKebab } from "../../utils/string";
 import type { CategoryTokens, VarsCss } from "../../theme/core/theme.types";
+import { camelToKebab, dotToKebab } from "../../utils/string";
 
 const SIZE_ALIASES: Record<string, string> = {
   full: "100%",
@@ -10,7 +10,7 @@ const SIZE_ALIASES: Record<string, string> = {
 
 export function resolveValue(
   value: string | number,
-  category: CategoryTokens,
+  category: keyof CategoryTokens,
   tokenVars: VarsCss,
 ): string {
   const v = String(value);

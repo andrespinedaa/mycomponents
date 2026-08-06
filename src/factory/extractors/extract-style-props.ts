@@ -6,14 +6,14 @@ export type ExtractedStyleProps = {
 };
 
 export function extractStyleProps(props: Record<string, unknown>): ExtractedStyleProps {
-  const styleProps = {} as StyleProps;
-  const elementProps = {} as Record<string, unknown>;
+  const styleProps: Record<string, unknown> = {};
+  const elementProps: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(props)) {
     if (STYLE_PROPS_KEYS.has(key)) {
-      (styleProps as Record<string, unknown>)[key] = value;
+      styleProps[key] = value;
     } else {
-      (elementProps as Record<string, unknown>)[key] = value;
+      elementProps[key] = value;
     }
   }
 

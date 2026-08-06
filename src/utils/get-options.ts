@@ -1,6 +1,6 @@
 import type { Theme, CategoryTokens } from "../theme/core/theme.types";
 
-export function getOptions(category: CategoryTokens, theme: Theme) {
+export function getOptions(category: keyof CategoryTokens, theme: Theme) {
   switch (category) {
     case "spacing":
       return [...Object.keys(theme.spacing), "auto", "full", "screen", "fit"];
