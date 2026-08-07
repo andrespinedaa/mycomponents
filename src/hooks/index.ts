@@ -1,3 +1,3 @@
 export * from './useBreakpoint';
-export * from './useCreateProvider';
+export * from './useCreateContext';
 export * from './useDisclosure';

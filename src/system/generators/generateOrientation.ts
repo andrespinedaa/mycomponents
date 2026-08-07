@@ -1,8 +1,8 @@
-import type { VarsCss } from "../core";
+import type { VarsCss } from "../../theme/core";
 import { generateTokensCSS, resolveTokenValue, resolveVarName } from "./css-gen-utils";
 import type { GeneratorNames } from "./generateComponents";
 import type { ParsedOrientationEntry } from "./parseComponentConfig";
-import { DOLLAR_DSL } from "../../system/system-css.data";
+import { DOLLAR_DSL } from "../system.data";
 
 function resolveSizeAwareBody(
   sizeAware: Record<string, string>,
@@ -23,7 +23,7 @@ function resolveSizeAwareBody(
   return body;
 }
 
-export function generateComponentOrientation(
+export function generateOrientation(
   names: GeneratorNames,
   orientation: Record<string, ParsedOrientationEntry> | undefined,
   sizes: Record<string, Record<string, unknown>> | undefined,

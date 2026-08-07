@@ -15,7 +15,6 @@ export const DotThemeComponent: DotThemeConfig = {
     rounded: "full",
     align: "center",
     display: "inline-flex",
-    Subtle: { bg: "primary.100", color: "primary.700" },
     Outlined: {
       bg: "transparent",
       color: "primary.600",

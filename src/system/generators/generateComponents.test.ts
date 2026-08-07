@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { defaultTheme } from "../../themes/default-theme";
-import type { Theme } from "../core/theme.types";
+import { defaultTheme } from "../../theme/themes/default-theme";
+import type { Theme } from "../../theme/theme.types";
 import { generateTokens } from "./generateTokens";
 import { generateComponents } from "./generateComponents";
 

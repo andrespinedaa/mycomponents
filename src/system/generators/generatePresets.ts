@@ -1,4 +1,4 @@
-import type { VarsCss } from "../core";
+import type { VarsCss } from "../../theme/core";
 import type { GeneratorNames } from "./generateComponents";
 import { emitBlock } from "./generateVariants";
 import type { ParsedPreset, ParsedSlot } from "./parseComponentConfig";
@@ -25,7 +25,7 @@ function emitPreset(
   return css;
 }
 
-export function generateComponentPresets(
+export function generatePresets(
   names: GeneratorNames,
   presets: Record<string, ParsedPreset> | undefined,
   slots: Record<string, ParsedSlot> | undefined,

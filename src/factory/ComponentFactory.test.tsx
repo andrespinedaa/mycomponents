@@ -4,7 +4,7 @@ import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { Box } from "../components/Primitives/Box/Box";
 import { ThemeProvider, useThemeContext } from "../theme";
-import { defaultTheme } from "../themes/default-theme";
+import { defaultTheme } from "../theme/themes/default-theme";
 import { ComponentFactory } from "./ComponentFactory";
 import type { ComponentConfig } from "./factories.types";
 
@@ -65,11 +65,6 @@ describe("ComponentFactory", () => {
 
     it("pasa OwnProps al render", () => {
       render(<TestComponent variant="Outlined">btn</TestComponent>, { wrapper });
-      expect(screen.getByText("btn")).toHaveAttribute("data-variant", "Outlined");
-    });
-
-    it("aplica defaultProps cuando no se pasan OwnProps", () => {
-      render(<TestComponent>btn</TestComponent>, { wrapper });
       expect(screen.getByText("btn")).toHaveAttribute("data-variant", "Outlined");
     });
 
@@ -188,7 +183,7 @@ describe("ComponentFactory", () => {
 
     it("responsive styleProp genera data-responsive en el fallback", () => {
       const { container } = render(
-        <NoRenderComponent p={{ base: "8px", md: "16px" }}>contenido</NoRenderComponent>,
+        <NoRenderComponent p={{ xs: "8px", md: "16px" }}>contenido</NoRenderComponent>,
         {
           wrapper,
         },
@@ -213,7 +208,7 @@ describe("ComponentFactory", () => {
 
     it("size responsive genera data-size y data-size-md", () => {
       // @ts-expect-error responsive size objects not yet reflected in SizeProp type
-      render(<TestComponent size={{ base: "sm", md: "lg" }}>btn</TestComponent>, { wrapper });
+      render(<TestComponent size={{ xs: "sm", md: "lg" }}>btn</TestComponent>, { wrapper });
       const el = screen.getByText("btn");
       expect(el).toHaveAttribute("data-size", "sm");
       expect(el).toHaveAttribute("data-size-md", "lg");

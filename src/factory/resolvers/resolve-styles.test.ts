@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { resolveStyle } from "./resolve-styles";
-import { defaultTheme } from "../../themes/default-theme";
-import { generateTokens } from "../../theme/generators/generateTokens";
+import { defaultTheme } from "../../theme/themes/default-theme";
+import { generateTokens } from "../../system/generators/generateTokens";
 
 const theme = defaultTheme;
 const prefix = theme.prefix;

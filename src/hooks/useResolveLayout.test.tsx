@@ -3,10 +3,10 @@ import { describe, expect, it } from "vitest";
 import { ComponentFactory } from "../factory/ComponentFactory";
 import type { ComponentConfig } from "../factory/factories.types";
 import { Box } from "../components/Primitives/Box/Box";
-import { Layout } from "../components/Primitives/Box/Layout";
+import { Layout } from "../components/Primitives/Layout/Layout";
 import { ThemeProvider } from "../theme";
-import type { ComponentVariants, Theme } from "../theme/core/theme.types";
-import { defaultTheme } from "../themes/default-theme";
+import type { ComponentVariants, Theme } from "../theme/theme.types";
+import { defaultTheme } from "../theme/themes/default-theme";
 
 // ─── Componentes de prueba — mimican la relación compound Card → Card.Section ──────────
 type ParentConfig = ComponentConfig<{

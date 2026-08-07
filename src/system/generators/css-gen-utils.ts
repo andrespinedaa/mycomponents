@@ -1,8 +1,8 @@
 import { camelToKebab } from "../../utils/string";
-import { DOLLAR_DSL, STYLE_PROPS_LOOKUP } from "../../system/system-css.data";
+import { DOLLAR_DSL, STYLE_PROPS_LOOKUP } from "../system.data";
 import { resolveValue } from "../../factory/resolvers/resolve-value";
-import type { Theme, VarsCss } from "../core/theme.types";
-import type { ComponentName } from "../core/theme.components.types";
+import type { Theme, VarsCss } from "../../theme/theme.types";
+import type { ComponentName } from "../../theme/core/theme.components.types";
 
 export type UsedKeys = Set<string>;
 
@@ -13,10 +13,6 @@ export function resolveVarName(key: string, prefix: string): string {
   return def
     ? `--${prefix}-${camelToKebab(def.properties[0])}`
     : `--${prefix}-${camelToKebab(key)}`;
-}
-
-export function getCssProp(key: string): string {
-  return STYLE_PROPS_LOOKUP[key]?.properties[0] ?? camelToKebab(key);
 }
 
 // ── moved from generateVariants ───────────────────────────────────────────────
@@ -36,7 +32,7 @@ export function resolveTokenValue(
 function resolveDollarProps(
   value: string,
   prefix: string,
-  prefixParent: string | undefined,
+  prefixParent: string | undefined, 
 ): string {
   const target = prefixParent ?? prefix;
   return value.replace(DOLLAR_DSL, (_, prop) => `var(${resolveVarName(prop, target)})`);
@@ -51,7 +47,7 @@ export function generateTokensCSS(
   let css = "";
   for (const [key, value] of Object.entries(tokens)) {
     if (value == null) continue;
-    const strValue = String(value);
+    const strValue = String(value); 
     const properties = STYLE_PROPS_LOOKUP[key]?.properties ?? [key];
 
     if (strValue.includes("$")) {

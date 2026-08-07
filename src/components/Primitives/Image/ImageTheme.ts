@@ -4,8 +4,6 @@ import type { ImgConfig } from "./Image";
 export type ImageTheme = ThemeComponentConfig<ImgConfig>;
 
 export const ImageThemeComponent: ImageTheme = {
-  // Image no tiene tamaño propio hoy — se dimensiona por el contenedor (Card, CardSection) o por `cover`.
-  // Placeholders vacíos para cumplir el contrato de `sizes` requerido.
   sizes: {
     xs: {},
     sm: {},

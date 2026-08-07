@@ -1,6 +1,6 @@
-import type { DeepPartial, Prettify } from "../../utils/utils.types";
-import type { Macros } from "./macros/theme.macros.types";
-import type { ThemeComponents } from "./theme.components.types";
+import type { DeepPartial, Prettify } from "../utils/utils.types";
+import type { Macros } from "./core/macros/theme.macros.types";
+import type { ThemeComponents } from "./core/theme.components.types";
 
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── HELPERS ───────
@@ -19,8 +19,6 @@ type MergeColorsOverride<Base, Custom> = Prettify<
     [K in keyof Custom]?: Custom[K];
   }
 >;
-type ScaleRange<Allowed extends Scales> = Allowed;
-export type PartialBreakPointKey<T> = Partial<Record<"base" | keyof ThemeBreakpoints, T>>;
 
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── CSS VALUES TYPES ───────
@@ -39,7 +37,12 @@ export type VarsCss = Record<string, string>;
 // ─── SCALE RANGE ───────
 // ════════════════════════════════════════════════════════════════════════════════════════
 // prettier-ignore
-export type Scales = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "full" | "none" | keyof ConsumerScales;
+export type Scales = 
+  | "xs" | "sm" | "md" | "lg" | "xl" // breakpoitns
+  | "2xl" | "3xl" | "4xl" | "full" | "none"  // extensions
+  | keyof ConsumerScales; // consumerscales
+
+type ScaleRange<Allowed extends Scales> = Allowed;
 type BreakPointsScale = ScaleRange<"xs" | "sm" | "md" | "lg" | "xl">;
 
 // ════════════════════════════════════════════════════════════════════════════════════════
@@ -70,22 +73,23 @@ export type ComponentStates =
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─────────────────────────────── NATIVE SYSTEM BASES ───────────────────────────────────
 // ════════════════════════════════════════════════════════════════════════════════════════
-type BaseSpacing = Record<ScaleRange<"2xl"> | BreakPointsScale, CSSLength>;
-type BaseRadius = Record<ScaleRange<"full" | "none"> | BreakPointsScale, CSSLength>;
-type BaseFontSizes = Record<ScaleRange<"2xl" | "3xl" | "4xl"> | BreakPointsScale, CSSLength>;
-type BaseBreakpoints = Record<BreakPointsScale, CSSLength>;
+interface BaseBreakpoints extends Record<BreakPointsScale, CSSLength> {}
+interface BaseSpacing extends Record<ScaleRange<"2xl"> | BreakPointsScale, CSSLength> {}
+interface BaseRadius extends Record<ScaleRange<"full" | "none"> | BreakPointsScale, CSSLength> {}
+// prettier-ignore
+interface BaseFontSizes extends Record<ScaleRange<"2xl" | "3xl" | "4xl"> | BreakPointsScale, CSSLength> {}
 type ColorsShades =
   "50" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900" | "950";
 type ColorsNames = "primary" | "secondary" | "neutral" | "danger" | "success" | "warning" | "info";
 export type ColorScale = Record<ColorsShades, string>;
-type BaseColors = Record<ColorsNames, ColorScale>;
+interface BaseColors extends Record<ColorsNames, ColorScale> {}
 
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── BASE TYPOGRAPHY ───────
 // ════════════════════════════════════════════════════════════════════════════════════════
 interface BaseTypography {
   fontSans: string;
-  fontMono: string;
+  fontMono: string; 
   trackingTight: string;
   weightHeading: number | string;
 }
@@ -98,13 +102,8 @@ interface BaseShadows extends Record<BreakPointsScale, string> {}
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── BASE NOTION ───────
 // ════════════════════════════════════════════════════════════════════════════════════════
-interface BaseMotion {
-  easeDefault: string;
-  easeIn: string;
-  durFast: string;
-  durState: string;
-  durLayout: string;
-}
+type Motions = "easeDefault" | "easeIn" | "durFast" | "durState" | "durLayout";
+interface BaseMotion extends Record<Motions, string> {}
 
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── BASE SEMANTIC COLORS ───────
@@ -122,10 +121,7 @@ interface BaseSemanticColors {
   textDisabled: string;
 }
 
-interface ThemeSemanticLayer {
-  dark: Partial<BaseSemanticColors>;
-  light: Partial<BaseSemanticColors>;
-}
+interface ThemeSemanticLayer extends Record<ColorScheme, Partial<BaseSemanticColors>> {}
 
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── EXTENSIONS FOR THE USER ───────
@@ -141,7 +137,6 @@ export interface ConsumerFontSizes {}
 export interface ConsumerTypography {}
 export interface ConsumerBreakPoints {}
 export interface ConsumerSemanticColors {}
-export interface ConsumerThemeComponents {}
 
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── FINAL TYPES ───────
@@ -151,7 +146,7 @@ type ThemeMotion = MergeBaseCustoms<BaseMotion, ConsumerMotion>;
 type ThemeShadows = MergeBaseCustoms<BaseShadows, ConsumerShadows>;
 type ThemeSpacing = MergeBaseCustoms<BaseSpacing, ConsumerSpacing>;
 export type ThemeColors = MergeBaseCustoms<BaseColors, ConsumerColors>;
-type ThemeFontSizes = MergeBaseCustoms<BaseFontSizes, ConsumerFontSizes>;
+export type ThemeFontSizes = MergeBaseCustoms<BaseFontSizes, ConsumerFontSizes>;
 type ThemeTypography = MergeBaseCustoms<BaseTypography, ConsumerTypography>;
 export type ThemeBreakpoints = MergeBaseCustoms<BaseBreakpoints, ConsumerBreakPoints>;
 type ThemeSemanticColors = MergeBaseCustoms<BaseSemanticColors, ConsumerSemanticColors>;

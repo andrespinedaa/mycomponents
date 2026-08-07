@@ -1,5 +1,5 @@
 import { camelToKebab } from "../../utils/string";
-import type { Theme, VarsCss } from "../core/theme.types";
+import type { Theme, VarsCss } from "../../theme/theme.types";
 
 interface TokenRecord {
   [key: string]: TokenValue;

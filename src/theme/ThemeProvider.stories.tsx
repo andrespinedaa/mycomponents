@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ThemeProvider } from "./ThemeProvider";
 import { createTheme } from "./createTheme";
-import { graphiteTheme, haloTheme, terraTheme } from "../themes";
+import { graphiteTheme, haloTheme, terraTheme } from "./themes";
 import { Box, Button, Badge, Card, Text } from "../components";
 
 const themes = [

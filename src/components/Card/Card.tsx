@@ -1,5 +1,5 @@
 import { ComponentFactory, type ComponentConfig } from "../../factory";
-import { Layout, type LayoutConfig } from "../Primitives/Box/Layout";
+import { Layout, type LayoutConfig } from "../Primitives/Layout/Layout";
 import { CardSection } from "./CardSection";
 
 export interface CardOwnProps {}

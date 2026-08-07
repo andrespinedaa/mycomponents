@@ -1,8 +1,8 @@
-import { STATE_SELECTORS, type ComponentStates, type GeneratorNames, type VarsCss } from "../";
+import { STATE_SELECTORS, type ComponentStates, type GeneratorNames, type VarsCss } from "../../theme";
 import { generateTokensCSS } from "./css-gen-utils";
 import type { ParsedBlock, ParsedStateNode, ParsedVariants } from "./parseComponentConfig";
 
-export function emitStateRules(
+function emitStateRules(
   selector: string,
   states: Array<[ComponentStates, ParsedStateNode]>,
   prefix: string,
@@ -31,14 +31,13 @@ export function emitBlock(
   parentPrefix: string | undefined,
 ): string {
   const body = generateTokensCSS(block.flat, prefix, tokenVars, parentPrefix);
-  console.log(body);
   return (
     (body ? `${selector}{${body}}` : "") +
     emitStateRules(selector, block.states, prefix, tokenVars, parentPrefix)
   );
 }
 
-export function generateComponentVariants(
+export function generateVariants(
   names: GeneratorNames,
   variants: ParsedVariants | undefined,
   tokenVars: VarsCss,

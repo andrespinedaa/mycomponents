@@ -1,11 +1,11 @@
-import type { Theme, VarsCss } from "../core/theme.types";
+import type { Theme, VarsCss } from "../../theme/theme.types";
 import { type GeneratorConfig } from "./css-gen-utils";
 import { parseComponentConfig } from "./parseComponentConfig";
-import { generateComponentBases } from "./generateBases";
-import { generateComponentOrientation } from "./generateOrientation";
-import { generateComponentPresets } from "./generatePresets";
-import { generateComponentVariants } from "./generateVariants";
-import { generateComponentSizes } from "./generateSizes";
+import { generateBases } from "./generateBases";
+import { generateOrientation } from "./generateOrientation";
+import { generatePresets } from "./generatePresets";
+import { generateVariants } from "./generateVariants";
+import { generateSizes } from "./generateSizes";
 import { camelToKebab } from "../../utils/string";
 
 export type GeneratorNames = {
@@ -31,11 +31,11 @@ function generateComponent(
   const names = generateNames(name, config);
   const parsed = parseComponentConfig(config);
   return (
-    generateComponentBases(names, parsed.usedKeys) +
-    generateComponentVariants(names, parsed.variants, tokenVars) +
-    generateComponentSizes(names, parsed.sizes, theme, tokenVars) +
-    generateComponentPresets(names, parsed.presets, parsed.slots, tokenVars) +
-    generateComponentOrientation(names, parsed.orientation, parsed.sizes, tokenVars)
+    generateBases(names, parsed.usedKeys) +
+    generateVariants(names, parsed.variants, tokenVars) +
+    generateSizes(names, parsed.sizes, theme, tokenVars) +
+    generatePresets(names, parsed.presets, parsed.slots, tokenVars) +
+    generateOrientation(names, parsed.orientation, parsed.sizes, tokenVars)
   );
 }
 

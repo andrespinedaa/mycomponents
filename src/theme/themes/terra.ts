@@ -1,53 +1,55 @@
-import { type Theme, defaultThemeMacros, defaultThemeComponents } from "../theme/core";
+import { type Theme, defaultThemeMacros, defaultThemeComponents } from "../core";
 
-// ─── Graphite — "Azul señal sobre slate, compacto y sharp" ───────────────────
-// (Formerly "Mineral" in the initial proposal)
-// Blue primary · cyan secondary · slate neutral
-// Sharp radii (4/6/8px) · compact spacing · standard controls
+// ─── Terra — "Terracota sobre stone, balanceada y warm" ──────────────────────
+// Terracotta primary · teal secondary · stone neutral
+// Balanced radii (6/9/14px) · standard spacing · mid-height controls
 
-export const graphiteTheme: Theme = {
-  prefix: "graphite",
+export const terraTheme: Theme = {
+  prefix: "terra",
 
   // ─── System Colors ────────────────────────────────────────────────────────
   colors: {
+    // Terracotta — warm, earthy primary
     primary: {
-      50: "#eff6ff",
-      100: "#dbeafe",
-      200: "#bfdbfe",
-      300: "#93c5fd",
-      400: "#60a5fa",
-      500: "#3b82f6",
-      600: "#2563eb",
-      700: "#1d4ed8",
-      800: "#1e40af",
-      900: "#1e3a8a",
-      950: "#172554",
+      50: "#fdf4f0",
+      100: "#fbe6dc",
+      200: "#f6c8b4",
+      300: "#eea487",
+      400: "#e27c57",
+      500: "#d35f3a",
+      600: "#bd4a28",
+      700: "#9c3a20",
+      800: "#7d301e",
+      900: "#67291d",
+      950: "#38130c",
     },
+    // Teal — earthy complement
     secondary: {
-      50: "#ecfeff",
-      100: "#cffafe",
-      200: "#a5f3fc",
-      300: "#67e8f9",
-      400: "#22d3ee",
-      500: "#06b6d4",
-      600: "#0891b2",
-      700: "#0e7490",
-      800: "#155e75",
-      900: "#164e63",
-      950: "#083344",
+      50: "#f0fdfa",
+      100: "#ccfbf1",
+      200: "#99f6e4",
+      300: "#5eead4",
+      400: "#2dd4bf",
+      500: "#14b8a6",
+      600: "#0d9488",
+      700: "#0f766e",
+      800: "#115e59",
+      900: "#134e4a",
+      950: "#042f2e",
     },
+    // Stone — warm neutral, not cold gray
     neutral: {
-      50: "#f8fafc",
-      100: "#f1f5f9",
-      200: "#e2e8f0",
-      300: "#cbd5e1",
-      400: "#94a3b8",
-      500: "#64748b",
-      600: "#475569",
-      700: "#334155",
-      800: "#1e293b",
-      900: "#0f172a",
-      950: "#020617",
+      50: "#fafaf9",
+      100: "#f5f5f4",
+      200: "#e7e5e4",
+      300: "#d6d3d1",
+      400: "#a8a29e",
+      500: "#78716c",
+      600: "#57534e",
+      700: "#44403c",
+      800: "#292524",
+      900: "#1c1917",
+      950: "#0c0a09",
     },
     danger: {
       50: "#fef2f2",
@@ -107,20 +109,20 @@ export const graphiteTheme: Theme = {
   spacing: {
     xs: "4px",
     sm: "8px",
-    md: "12px",
-    lg: "16px",
-    xl: "24px",
-    "2xl": "32px",
+    md: "16px",
+    lg: "24px",
+    xl: "36px",
+    "2xl": "48px",
   },
 
   // ─── Radius Tokens ────────────────────────────────────────────────────────
   radius: {
     none: "0",
-    xs: "2px",
-    sm: "4px",
-    md: "6px",
-    lg: "8px",
-    xl: "10px",
+    xs: "3px",
+    sm: "6px",
+    md: "9px",
+    lg: "14px",
+    xl: "18px",
     full: "9999px",
   },
 
@@ -128,20 +130,20 @@ export const graphiteTheme: Theme = {
   fontSizes: {
     xs: "12px",
     sm: "13px",
-    md: "14px",
+    md: "15px",
     lg: "16px",
-    xl: "18px",
-    "2xl": "22px",
-    "3xl": "28px",
-    "4xl": "38px",
+    xl: "19px",
+    "2xl": "24px",
+    "3xl": "30px",
+    "4xl": "40px",
   },
 
   // ─── Typography ───────────────────────────────────────────────────────────
   typography: {
     fontSans: "'Inter','Inter var',system-ui,-apple-system,'Segoe UI',sans-serif",
     fontMono: "ui-monospace,'SF Mono','JetBrains Mono','Menlo',monospace",
-    trackingTight: "-0.014em",
-    weightHeading: 650,
+    trackingTight: "-0.012em",
+    weightHeading: 700,
   },
 
   // ─── Shadows Tokens ───────────────────────────────────────────────────────
@@ -210,6 +212,6 @@ export const graphiteTheme: Theme = {
   },
 
   macros: defaultThemeMacros,
-
+  
   components: defaultThemeComponents,
 };

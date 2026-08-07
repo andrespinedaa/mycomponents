@@ -1,8 +1,8 @@
-import type { Theme, ThemeBreakpoints, VarsCss } from "../core/theme.types";
+import type { Theme, ThemeBreakpoints, VarsCss } from "../../theme/theme.types";
 import { generateTokensCSS } from "./css-gen-utils";
 import type { GeneratorNames } from "./generateComponents";
 
-export function generateComponentSizes(
+export function generateSizes(
   names: GeneratorNames,
   sizes: Record<string, Record<string, unknown>> | undefined,
   theme: Theme,

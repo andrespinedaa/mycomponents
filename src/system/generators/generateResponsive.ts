@@ -1,13 +1,14 @@
-import type { Theme } from "../core/theme.types";
+import type { Theme } from "../../theme/theme.types";
+import { getSortedBreakpoints } from "../../theme/core/resolveBreakpoints";
 import { camelToKebab } from "../../utils/string";
-import { STYLE_PROPS_FLAT } from "../../system/system-css.data";
+import { STYLE_PROPS_FLAT } from "../system.data";
 
 const StylePropsResponsive: string[] = Array.from(
   new Set(STYLE_PROPS_FLAT.filter((entry) => entry.responsive).map((entry) => entry.prop)),
 );
 
 function buildFallbackChain(varKey: string, bps: string[]): string {
-  let chain = `var(--${varKey}-base)`;
+  let chain = "unset";
   for (const bp of bps) {
     chain = `var(--${varKey}-${bp}, ${chain})`;
   }
@@ -15,21 +16,15 @@ function buildFallbackChain(varKey: string, bps: string[]): string {
 }
 
 export function generateResponsive(theme: Theme): string {
-  const { breakpoints } = theme;
-  const activeBps = Object.keys(breakpoints);
+  const activeBps = getSortedBreakpoints(theme).map(([name]) => name);
+  const minWidths = Object.fromEntries(getSortedBreakpoints(theme));
 
   let css = "";
 
-  css += '[data-responsive="true"]{';
-  for (const cssProp of StylePropsResponsive) {
-    const varKey = camelToKebab(cssProp);
-    css += `${varKey}:var(--${varKey}-base,unset);`;
-  }
-  css += "}";
-
   activeBps.forEach((bp, idx) => {
     const bpsUpToHere = activeBps.slice(0, idx + 1);
-    css += `@media(min-width:${breakpoints[bp as keyof typeof breakpoints]}){[data-responsive="true"]{`;
+    const minWidth = idx === 0 ? "0px" : minWidths[bp];
+    css += `@media(min-width:${minWidth}){[data-responsive="true"]{`;
     for (const cssProp of StylePropsResponsive) {
       const varKey = camelToKebab(cssProp);
       css += `${varKey}:${buildFallbackChain(varKey, bpsUpToHere)};`;

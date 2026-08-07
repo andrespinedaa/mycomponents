@@ -1,19 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { defaultTheme } from "../../themes/default-theme";
-import type { Theme } from "../core/theme.types";
+import { defaultTheme } from "../../theme/themes/default-theme";
+import type { Theme } from "../../theme/theme.types";
 import { generateTokens } from "./generateTokens";
 import { parseComponentConfig } from "./parseComponentConfig";
-import { generateComponentSizes } from "./generateSizes";
+import { generateSizes } from "./generateSizes";
 import { generateNames } from "./generateComponents";
 import type { GeneratorConfig } from "./css-gen-utils";
-import type { ComponentName } from "../core";
+import type { ComponentName } from "../../theme/core";
 
 const p = defaultTheme.prefix;
 const { vars: tokenVars } = generateTokens(defaultTheme);
 
-// Partial — estos fixtures aíslan un solo generador a la vez, sin necesidad de `sizes`.
-// sizes se sobreescribe suelto: Record<Config["sizes"], ...> exige TODAS las keys de tamaño
-// de TODOS los componentes cuando Config es la unión ComponentName — inmanejable en fixtures.
 type TestConfig = Omit<Partial<NonNullable<Theme["components"]>[ComponentName]>, "sizes"> & {
   sizes?: Record<string, any>;
   name?: string;
@@ -21,7 +18,7 @@ type TestConfig = Omit<Partial<NonNullable<Theme["components"]>[ComponentName]>,
 };
 
 function callSizes(name: string, config: TestConfig, theme: Theme = defaultTheme): string {
-  return generateComponentSizes(
+  return generateSizes(
     generateNames(name, config as GeneratorConfig),
     parseComponentConfig(config as GeneratorConfig).sizes,
     theme,
@@ -29,9 +26,9 @@ function callSizes(name: string, config: TestConfig, theme: Theme = defaultTheme
   );
 }
 
-// --- generateComponentSizes --------------------------------------------------
+// --- generateSizes --------------------------------------------------
 
-describe("generateComponentSizes", () => {
+describe("generateSizes", () => {
   describe("guarda de salida temprana", () => {
     it("retorna vacío si no hay sizes", () => {
       const config: TestConfig = {};
@@ -178,7 +175,7 @@ describe("generateComponentSizes", () => {
 
 // --- DSL $prop en sizes -------------------------------------------------------
 
-describe("generateComponentSizes — DSL $prop", () => {
+describe("generateSizes — DSL $prop", () => {
   it("$prop standalone en size resuelve var del padre", () => {
     const config: TestConfig = {
       parentName: "Card",

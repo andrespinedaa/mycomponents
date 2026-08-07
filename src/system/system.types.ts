@@ -1,12 +1,11 @@
-import type { CSSProperties } from "react";
-import type { CSSLength, CategoryTokens, PartialBreakPointKey } from "../theme";
-import type { EXCLUDED_STYLE_PROPS, STYLE_PROPS_OVERRIDES } from "./system-css.data";
-import type { Prettify } from "../utils/utils.types";
+import type { CSSLength, CategoryTokens, ThemeBreakpoints } from "../theme";
+import type { EXCLUDED_STYLE_PROPS, STYLE_PROPS_OVERRIDES } from "./system.data";
+import type { Partialized, Prettify } from "../utils/utils.types";
 
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── Types Alias StyleProps ───────
 // ════════════════════════════════════════════════════════════════════════════════════════
-
+export type PartialBreakPointKey<T> = Partialized<keyof ThemeBreakpoints, T>;
 export type Responsive<T> = T | PartialBreakPointKey<T>;
 type WithTokens<T extends string> = T | CSSLength | (string & {});
 
@@ -40,8 +39,8 @@ export type StylePropsToken = {
   shadow?: WithTokens<CategoryTokens["shadow"]>;
 
   // ────────────────────────────────────────────────── FlexBox ─────────────────────────────────────────────────────────
-  flexDir?: Responsive<CSSProperties["flexDirection"]>;         align?: Responsive<CSSProperties["alignItems"]>;
-  justify?: Responsive<CSSProperties["justifyContent"]>;        gap?: Responsive<WithTokens<CategoryTokens["spacing"]>>;
+  flexDir?: Responsive<React.CSSProperties["flexDirection"]>;      align?: Responsive<React.CSSProperties["alignItems"]>;
+  justify?: Responsive<React.CSSProperties["justifyContent"]>;       gap?: Responsive<WithTokens<CategoryTokens["spacing"]>>;
   rowGap?: Responsive<WithTokens<CategoryTokens["spacing"]>>;  columnGap?: Responsive<WithTokens<CategoryTokens["spacing"]>>;
 
   // ────────────────────────────────────────────────── Positions ───────────────────────────────────────────────────────
@@ -54,8 +53,8 @@ export type StylePropsToken = {
   fontFamily?: WithTokens<CategoryTokens["font"]>;
 
   // ────────────────────────────────────────────────── Responsive ───────────────────────────────────────────────────────
-  opacity?: Responsive<CSSProperties["opacity"]>;               zIndex?: Responsive<CSSProperties["zIndex"]>;
-  flexGrow?: Responsive<CSSProperties["flexGrow"]>;             flexShrink?: Responsive<CSSProperties["flexShrink"]>;
+  opacity?: Responsive<React.CSSProperties["opacity"]>;               zIndex?: Responsive<React.CSSProperties["zIndex"]>;
+  flexGrow?: Responsive<React.CSSProperties["flexGrow"]>;             flexShrink?: Responsive<React.CSSProperties["flexShrink"]>;
 };
 
 // ════════════════════════════════════════════════════════════════════════════════════════
@@ -72,7 +71,7 @@ type NoRepeatStyleProps =
 type ExcludedStyleProps = (typeof EXCLUDED_STYLE_PROPS)[number];
 
 type StylePropsOmit = Omit<
-  CSSProperties,
+  React.CSSProperties,
   keyof StylePropsToken | NoRepeatStyleProps | ExcludedStyleProps
 >;
 
@@ -91,9 +90,9 @@ type CSSPropToCategory = {
 };
 
 export type SystemCSS = {
-  [K in keyof CSSProperties]?: K extends keyof CSSPropToCategory
-    ? CategoryTokens[CSSPropToCategory[K]] | CSSProperties[K]
-    : CSSProperties[K];
+  [K in keyof React.CSSProperties]?: K extends keyof CSSPropToCategory
+    ? CategoryTokens[CSSPropToCategory[K]] | React.CSSProperties[K]
+    : React.CSSProperties[K];
 };
 
 // ════════════════════════════════════════════════════════════════════════════════════════

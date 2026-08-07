@@ -6,11 +6,11 @@ describe("extractMod", () => {
   // ─── string ──────────────────────────────────────────────────
   describe("string", () => {
     it("string → data-{string}=true", () => {
-      expect(extractMod("disabled")).toEqual({ "data-disabled": true });
+      expect(extractMod("disabled", "xs")).toEqual({ "data-disabled": true });
     });
 
     it("array de strings", () => {
-      expect(extractMod(["disabled", "active"])).toEqual({
+      expect(extractMod(["disabled", "active"], "xs")).toEqual({
         "data-disabled": true,
         "data-active": true,
       });
@@ -20,69 +20,69 @@ describe("extractMod", () => {
   // ─── boolean ─────────────────────────────────────────────────
   describe("boolean", () => {
     it("true es ignorado como entry (no es un key)", () => {
-      expect(extractMod(true)).toEqual({});
+      expect(extractMod(true, "xs")).toEqual({});
     });
 
     it("false es ignorado", () => {
-      expect(extractMod(false)).toEqual({});
+      expect(extractMod(false, "xs")).toEqual({});
     });
 
     it("boolean en array — ignorado", () => {
-      expect(extractMod(["active", false, true])).toEqual({ "data-active": true });
+      expect(extractMod(["active", false, true], "xs")).toEqual({ "data-active": true });
     });
   });
 
   // ─── objeto plano ─────────────────────────────────────────────
   describe("objeto plano", () => {
     it("objeto → data-{key}={value}", () => {
-      expect(extractMod({ orientation: "horizontal" })).toEqual({
+      expect(extractMod({ orientation: "horizontal" }, "xs")).toEqual({
         "data-orientation": "horizontal",
       });
     });
 
     it("filtra false", () => {
-      expect(extractMod({ loading: false })).toEqual({});
+      expect(extractMod({ loading: false }, "xs")).toEqual({});
     });
 
     it("filtra null", () => {
-      expect(extractMod({ disabled: null })).toEqual({});
+      expect(extractMod({ disabled: null }, "xs")).toEqual({});
     });
 
     it("filtra undefined", () => {
-      expect(extractMod({ active: undefined })).toEqual({});
+      expect(extractMod({ active: undefined }, "xs")).toEqual({});
     });
 
     it("incluye true", () => {
-      expect(extractMod({ disabled: true })).toEqual({ "data-disabled": true });
+      expect(extractMod({ disabled: true }, "xs")).toEqual({ "data-disabled": true });
     });
 
     it("incluye string", () => {
-      expect(extractMod({ state: "loading" })).toEqual({ "data-state": "loading" });
+      expect(extractMod({ state: "loading" }, "xs")).toEqual({ "data-state": "loading" });
     });
   });
 
   // ─── objeto con valor responsivo ──────────────────────────────
   describe("objeto con valor responsivo", () => {
     it("{ size: 'md' } → data-size=md", () => {
-      expect(extractMod({ size: "md" })).toEqual({ "data-size": "md" });
+      expect(extractMod({ size: "md" }, "xs")).toEqual({ "data-size": "md" });
     });
 
-    it("{ size: { base, md } } → data-size + data-size-md", () => {
-      expect(extractMod({ size: { base: "sm", md: "lg" } })).toEqual({
+    it("{ size: { xs, md } } → data-size + data-size-md", () => {
+      expect(extractMod({ size: { xs: "sm", md: "lg" } }, "xs")).toEqual({
         "data-size": "sm",
         "data-size-md": "lg",
       });
     });
 
-    it("{ size: { md, xl } } sin base — solo breakpoints declarados", () => {
-      expect(extractMod({ size: { md: "lg", xl: "xl" } })).toEqual({
+    it("{ size: { md, xl } } sin xs — solo breakpoints declarados", () => {
+      expect(extractMod({ size: { md: "lg", xl: "xl" } }, "xs")).toEqual({
         "data-size-md": "lg",
         "data-size-xl": "xl",
       });
     });
 
     it("cualquier clave puede ser responsiva", () => {
-      expect(extractMod({ gap: { base: "sm", lg: "xl" } })).toEqual({
+      expect(extractMod({ gap: { xs: "sm", lg: "xl" } }, "xs")).toEqual({
         "data-gap": "sm",
         "data-gap-lg": "xl",
       });
@@ -92,27 +92,27 @@ describe("extractMod", () => {
   // ─── array mixto ─────────────────────────────────────────────
   describe("array mixto", () => {
     it("combina string y objeto", () => {
-      expect(extractMod([{ orientation: "horizontal" }, "focused"])).toEqual({
+      expect(extractMod([{ orientation: "horizontal" }, "focused"], "xs")).toEqual({
         "data-orientation": "horizontal",
         "data-focused": true,
       });
     });
 
     it("último valor gana en colisión", () => {
-      expect(extractMod([{ state: "idle" }, { state: "loading" }])).toEqual({
+      expect(extractMod([{ state: "idle" }, { state: "loading" }], "xs")).toEqual({
         "data-state": "loading",
       });
     });
 
     it("filtra falsy dentro del array", () => {
-      expect(extractMod([{ loading: false, active: true }, "focused"])).toEqual({
+      expect(extractMod([{ loading: false, active: true }, "focused"], "xs")).toEqual({
         "data-active": true,
         "data-focused": true,
       });
     });
 
     it("null y undefined en array ignorados", () => {
-      expect(extractMod([null, undefined, "active"])).toEqual({ "data-active": true });
+      expect(extractMod([null, undefined, "active"], "xs")).toEqual({ "data-active": true });
     });
   });
 
@@ -124,7 +124,7 @@ describe("extractMod", () => {
         { variant: "solid" },
         { slot: "Button" },
         { size: "sm" },
-      ])).toEqual({
+      ], "xs")).toEqual({
         "data-focused": true,
         "data-variant": "solid",
         "data-slot": "Button",
@@ -137,8 +137,8 @@ describe("extractMod", () => {
         "focused",
         { variant: "solid" },
         { slot: "Button" },
-        { size: { base: "sm", md: "lg" } },
-      ])).toEqual({
+        { size: { xs: "sm", md: "lg" } },
+      ], "xs")).toEqual({
         "data-focused": true,
         "data-variant": "solid",
         "data-slot": "Button",
@@ -151,30 +151,26 @@ describe("extractMod", () => {
       expect(extractMod([
         { slot: "Input" },
         undefined,
-      ])).toEqual({ "data-slot": "Input" });
+      ], "xs")).toEqual({ "data-slot": "Input" });
     });
   });
 
   // ─── edge cases ───────────────────────────────────────────────
   describe("edge cases", () => {
-    it("sin argumentos → objeto vacío", () => {
-      expect(extractMod()).toEqual({});
-    });
-
-    it("undefined → objeto vacío", () => {
-      expect(extractMod(undefined)).toEqual({});
+    it("mod undefined → objeto vacío", () => {
+      expect(extractMod(undefined, "xs")).toEqual({});
     });
 
     it("objeto vacío → objeto vacío", () => {
-      expect(extractMod({})).toEqual({});
+      expect(extractMod({}, "xs")).toEqual({});
     });
 
     it("array vacío → objeto vacío", () => {
-      expect(extractMod([])).toEqual({});
+      expect(extractMod([], "xs")).toEqual({});
     });
 
     it("todos los valores falsy → objeto vacío", () => {
-      expect(extractMod({ a: false, b: null, c: undefined })).toEqual({});
+      expect(extractMod({ a: false, b: null, c: undefined }, "xs")).toEqual({});
     });
   });
 });

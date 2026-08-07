@@ -1,58 +1,63 @@
-import { type Theme, defaultThemeMacros, defaultThemeComponents } from "../theme/core";
+import { type Theme, defaultThemeMacros, defaultThemeComponents } from "../core";
 
-// ─── Terra — "Terracota sobre stone, balanceada y warm" ──────────────────────
-// Terracotta primary · teal secondary · stone neutral
-// Balanced radii (6/9/14px) · standard spacing · mid-height controls
+// ─── Halo — "Violeta sobre zinc, espacioso y soft" ────────────────────────────
+// Violet primary · pink secondary · zinc neutral
+// Large radii (8/12/18px) · generous spacing · tall controls
+// Dark-first: neutral.950 = #09090b
 
-export const terraTheme: Theme = {
-  prefix: "terra",
+export const haloTheme: Theme = {
+  prefix: "halo",
 
   // ─── System Colors ────────────────────────────────────────────────────────
   colors: {
-    // Terracotta — warm, earthy primary
+    // Violet — the Halo signature
     primary: {
-      50: "#fdf4f0",
-      100: "#fbe6dc",
-      200: "#f6c8b4",
-      300: "#eea487",
-      400: "#e27c57",
-      500: "#d35f3a",
-      600: "#bd4a28",
-      700: "#9c3a20",
-      800: "#7d301e",
-      900: "#67291d",
-      950: "#38130c",
+      50:  "#f5f3ff",
+      100: "#ede9fe",
+      200: "#ddd6fe",
+      300: "#c4b5fd",
+      400: "#a78bfa",
+      500: "#8b5cf6",
+      600: "#7c3aed",
+      700: "#6d28d9",
+      800: "#5b21b6",
+      900: "#4c1d95",
+      950: "#2e1065",
     },
-    // Teal — earthy complement
+
+    // Pink — Halo secondary accent
     secondary: {
-      50: "#f0fdfa",
-      100: "#ccfbf1",
-      200: "#99f6e4",
-      300: "#5eead4",
-      400: "#2dd4bf",
-      500: "#14b8a6",
-      600: "#0d9488",
-      700: "#0f766e",
-      800: "#115e59",
-      900: "#134e4a",
-      950: "#042f2e",
+      50:  "#fdf2f8",
+      100: "#fce7f3",
+      200: "#fbcfe8",
+      300: "#f9a8d4",
+      400: "#f472b6",
+      500: "#ec4899",
+      600: "#db2777",
+      700: "#be185d",
+      800: "#9d174d",
+      900: "#831843",
+      950: "#500724",
     },
-    // Stone — warm neutral, not cold gray
+
+    // Zinc — cool, clean neutral
     neutral: {
-      50: "#fafaf9",
-      100: "#f5f5f4",
-      200: "#e7e5e4",
-      300: "#d6d3d1",
-      400: "#a8a29e",
-      500: "#78716c",
-      600: "#57534e",
-      700: "#44403c",
-      800: "#292524",
-      900: "#1c1917",
-      950: "#0c0a09",
+      50:  "#fafafa",
+      100: "#f4f4f5",
+      200: "#e4e4e7",
+      300: "#d4d4d8",
+      400: "#a1a1aa",
+      500: "#71717a",
+      600: "#52525b",
+      700: "#3f3f46",
+      800: "#27272a",
+      900: "#18181b",
+      950: "#09090b",
     },
+
+    // Shared status colors (same across all themes)
     danger: {
-      50: "#fef2f2",
+      50:  "#fef2f2",
       100: "#fee2e2",
       200: "#fecaca",
       300: "#fca5a5",
@@ -65,7 +70,7 @@ export const terraTheme: Theme = {
       950: "#450a0a",
     },
     success: {
-      50: "#ecfdf5",
+      50:  "#ecfdf5",
       100: "#d1fae5",
       200: "#a7f3d0",
       300: "#6ee7b7",
@@ -78,7 +83,7 @@ export const terraTheme: Theme = {
       950: "#022c22",
     },
     warning: {
-      50: "#fffbeb",
+      50:  "#fffbeb",
       100: "#fef3c7",
       200: "#fde68a",
       300: "#fcd34d",
@@ -91,7 +96,7 @@ export const terraTheme: Theme = {
       950: "#451a03",
     },
     info: {
-      50: "#eff6ff",
+      50:  "#eff6ff",
       100: "#dbeafe",
       200: "#bfdbfe",
       300: "#93c5fd",
@@ -107,43 +112,43 @@ export const terraTheme: Theme = {
 
   // ─── Spacing Tokens ───────────────────────────────────────────────────────
   spacing: {
-    xs: "4px",
-    sm: "8px",
-    md: "16px",
-    lg: "24px",
-    xl: "36px",
-    "2xl": "48px",
+    xs:   "6px",
+    sm:   "12px",
+    md:   "18px",
+    lg:   "28px",
+    xl:   "40px",
+    "2xl":"56px",
   },
 
   // ─── Radius Tokens ────────────────────────────────────────────────────────
   radius: {
     none: "0",
-    xs: "3px",
-    sm: "6px",
-    md: "9px",
-    lg: "14px",
-    xl: "18px",
+    xs:   "4px",
+    sm:   "8px",
+    md:   "12px",
+    lg:   "18px",
+    xl:   "22px",
     full: "9999px",
   },
 
   // ─── Font sizes Tokens ────────────────────────────────────────────────────
   fontSizes: {
-    xs: "12px",
-    sm: "13px",
-    md: "15px",
-    lg: "16px",
-    xl: "19px",
-    "2xl": "24px",
-    "3xl": "30px",
-    "4xl": "40px",
+    xs:   "10px",
+    sm:   "11px",
+    md:   "12px",
+    lg:   "13px",
+    xl:   "17px",
+    "2xl":"25px",
+    "3xl":"32px",
+    "4xl":"44px",
   },
 
   // ─── Typography ───────────────────────────────────────────────────────────
   typography: {
     fontSans: "'Inter','Inter var',system-ui,-apple-system,'Segoe UI',sans-serif",
     fontMono: "ui-monospace,'SF Mono','JetBrains Mono','Menlo',monospace",
-    trackingTight: "-0.012em",
-    weightHeading: 700,
+    trackingTight: "-0.01em",
+    weightHeading: 600,
   },
 
   // ─── Shadows Tokens ───────────────────────────────────────────────────────
@@ -158,37 +163,37 @@ export const terraTheme: Theme = {
   // ─── Motion ───────────────────────────────────────────────────────────────
   motion: {
     easeDefault: "cubic-bezier(.4,0,.2,1)",
-    easeIn: "cubic-bezier(.4,0,1,1)",
-    durFast: "150ms",
-    durState: "200ms",
-    durLayout: "300ms",
+    easeIn:      "cubic-bezier(.4,0,1,1)",
+    durFast:     "150ms",
+    durState:    "200ms",
+    durLayout:   "300ms",
   },
 
   // ─── Semantic layer (dark-first) ──────────────────────────────────────────
   semantic: {
     dark: {
-      background: "neutral.950",
-      surface: "neutral.900",
-      surfaceRaised: "neutral.800",
-      surfaceHover: "neutral.800",
+      background:    "neutral.950",   // #09090b
+      surface:       "neutral.900",   // #18181b
+      surfaceRaised: "neutral.800",   // #27272a
+      surfaceHover:  "neutral.800",
       surfaceSunken: "#000000",
-      border: "neutral.800",
-      borderStrong: "neutral.700",
-      text: "neutral.50",
-      textSubtle: "neutral.400",
-      textDisabled: "neutral.600",
+      border:        "neutral.800",   // #27272a
+      borderStrong:  "neutral.700",   // #3f3f46
+      text:          "neutral.50",    // #fafafa
+      textSubtle:    "neutral.400",   // #a1a1aa
+      textDisabled:  "neutral.600",   // #52525b
     },
     light: {
-      background: "neutral.50",
-      surface: "#ffffff",
+      background:    "neutral.50",    // #fafafa
+      surface:       "#ffffff",
       surfaceRaised: "#ffffff",
-      surfaceHover: "neutral.100",
+      surfaceHover:  "neutral.100",   // #f4f4f5
       surfaceSunken: "neutral.100",
-      border: "neutral.200",
-      borderStrong: "neutral.300",
-      text: "neutral.900",
-      textSubtle: "neutral.500",
-      textDisabled: "neutral.400",
+      border:        "neutral.200",   // #e4e4e7
+      borderStrong:  "neutral.300",   // #d4d4d8
+      text:          "neutral.900",   // #18181b
+      textSubtle:    "neutral.500",   // #71717a
+      textDisabled:  "neutral.400",   // #a1a1aa
     },
   },
 
@@ -204,14 +209,14 @@ export const terraTheme: Theme = {
 
   // ─── BreakPoints Mobile First ─────────────────────────────────────────────
   breakpoints: {
-    xs: "150px",
-    sm: "640px",
-    md: "768px",
-    lg: "1024px",
-    xl: "1280px",
+    xs: "320px",
+    sm: "375px",
+    md: "425px",
+    lg: "768px",
+    xl: "1024px",
   },
 
   macros: defaultThemeMacros,
-  
+
   components: defaultThemeComponents,
 };

@@ -87,7 +87,7 @@ No usar un contexto genérico (`Record<string, unknown>`) — eso elimina tipos 
 ```ts
 // LayoutContext — contexto compartido para orientation, size, variant
 export const [LayoutProvider, useLayoutContext] =
-  useCreateProvider<LayoutContextValue>("Layout", {} as LayoutContextValue);
+  useCreateContext<LayoutContextValue>("Layout", {} as LayoutContextValue);
 
 // Padre — provee contexto a sus hijos
 const ctx = useMemo(() => ({ size, variant }), [size, variant]);

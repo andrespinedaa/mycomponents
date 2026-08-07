@@ -1,10 +1,10 @@
-import { createContext, useContext } from "react";
+import React from "react";
 
-export function useCreateProvider<T>(name: string, defaultValue?: T) {
-  const Context = createContext<T | null>(defaultValue ?? null);
+export function useCreateContext<T>(name: string, defaultValue?: T) {
+  const Context = React.createContext<T | null>(defaultValue ?? null);
 
   function useProvider() {
-    const context = useContext(Context);
+    const context = React.useContext(Context);
 
     if (!context) {
       throw new Error(

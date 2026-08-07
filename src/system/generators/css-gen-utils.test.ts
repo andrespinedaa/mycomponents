@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { resolveVars } from "../../factory/resolvers/resolve-vars";
 import { generateTokens } from "./generateTokens";
-import { defaultTheme } from "../../themes/default-theme";
+import { defaultTheme } from "../../theme/themes/default-theme";
 
 const { vars: tokenVars } = generateTokens(defaultTheme);
 

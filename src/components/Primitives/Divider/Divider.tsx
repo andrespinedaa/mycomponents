@@ -1,5 +1,5 @@
 import { ComponentFactory, type ComponentConfig } from "../../../factory";
-import { Box } from "..";
+import { Box } from "../Box";
 
 export interface DividerOwnProps {}
 
@@ -14,7 +14,7 @@ export type DividerConfig = ComponentConfig<{
 
 export const Divider = ComponentFactory<DividerConfig>({
   name: "Divider",
-  render: ({ ref, children, variant = "Filled", orientation = "horizontal", ...rest }) => {
+  render: ({ ref, children, variant = "Filled", orientation = "horizontal", set, ...rest }) => {
     return (
       <Box
         ref={ref}

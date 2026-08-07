@@ -16,6 +16,6 @@ export * from './components/Input/Input';
 export * from './factory';
 export * from './hooks';
 export * from './system';
-export * from './factory/core/polimorphic.types';
+export * from './theme';
 export * from './utils/utils.types';
 export * from './utils';

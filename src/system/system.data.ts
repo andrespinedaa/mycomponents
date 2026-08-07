@@ -1,6 +1,6 @@
-import type { CategoryTokens, ComponentStates } from "../theme/core/theme.types";
-import { CSS_PROPERTY_NAMES } from "../theme/generators/css-property-names.data";
-import type { StylePropsToken } from "./system-css.types";
+import type { CategoryTokens, ComponentStates } from "../theme/theme.types";
+import { CSS_PROPERTY_NAMES } from "./generators/css-property-names.data";
+import type { StylePropsToken } from "./system.types";
 
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── DSL LENGUAGE REGEX ───────
@@ -35,7 +35,6 @@ type StylePropDef = {
 };
 
 type StylePropsAlias = keyof StylePropsToken;
-type StylePropsRun = Record<StylePropsAlias, StylePropDef>;
 
 // prettier-ignore
 export const STYLE_PROPS_OVERRIDES = {
@@ -99,7 +98,7 @@ export const STYLE_PROPS_OVERRIDES = {
   flexGrow:    { properties: ["flexGrow"],                     category: "raw", responsive: true },
   flexShrink:  { properties: ["flexShrink"],                   category: "raw", responsive: true },
 
-} as const satisfies StylePropsRun;
+} as const satisfies Record<StylePropsAlias, StylePropDef>;
 
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── STYLEPROPS RUNTIME ───────

@@ -2,7 +2,7 @@ import { Card, Badge, Dot, Button } from "./components";
 import { Text, Box, Image, Divider } from "./components/Primitives";
 import { ThemeProvider } from "./theme";
 import { createTheme } from "./theme/createTheme";
-import { graphiteTheme, haloTheme, terraTheme } from "./themes";
+import { graphiteTheme, haloTheme, terraTheme } from "./theme/themes";
 import bg1 from "./components/Card/background 2.jpg";
 import bg2 from "./components/Card/background.jpg";
 
@@ -17,12 +17,7 @@ function App() {
           <Box></Box>
           <Box></Box>
           <Box display="flex" gap="md">
-            <Button
-              type="button"
-              shadow="md"
-              rounded="xs"
-              /* style={(t) => ({ background: t.colors.secondary[300] })} */
-            >
+            <Button type="button" shadow="md" rounded="xs">
               Sign Up
             </Button>
             <Button type="button" shadow="md" rounded="xs">

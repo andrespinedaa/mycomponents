@@ -9,14 +9,14 @@ import {
 } from "../../theme/core/macros/theme.macros.data";
 import type { FlexMacros, GridMacros, Macros, ThemeMacros } from "../../theme/core/macros/theme.macros.types";
 
+type MacroSchema = Record<string, readonly string[]>;
+
 function macroToCssValue<T extends string>(value: T): string {
   return value
     .replace(/([A-Z])/g, "-$1")
     .toLowerCase()
     .replace(/^-/, "");
 }
-
-type MacroSchema = Record<string, readonly string[]>;
 
 function createMacroParser<TMacro extends string>(schema: MacroSchema) {
   const sortedSchema = Object.fromEntries(

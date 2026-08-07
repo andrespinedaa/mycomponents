@@ -1,6 +1,6 @@
-import type { ColorScale, Theme, ThemeColors, ThemeOverride } from "./core/theme.types";
+import type { ColorScale, Theme, ThemeColors, ThemeOverride } from "./theme.types";
 
-export function mergeColors(base: ThemeColors, override: ThemeOverride["colors"]): ThemeColors {
+function mergeColors(base: ThemeColors, override: ThemeOverride["colors"]): ThemeColors {
   if (!override) return base;
 
   return Object.keys(override).reduce(
@@ -19,7 +19,7 @@ export function mergeColors(base: ThemeColors, override: ThemeOverride["colors"]
   );
 }
 
-export function mergeRecord<T extends Record<string, string>>(
+function mergeRecord<T extends Record<string, string>>(
   base: T,
   override: Partial<T> | undefined,
 ): T {

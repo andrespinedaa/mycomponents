@@ -31,9 +31,6 @@ export const CardThemeComponent: CardTheme = {
       hover: { shadow: "0 8px 24px rgba(0,0,0,0.10), 0 28px 64px rgba(0,0,0,0.16)" },
     },
   },
-  statics: {
-    Section: CardSectionThemeComponent,
-  },
   orientation: {
     horizontal: {
       minW: "$minH",

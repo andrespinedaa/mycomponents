@@ -5,7 +5,6 @@ export interface ItemProps {}
 export type ItemConfig = ComponentConfig<{
   tag: "li";
   name: "Item";
-  defaultProps: {};
   ownProps: ItemProps;
   sizes: "xs" | "sm" | "md" | "lg" | "xl";
   variants: "Filled" | "Outlined" | "Elevated";

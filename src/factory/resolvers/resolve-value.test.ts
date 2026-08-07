@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { defaultTheme } from "../../themes/default-theme";
-import { generateTokens } from "../../theme/generators/generateTokens";
+import { defaultTheme } from "../../theme/themes/default-theme";
+import { generateTokens } from "../../system/generators/generateTokens";
 import { resolveValue } from "./resolve-value";
 
 const p = defaultTheme.prefix;

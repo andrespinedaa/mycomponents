@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { defaultTheme } from "../../themes/default-theme";
-import type { Theme } from "../core/theme.types";
+import { defaultTheme } from "../../theme/themes/default-theme";
+import type { Theme } from "../../theme/theme.types";
 import { generateTokens } from "./generateTokens";
 import { parseComponentConfig } from "./parseComponentConfig";
-import { generateComponentPresets } from "./generatePresets";
+import { generatePresets } from "./generatePresets";
 import { generateNames } from "./generateComponents";
 import type { GeneratorConfig } from "./css-gen-utils";
-import type { ComponentName } from "../core";
+import type { ComponentName } from "../../theme/core";
 
 const { vars: tokenVars } = generateTokens(defaultTheme);
 
@@ -17,7 +17,7 @@ type TestConfig = Partial<NonNullable<Theme["components"]>[ComponentName]> & {
 
 function callPresets(name: string, config: TestConfig): string {
   const { presets, slots } = parseComponentConfig(config as GeneratorConfig);
-  return generateComponentPresets(
+  return generatePresets(
     generateNames(name, config as GeneratorConfig),
     presets,
     slots,
@@ -25,9 +25,9 @@ function callPresets(name: string, config: TestConfig): string {
   );
 }
 
-// --- generateComponentPresets --------------------------------------------------
+// --- generatePresets --------------------------------------------------
 
-describe("generateComponentPresets", () => {
+describe("generatePresets", () => {
   describe("preset plano — nivel componente", () => {
     it("genera [data-slot][data-set] con los tokens del preset como CSS vars", () => {
       const config: TestConfig = {

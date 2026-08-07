@@ -1,23 +1,23 @@
 import { describe, expect, it } from "vitest";
-import type { Theme } from "../core/theme.types";
-import { generateComponentBases } from "./generateBases";
+import type { Theme } from "../../theme/theme.types";
+import { generateBases } from "./generateBases";
 import { parseComponentConfig } from "./parseComponentConfig";
 import { generateNames } from "./generateComponents";
 import type { GeneratorConfig } from "./css-gen-utils";
-import type { ComponentName } from "../core";
+import type { ComponentName } from "../../theme/core";
 
 type TestConfig = Partial<NonNullable<Theme["components"]>[ComponentName]>;
 
 function callBases(name: string, config: TestConfig): string {
-  return generateComponentBases(
+  return generateBases(
     generateNames(name, config as GeneratorConfig),
     parseComponentConfig(config as GeneratorConfig).usedKeys,
   );
 }
 
-// ─── generateComponentBases ──────────────────────────────────────────────────
+// ─── generateBases ──────────────────────────────────────────────────
 
-describe("generateComponentBases", () => {
+describe("generateBases", () => {
   describe("guarda de salida temprana", () => {
     it("retorna vacío si no hay variants, sizes ni presets", () => {
       const config: TestConfig = {};

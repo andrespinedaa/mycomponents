@@ -1,7 +1,7 @@
-import type { CategoryTokens, VarsCss } from "../../theme/core/theme.types";
+import type { CategoryTokens, VarsCss } from "../../theme/theme.types";
 import { camelToKebab, dotToKebab } from "../../utils/string";
 
-const SIZE_ALIASES: Record<string, string> = {
+export const SIZE_ALIASES: Record<string, string> = {
   full: "100%",
   screen: "100vw",
   fit: "fit-content",

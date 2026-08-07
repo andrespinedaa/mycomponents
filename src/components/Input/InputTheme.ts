@@ -4,7 +4,6 @@ import type { InputConfig } from "./Input";
 export type InputThemeConfig = ThemeComponentConfig<InputConfig>;
 
 export const InputThemeComponent: InputThemeConfig = {
-  defaultProps: { size: "md" },
   sizes: {
     xs: { h: "28px", fontSize: "xs", px: "xs" },
     sm: { h: "32px", fontSize: "sm", px: "xs" },

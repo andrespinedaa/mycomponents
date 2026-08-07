@@ -81,7 +81,7 @@ Cada relación padre→hijo tiene su propio contexto tipado. No existe un contex
 ```ts
 // LayoutContext — contexto compartido para orientation, size, variant
 export const [LayoutProvider, useLayoutContext] =
-  useCreateProvider<LayoutContextValue>("Layout", {} as LayoutContextValue);
+  useCreateContext<LayoutContextValue>("Layout", {} as LayoutContextValue);
 
 // Card.tsx — provee contexto a sus hijos
 const ctx = useMemo(() => ({ orientation }), [orientation]);
@@ -132,7 +132,7 @@ type BoxConfig = ComponentConfig<{
 - [x] Macros (`apply`) con soporte a CSS custom properties
 - [x] `mod` para data attributes semánticos
 - [x] `vars` para CSS custom properties por instancia
-- [x] Contextos tipados con `useCreateProvider`
+- [x] Contextos tipados con `useCreateContext`
 - [x] `LayoutContext` compartido entre compound components
 - [x] Componentes base: Box, Grid, Divider, Badge, Button, Card, Alert, Avatar, Input
 

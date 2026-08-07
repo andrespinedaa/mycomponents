@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { LayoutProvider, type LayoutContextValue } from "../../../context/LayoutContext";
 import { ComponentFactory, type ComponentConfig } from "../../../factory";
 import type { ComponentVariants, Scales } from "../../../theme";
-import { Box } from "./Box";
+import { Box } from "../Box/Box";
 
 export interface LayoutProps {}
 

@@ -1,31 +1,29 @@
 import { describe, expect, it } from "vitest";
-import { defaultTheme } from "../../themes/default-theme";
-import type { Theme } from "../core/theme.types";
+import { defaultTheme } from "../../theme/themes/default-theme";
+import type { Theme } from "../../theme/theme.types";
 import { generateNames } from "./generateComponents";
 import type { GeneratorConfig } from "./css-gen-utils";
 import { generateTokens } from "./generateTokens";
 import { parseComponentConfig } from "./parseComponentConfig";
-import { generateComponentVariants } from "./generateVariants";
-import type { ComponentName } from "../core";
+import { generateVariants } from "./generateVariants";
+import type { ComponentName } from "../../theme/core";
 
 const p = defaultTheme.prefix;
 const { vars: tokenVars } = generateTokens(defaultTheme);
 
-// Partial — estos fixtures aíslan un solo generador a la vez, sin necesidad de `sizes`.
-// Se castea a GeneratorConfig al llamar los generadores: son fixtures de test, no config real.
 type TestConfig = Partial<NonNullable<Theme["components"]>[ComponentName]>;
 
 function callVariants(name: string, config: TestConfig): string {
-  return generateComponentVariants(
+  return generateVariants(
     generateNames(name, config as GeneratorConfig),
     parseComponentConfig(config as GeneratorConfig).variants,
     tokenVars,
   );
 }
 
-// --- generateComponentVariants -----------------------------------------------
+// --- generateVariants -----------------------------------------------
 
-describe("generateComponentVariants", () => {
+describe("generateVariants", () => {
   describe("guarda de salida temprana", () => {
     it("retorna vacío si no hay variants", () => {
       const config: TestConfig = {};
@@ -312,7 +310,7 @@ describe("generateComponentVariants", () => {
 
 // --- DSL $prop en variants ----------------------------------------------------
 
-describe("generateComponentVariants — DSL $prop", () => {
+describe("generateVariants — DSL $prop", () => {
   it("$prop en flat base resuelve var del padre", () => {
     const config: TestConfig = {
       parentName: "Card",

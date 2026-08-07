@@ -1,63 +1,56 @@
-import { type Theme, defaultThemeMacros, defaultThemeComponents } from "../theme/core";
+import { type Theme, defaultThemeMacros, defaultThemeComponents } from "../core";
 
-// ─── Halo — "Violeta sobre zinc, espacioso y soft" ────────────────────────────
-// Violet primary · pink secondary · zinc neutral
-// Large radii (8/12/18px) · generous spacing · tall controls
-// Dark-first: neutral.950 = #09090b
+// ─── Graphite — "Azul señal sobre slate, compacto y sharp" ───────────────────
+// (Formerly "Mineral" in the initial proposal)
+// Blue primary · cyan secondary · slate neutral
+// Sharp radii (4/6/8px) · compact spacing · standard controls
 
-export const haloTheme: Theme = {
-  prefix: "halo",
+export const graphiteTheme: Theme = {
+  prefix: "graphite",
 
   // ─── System Colors ────────────────────────────────────────────────────────
   colors: {
-    // Violet — the Halo signature
     primary: {
-      50:  "#f5f3ff",
-      100: "#ede9fe",
-      200: "#ddd6fe",
-      300: "#c4b5fd",
-      400: "#a78bfa",
-      500: "#8b5cf6",
-      600: "#7c3aed",
-      700: "#6d28d9",
-      800: "#5b21b6",
-      900: "#4c1d95",
-      950: "#2e1065",
+      50: "#eff6ff",
+      100: "#dbeafe",
+      200: "#bfdbfe",
+      300: "#93c5fd",
+      400: "#60a5fa",
+      500: "#3b82f6",
+      600: "#2563eb",
+      700: "#1d4ed8",
+      800: "#1e40af",
+      900: "#1e3a8a",
+      950: "#172554",
     },
-
-    // Pink — Halo secondary accent
     secondary: {
-      50:  "#fdf2f8",
-      100: "#fce7f3",
-      200: "#fbcfe8",
-      300: "#f9a8d4",
-      400: "#f472b6",
-      500: "#ec4899",
-      600: "#db2777",
-      700: "#be185d",
-      800: "#9d174d",
-      900: "#831843",
-      950: "#500724",
+      50: "#ecfeff",
+      100: "#cffafe",
+      200: "#a5f3fc",
+      300: "#67e8f9",
+      400: "#22d3ee",
+      500: "#06b6d4",
+      600: "#0891b2",
+      700: "#0e7490",
+      800: "#155e75",
+      900: "#164e63",
+      950: "#083344",
     },
-
-    // Zinc — cool, clean neutral
     neutral: {
-      50:  "#fafafa",
-      100: "#f4f4f5",
-      200: "#e4e4e7",
-      300: "#d4d4d8",
-      400: "#a1a1aa",
-      500: "#71717a",
-      600: "#52525b",
-      700: "#3f3f46",
-      800: "#27272a",
-      900: "#18181b",
-      950: "#09090b",
+      50: "#f8fafc",
+      100: "#f1f5f9",
+      200: "#e2e8f0",
+      300: "#cbd5e1",
+      400: "#94a3b8",
+      500: "#64748b",
+      600: "#475569",
+      700: "#334155",
+      800: "#1e293b",
+      900: "#0f172a",
+      950: "#020617",
     },
-
-    // Shared status colors (same across all themes)
     danger: {
-      50:  "#fef2f2",
+      50: "#fef2f2",
       100: "#fee2e2",
       200: "#fecaca",
       300: "#fca5a5",
@@ -70,7 +63,7 @@ export const haloTheme: Theme = {
       950: "#450a0a",
     },
     success: {
-      50:  "#ecfdf5",
+      50: "#ecfdf5",
       100: "#d1fae5",
       200: "#a7f3d0",
       300: "#6ee7b7",
@@ -83,7 +76,7 @@ export const haloTheme: Theme = {
       950: "#022c22",
     },
     warning: {
-      50:  "#fffbeb",
+      50: "#fffbeb",
       100: "#fef3c7",
       200: "#fde68a",
       300: "#fcd34d",
@@ -96,7 +89,7 @@ export const haloTheme: Theme = {
       950: "#451a03",
     },
     info: {
-      50:  "#eff6ff",
+      50: "#eff6ff",
       100: "#dbeafe",
       200: "#bfdbfe",
       300: "#93c5fd",
@@ -112,43 +105,43 @@ export const haloTheme: Theme = {
 
   // ─── Spacing Tokens ───────────────────────────────────────────────────────
   spacing: {
-    xs:   "6px",
-    sm:   "12px",
-    md:   "18px",
-    lg:   "28px",
-    xl:   "40px",
-    "2xl":"56px",
+    xs: "4px",
+    sm: "8px",
+    md: "12px",
+    lg: "16px",
+    xl: "24px",
+    "2xl": "32px",
   },
 
   // ─── Radius Tokens ────────────────────────────────────────────────────────
   radius: {
     none: "0",
-    xs:   "4px",
-    sm:   "8px",
-    md:   "12px",
-    lg:   "18px",
-    xl:   "22px",
+    xs: "2px",
+    sm: "4px",
+    md: "6px",
+    lg: "8px",
+    xl: "10px",
     full: "9999px",
   },
 
   // ─── Font sizes Tokens ────────────────────────────────────────────────────
   fontSizes: {
-    xs:   "10px",
-    sm:   "11px",
-    md:   "12px",
-    lg:   "13px",
-    xl:   "17px",
-    "2xl":"25px",
-    "3xl":"32px",
-    "4xl":"44px",
+    xs: "12px",
+    sm: "13px",
+    md: "14px",
+    lg: "16px",
+    xl: "18px",
+    "2xl": "22px",
+    "3xl": "28px",
+    "4xl": "38px",
   },
 
   // ─── Typography ───────────────────────────────────────────────────────────
   typography: {
     fontSans: "'Inter','Inter var',system-ui,-apple-system,'Segoe UI',sans-serif",
     fontMono: "ui-monospace,'SF Mono','JetBrains Mono','Menlo',monospace",
-    trackingTight: "-0.01em",
-    weightHeading: 600,
+    trackingTight: "-0.014em",
+    weightHeading: 650,
   },
 
   // ─── Shadows Tokens ───────────────────────────────────────────────────────
@@ -163,37 +156,37 @@ export const haloTheme: Theme = {
   // ─── Motion ───────────────────────────────────────────────────────────────
   motion: {
     easeDefault: "cubic-bezier(.4,0,.2,1)",
-    easeIn:      "cubic-bezier(.4,0,1,1)",
-    durFast:     "150ms",
-    durState:    "200ms",
-    durLayout:   "300ms",
+    easeIn: "cubic-bezier(.4,0,1,1)",
+    durFast: "150ms",
+    durState: "200ms",
+    durLayout: "300ms",
   },
 
   // ─── Semantic layer (dark-first) ──────────────────────────────────────────
   semantic: {
     dark: {
-      background:    "neutral.950",   // #09090b
-      surface:       "neutral.900",   // #18181b
-      surfaceRaised: "neutral.800",   // #27272a
-      surfaceHover:  "neutral.800",
+      background: "neutral.950",
+      surface: "neutral.900",
+      surfaceRaised: "neutral.800",
+      surfaceHover: "neutral.800",
       surfaceSunken: "#000000",
-      border:        "neutral.800",   // #27272a
-      borderStrong:  "neutral.700",   // #3f3f46
-      text:          "neutral.50",    // #fafafa
-      textSubtle:    "neutral.400",   // #a1a1aa
-      textDisabled:  "neutral.600",   // #52525b
+      border: "neutral.800",
+      borderStrong: "neutral.700",
+      text: "neutral.50",
+      textSubtle: "neutral.400",
+      textDisabled: "neutral.600",
     },
     light: {
-      background:    "neutral.50",    // #fafafa
-      surface:       "#ffffff",
+      background: "neutral.50",
+      surface: "#ffffff",
       surfaceRaised: "#ffffff",
-      surfaceHover:  "neutral.100",   // #f4f4f5
+      surfaceHover: "neutral.100",
       surfaceSunken: "neutral.100",
-      border:        "neutral.200",   // #e4e4e7
-      borderStrong:  "neutral.300",   // #d4d4d8
-      text:          "neutral.900",   // #18181b
-      textSubtle:    "neutral.500",   // #71717a
-      textDisabled:  "neutral.400",   // #a1a1aa
+      border: "neutral.200",
+      borderStrong: "neutral.300",
+      text: "neutral.900",
+      textSubtle: "neutral.500",
+      textDisabled: "neutral.400",
     },
   },
 
@@ -209,11 +202,11 @@ export const haloTheme: Theme = {
 
   // ─── BreakPoints Mobile First ─────────────────────────────────────────────
   breakpoints: {
-    xs: "320px",
-    sm: "375px",
-    md: "425px",
-    lg: "768px",
-    xl: "1024px",
+    xs: "150px",
+    sm: "640px",
+    md: "768px",
+    lg: "1024px",
+    xl: "1280px",
   },
 
   macros: defaultThemeMacros,

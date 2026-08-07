@@ -1,5 +1,5 @@
 import { ComponentFactory, type ComponentConfig } from "../../../factory";
-import type { ComponentVariants } from "../../../theme";
+import type { ComponentVariants, ThemeFontSizes } from "../../../theme";
 
 export interface TextOwnProps {}
 
@@ -8,7 +8,7 @@ export type TextConfig = ComponentConfig<{
   name: "Text";
   ownProps: TextOwnProps;
   variants: ComponentVariants;
-  sizes: "xs" | "sm" | "md" | "lg" | "xl";
+  sizes: keyof ThemeFontSizes;
 }>;
 
 export const Text = ComponentFactory<TextConfig>({ render: "p", name: "Text" });

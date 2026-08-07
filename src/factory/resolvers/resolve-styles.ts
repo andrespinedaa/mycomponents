@@ -15,6 +15,7 @@ interface ResolveStylesOptions {
   styleProps: StyleProps;
   theme: Theme;
   tokenVars: VarsCss;
+  smallestBreakpoint: string;
   vars?: VarsCss;
   style?: CSSProperties;
   unstyled?: boolean;
@@ -56,11 +57,12 @@ export function resolveSystemStyles({
   tokenVars,
   styleProps,
   unstyled = false,
+  smallestBreakpoint,
 }: ResolveStylesOptions): ResolvedStylesResult {
   const macroStyles = resolveMacros(apply, theme.macros);
   const { styles: systemStyles, hasResponsive } = unstyled
     ? { styles: {}, hasResponsive: false }
-    : parseStyleProps(styleProps, tokenVars);
+    : parseStyleProps(styleProps, tokenVars, smallestBreakpoint);
 
   return {
     styles: { ...macroStyles, ...systemStyles, ...vars, ...style },

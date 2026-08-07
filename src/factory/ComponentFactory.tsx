@@ -1,6 +1,6 @@
-import { type ElementType, forwardRef } from "react";
+import React from "react";
 import { resolveLayout, resolveStyle, resolveSystemStyles, resolveVars } from "./resolvers";
-import { useThemeContext, type GeneratorConfig } from "../theme";
+import { useThemeContext, useSystemContext } from "../theme";
 import { camelToKebab } from "../utils";
 import type {
   ElementRefType,
@@ -17,77 +17,38 @@ export function ComponentFactory<Config extends FactoryConfig>({
   render,
   statics,
 }: FactoryOptions<Config>): FactoryReturn<Config> {
-  const Component = forwardRef<ElementRefType<Config["tag"]>, InternalProps<Config, Config["tag"]>>(
-    function ComponentRender(props, ref) {
-      const { theme, tokenVars, sizeResponsive } = useThemeContext();
-      const config = theme.components?.[name];
-      const resolvedName = config?.name ?? name;
+  const Component = React.forwardRef<
+    ElementRefType<Config["tag"]>,
+    InternalProps<Config, Config["tag"]>
+  >(function ComponentRender(props, ref) {
+    const { theme } = useThemeContext();
+    const { tokenVars, sizeResponsive, smallestBreakpoint } = useSystemContext();
+    const config = theme.components?.[name];
+    const resolvedName = config?.name ?? name;
 
-      const {
-        set,
-        size,
-        variant,
-        dataSlot,
-        renderRoot,
-        orientation,
-        vars: varsRaw,
-        "data-slot": inheritedSlot,
-        ...restProps
-      } = props;
+    const {
+      set,
+      size,
+      variant,
+      dataSlot,
+      renderRoot,
+      orientation,
+      vars: varsRaw,
+      "data-slot": inheritedSlot,
+      ...restProps
+    } = props;
 
-      const {
-        set: resolvedSet,
-        size: resolvedSize,
-        variant: resolvedVariant,
-        orientation: resolvedOrientation,
-      } = resolveLayout(
-        sizeResponsive,
-        { size, variant, set, orientation },
-        config as GeneratorConfig,
-      );
-      const resolvedVars = resolveVars(camelToKebab(resolvedName), varsRaw, tokenVars);
-      const dataName = dataSlot || inheritedSlot || resolvedName || undefined;
+    const {
+      set: resolvedSet,
+      size: resolvedSize,
+      variant: resolvedVariant,
+      orientation: resolvedOrientation,
+    } = resolveLayout(sizeResponsive, { size, variant, set, orientation }, config);
+    const resolvedVars = resolveVars(camelToKebab(resolvedName), varsRaw, tokenVars);
+    const dataName = dataSlot || inheritedSlot || resolvedName || undefined;
 
-      if (renderRoot) {
-        return renderRoot({
-          ref,
-          set: resolvedSet,
-          vars: resolvedVars,
-          size: resolvedSize,
-          dataSlot: dataName,
-          variant: resolvedVariant,
-          orientation: resolvedOrientation,
-          ...restProps,
-        });
-      }
-
-      if (typeof render === "string") {
-        const { as, mod, apply, slots, style: styleRaw, unstyled = false, ...rest } = restProps;
-        const Element = (as ?? render) as ElementType;
-        const { styleProps, elementProps } = extractStyleProps(rest);
-        const { styles, hasResponsive } = resolveSystemStyles({
-          apply,
-          theme,
-          tokenVars,
-          unstyled,
-          styleProps,
-          vars: resolvedVars,
-          style: resolveStyle(theme, styleRaw, tokenVars),
-        });
-        const elementModProps = extractMod([
-          mod,
-          { slots },
-          { slot: dataName },
-          { set: resolvedSet },
-          { size: resolvedSize },
-          { variant: resolvedVariant },
-          { responsive: hasResponsive },
-          { orientation: resolvedOrientation },
-        ]);
-        return <Element ref={ref} style={styles} {...elementProps} {...elementModProps} />;
-      }
-
-      return render({
+    if (renderRoot) {
+      return renderRoot({
         ref,
         set: resolvedSet,
         vars: resolvedVars,
@@ -96,9 +57,50 @@ export function ComponentFactory<Config extends FactoryConfig>({
         variant: resolvedVariant,
         orientation: resolvedOrientation,
         ...restProps,
-      } as unknown as PolymorphicProps<Config, Config["tag"]>);
-    },
-  );
+      });
+    }
+
+    if (typeof render === "string") {
+      const { as, mod, apply, slots, style: styleRaw, unstyled = false, ...rest } = restProps;
+      const Element = (as ?? render) as React.ElementType;
+      const { styleProps, elementProps } = extractStyleProps(rest);
+      const { styles, hasResponsive } = resolveSystemStyles({
+        apply,
+        theme,
+        tokenVars,
+        unstyled,
+        styleProps,
+        vars: resolvedVars,
+        smallestBreakpoint,
+        style: resolveStyle(theme, styleRaw, tokenVars),
+      });
+      const elementModProps = extractMod(
+        [
+          mod,
+          { slots },
+          { slot: dataName },
+          { set: resolvedSet },
+          { size: resolvedSize },
+          { variant: resolvedVariant },
+          { responsive: hasResponsive },
+          { orientation: resolvedOrientation },
+        ],
+        smallestBreakpoint,
+      );
+      return <Element ref={ref} style={styles} {...elementProps} {...elementModProps} />;
+    }
+
+    return render({
+      ref,
+      set: resolvedSet,
+      vars: resolvedVars,
+      size: resolvedSize,
+      dataSlot: dataName,
+      variant: resolvedVariant,
+      orientation: resolvedOrientation,
+      ...restProps,
+    } as unknown as PolymorphicProps<Config, Config["tag"]>);
+  });
 
   Component.displayName = name;
 

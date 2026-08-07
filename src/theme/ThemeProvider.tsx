@@ -1,21 +1,16 @@
-import {
-  useCallback,
-  useEffect,
-  useInsertionEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
-import { ThemeContextProvider, type ThemeContextValue } from "./ThemeContext";
-import { generateComponents } from "./generators/generateComponents";
-import { generateResponsive } from "./generators/generateResponsive";
-import { generateTokens } from "./generators/generateTokens";
-import type { ColorScheme, Theme } from "./core/theme.types";
+import React from "react";
+import { ThemeContextProvider, type ThemeContextValue } from "../context/ThemeContext";
+import { SystemContextProvider, type SystemContextValue } from "../context/SystemContext";
+import { generateComponents } from "../system/generators/generateComponents";
+import { generateResponsive } from "../system/generators/generateResponsive";
+import { generateTokens } from "../system/generators/generateTokens";
+import type { ColorScheme, Theme } from "./theme.types";
+import { getSmallestBreakpoint } from "./core/resolveBreakpoints";
 import { useBreakPoint } from "../hooks/useBreakpoint";
 
-export interface ThemeProviderProps {
+interface ThemeProviderProps {
   theme: Theme;
-  children: ReactNode;
+  children: React.ReactNode;
   defaultColorScheme?: ColorScheme;
 }
 
@@ -37,19 +32,18 @@ function removeStyle(id: string): void {
 
 export function ThemeProvider({
   theme,
-  defaultColorScheme = "light",
   children,
+  defaultColorScheme = "light",
 }: ThemeProviderProps) {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>(defaultColorScheme);
-  const toggleColorScheme = useCallback(
+  const [colorScheme, setColorScheme] = React.useState<ColorScheme>(defaultColorScheme);
+  const toggleColorScheme = React.useCallback(
     () => setColorScheme((s) => (s === "light" ? "dark" : "light")),
     [],
   );
 
-  const tokensVars = useMemo(() => generateTokens(theme), [theme]);
-  console.log(tokensVars);
+  const tokensVars = React.useMemo(() => generateTokens(theme), [theme]);
 
-  useInsertionEffect(() => {
+  React.useInsertionEffect(() => {
     injectStyle(`${theme.prefix}-tokens`, tokensVars.tokens);
     injectStyle(`${theme.prefix}-components`, generateComponents(theme, tokensVars.vars));
     injectStyle(`${theme.prefix}-responsive`, generateResponsive(theme));
@@ -63,7 +57,7 @@ export function ThemeProvider({
     };
   }, [theme, tokensVars]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (typeof document === "undefined") return;
     document.documentElement.dataset.colorScheme = colorScheme;
     return () => {
@@ -72,17 +66,20 @@ export function ThemeProvider({
   }, [colorScheme]);
 
   const sizeResponsive = useBreakPoint(theme);
-  const ctxValue = useMemo<ThemeContextValue>(
-    () => ({
-      theme,
-      tokenVars: tokensVars.vars,
-      sizeResponsive,
-      colorScheme,
-      setColorScheme,
-      toggleColorScheme,
-    }),
-    [theme, tokensVars, sizeResponsive, colorScheme, toggleColorScheme],
+  const smallestBreakpoint = React.useMemo(() => getSmallestBreakpoint(theme), [theme]);
+
+  const ThemectxValue = React.useMemo<ThemeContextValue>(
+    () => ({ theme, colorScheme, setColorScheme, toggleColorScheme }),
+    [theme, colorScheme, toggleColorScheme],
+  );
+  const SystemThemeValue = React.useMemo<SystemContextValue>(
+    () => ({ tokenVars: tokensVars.vars, sizeResponsive, smallestBreakpoint }),
+    [tokensVars, sizeResponsive, smallestBreakpoint],
   );
 
-  return <ThemeContextProvider value={ctxValue}>{children}</ThemeContextProvider>;
+  return (
+    <ThemeContextProvider value={ThemectxValue}>
+      <SystemContextProvider value={SystemThemeValue}>{children}</SystemContextProvider>
+    </ThemeContextProvider>
+  );
 }

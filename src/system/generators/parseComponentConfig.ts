@@ -1,7 +1,7 @@
-import type { ComponentStates } from "../core/theme.types";
+import type { ComponentStates } from "../../theme/theme.types";
 import { type GeneratorConfig } from "./css-gen-utils";
-import { DOLLAR_DSL } from "../../system/system-css.data";
-import { STATE_SELECTORS } from "../../system/system-css.data";
+import { DOLLAR_DSL } from "../system.data";
+import { STATE_SELECTORS } from "../system.data";
 
 // ── IR types ──────────────────────────────────────────────────────────────────
 
@@ -32,7 +32,7 @@ export type ParsedOrientationEntry = {
   sizeAware: Record<string, string>;
 };
 
-export type ParsedComponentConfig = {
+type ParsedComponentConfig = {
   usedKeys: Set<string>;
   variants?: ParsedVariants;
   sizes?: Record<string, Record<string, unknown>>;

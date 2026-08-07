@@ -6,5 +6,5 @@ export * from './generateResponsive';
 export * from './generateSizes';
 export * from './generateTokens';
 export * from './generateVariants';
-export * from '../../system/system-css.data';
-export * from '../../system/system-css.types';
+export * from '../system.data';
+export * from '../system.types';

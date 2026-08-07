@@ -1,5 +1,5 @@
 import { ComponentFactory, type ComponentConfig } from "../../factory";
-import { Layout, type LayoutConfig } from "../Primitives/Box/Layout";
+import { Layout, type LayoutConfig } from "../Primitives/Layout/Layout";
 
 export type CardSectionSets = "cover" | "top" | "bottom" | "gradient" | "background";
 export type CardSlots = "header" | "body" | "footer" | "media";

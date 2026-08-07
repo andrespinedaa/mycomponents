@@ -16,8 +16,11 @@ import type {
 } from "../../components";
 import type { FactoryConfig, OrientationProp } from "../../factory";
 import type { Partialized } from "../../utils/utils.types";
-import type { StylePropsTokens } from "../../system/system-css.types";
-import type { ComponentStates, ComponentVariants } from "./theme.types";
+import type { StylePropsTokens } from "../../system/system.types";
+import type { ComponentStates } from "../theme.types";
+import type { LayoutConfig } from "../../components/Primitives/Layout/Layout";
+import type { MenuConfig } from "../../components/Menu/Menu";
+import type { ItemConfig } from "../../components/Menu/Item";
 
 // ─── StyledBlock (SCSS-like) ───
 type Block<K extends keyof any, V> = StylePropsTokens & Partialized<K, V>;
@@ -26,7 +29,8 @@ export type StyledBlock = Block<ComponentStates, StateNode>;
 
 // ─── Fields ──────
 // ─── Variant Field ─────────────────────────────────────────────────────────────────────────────────
-type VariantsField = StyledBlock & Partialized<ComponentVariants, StyledBlock>;
+type VariantsField<Config extends FactoryConfig> = StyledBlock &
+  Partialized<NonNullable<Config["variants"]>, StyledBlock>;
 
 // ─── Size Field ─────────────────────────────────────────────────────────────────────────────────
 type SizeField<Config extends FactoryConfig> = Record<Config["sizes"], StylePropsTokens>;
@@ -56,19 +60,25 @@ type SlotsField<Config extends FactoryConfig> = {
 export type ThemeComponentOptions<Config extends FactoryConfig> = {
   name?: string;
   parentName?: string;
-  variants?: VariantsField;
+  variants?: VariantsField<Config>;
   sizes?: SizeField<Config>;
   slots?: SlotsField<Config>;
   presets?: PresetsField<Config>;
   orientation?: OrientationField;
 };
 
+// Punto de extensión del consumidor — TypeScript fusiona `interface` nativamente,
+// así que un consumidor externo puede agregar sus propios componentes con:
+//   declare module "mycomponents" { interface ComponentConfigs { MyWidget: MyWidgetConfig } }
+// No usar el patrón Base+Consumer+Merge aquí: ese patrón es solo para `type` aliases,
+// que no fusionan declaraciones. Esto ya es `interface` — abierto por diseño del lenguaje.
 export interface ComponentConfigs {
   /* Primitives */
   Box: BoxConfig;
   Text: TextConfig;
   Image: ImgConfig;
   Grid: GridConfig;
+  Layout: LayoutConfig;
   GridItem: GridItemConfig;
   Divider: DividerConfig;
   /* Components */
@@ -80,6 +90,8 @@ export interface ComponentConfigs {
   Button: ButtonConfig;
   Dot: DotConfig;
   Input: InputConfig;
+  Menu: MenuConfig;
+  Item: ItemConfig;
 };
 
 export type ComponentName = keyof ComponentConfigs;

@@ -1,9 +1,10 @@
-import type { Theme, CategoryTokens } from "../theme/core/theme.types";
+import type { Theme, CategoryTokens } from "../theme/theme.types";
+import { SIZE_ALIASES } from "../factory/resolvers/resolve-value";
 
 export function getOptions(category: keyof CategoryTokens, theme: Theme) {
   switch (category) {
     case "spacing":
-      return [...Object.keys(theme.spacing), "auto", "full", "screen", "fit"];
+      return [...Object.keys(theme.spacing), ...Object.keys(SIZE_ALIASES)];
 
     case "colors":
       return Object.entries(theme.colors).flatMap(([color, shades]) =>

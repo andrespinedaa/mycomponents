@@ -6,7 +6,6 @@ export interface MenuProps {}
 export type MenuConfig = ComponentConfig<{
   tag: "ul";
   name: "Menu";
-  defaultProps: {};
   ownProps: MenuProps;
   sizes: "xs" | "sm" | "md" | "lg" | "xl";
   variants: "Filled" | "Outlined" | "Elevated";

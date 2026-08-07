@@ -1,15 +1,14 @@
-import type { CSSProperties } from "react";
 import {
-  type StyleProps,
   STYLE_PROPS_LOOKUP,
+  type StyleProps,
   type Responsive,
   type PartialBreakPointKey,
-} from "../../theme";
+} from "../../system";
 import { resolveValue } from "../resolvers/resolve-value";
 import { camelToKebab } from "../../utils/string";
 
-export type ParsedStyleProps = {
-  styles: CSSProperties;
+type ParsedStyleProps = {
+  styles: React.CSSProperties;
   hasResponsive: boolean;
 };
 
@@ -20,6 +19,7 @@ function isResponsiveObject<T>(value: Responsive<T> | undefined): value is Parti
 export function parseStyleProps(
   styleProps: StyleProps,
   tokenVars: Record<string, string>,
+  smallestBreakpoint: string,
 ): ParsedStyleProps {
   const result: Record<string, string | number> = {};
   let hasResponsive = false;
@@ -37,7 +37,7 @@ export function parseStyleProps(
     // ── Camino responsive ──────────────────────────────────────────────────
     if (isResponsiveObject(value)) {
       if (!isResponsiveProp) {
-        const baseValue = (value as Record<string, unknown>).base;
+        const baseValue = (value as Record<string, unknown>)[smallestBreakpoint];
         if (baseValue !== undefined && baseValue !== null) {
           const resolved = resolveValue(baseValue as string | number, category, tokenVars);
           for (const cssProp of properties) {
@@ -65,5 +65,5 @@ export function parseStyleProps(
     }
   }
 
-  return { styles: result as CSSProperties, hasResponsive };
+  return { styles: result as React.CSSProperties, hasResponsive };
 }

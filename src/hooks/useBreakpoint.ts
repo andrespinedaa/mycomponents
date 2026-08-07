@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
-import type { Scales, Theme } from "../theme/core/theme.types";
-
-function getSortedBreakpoints(theme: Theme): Array<[string, string]> {
-  return Object.entries(theme.breakpoints).sort(([, a], [, b]) => parseInt(a) - parseInt(b));
-}
+import type { Scales, Theme } from "../theme/theme.types";
+import { getSortedBreakpoints } from "../theme/core/resolveBreakpoints";
 
 function resolveBreakpointSize(theme: Theme): Scales {
   const sorted = getSortedBreakpoints(theme);

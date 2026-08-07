@@ -3,24 +3,25 @@ import { createRef } from "react";
 import userEvent from "@testing-library/user-event"; // ← agregás esto
 import { describe, it, expect, vi } from "vitest";
 import { Box } from "./Box";
-import { ThemeContextProvider } from "../../../theme/ThemeContext";
+import { ThemeContextProvider } from "../../../context/ThemeContext";
+import { SystemContextProvider } from "../../../context/SystemContext";
 import { defaultTheme } from "../../../theme";
-import { generateTokens } from "../../../theme/generators/generateTokens";
+import { generateTokens } from "../../../system/generators/generateTokens";
 
 const { vars: tokenVars } = generateTokens(defaultTheme);
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <ThemeContextProvider
     value={{
-      sizeResponsive: "md",
       theme: defaultTheme,
-      tokenVars,
       colorScheme: "light",
       setColorScheme: () => {},
       toggleColorScheme: () => {},
     }}
   >
-    {children}
+    <SystemContextProvider value={{ sizeResponsive: "md", tokenVars, smallestBreakpoint: "xs" }}>
+      {children}
+    </SystemContextProvider>
   </ThemeContextProvider>
 );
 
@@ -225,7 +226,7 @@ describe("Box", () => {
   describe("responsive props", () => {
     it("acepta objeto responsive sin error", () => {
       expect(() =>
-        render(<Box mt={{ base: "sm", md: "lg" }}>contenido</Box>, { wrapper }),
+        render(<Box mt={{ xs: "sm", md: "lg" }}>contenido</Box>, { wrapper }),
       ).not.toThrow();
     });
   });
