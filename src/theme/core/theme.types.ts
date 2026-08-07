@@ -1,45 +1,58 @@
-import type { CSSProperties } from "react";
 import type { DeepPartial, Prettify } from "../../utils/utils.types";
 import type { Macros } from "./macros/theme.macros.types";
 import type { ThemeComponents } from "./theme.components.types";
 
-// ─── Helpers ─────
-export type SystemVariants<Allowed extends ComponentVariants> = Allowed;
-export type SystemStatus<Allowed extends ComponentStates> = Allowed;
-export type ScaleRange<Allowed extends Scales> = Allowed;
-export type BreakpointKey = "base" | keyof ThemeBreakpoints;
-export type PartialBreakPointKey<T> = Partial<Record<BreakpointKey, T>>;
-export type CSSPropertyName = Extract<keyof CSSProperties, string>;
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── HELPERS ───────
+// ════════════════════════════════════════════════════════════════════════════════════════
+type MergeBaseCustoms<Base, Custom> = Prettify<
+  Base & {
+    [K in keyof Custom]: Custom[K];
+  }
+>;
+type MergeBaseCustomsOverride<Base, Custom> = Prettify<
+  Partial<Base> & Partial<{ [K in keyof Custom]: Custom[K] }>
+>;
 
-// ─── CSS Value Types ──────────────────────────────────────────────────────────
+type MergeColorsOverride<Base, Custom> = Prettify<
+  { [K in keyof Base]?: DeepPartial<Base[K]> } & {
+    [K in keyof Custom]?: Custom[K];
+  }
+>;
+type ScaleRange<Allowed extends Scales> = Allowed;
+export type PartialBreakPointKey<T> = Partial<Record<"base" | keyof ThemeBreakpoints, T>>;
+
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── CSS VALUES TYPES ───────
+// ════════════════════════════════════════════════════════════════════════════════════════
 // prettier-ignore
-export type CSSUnit =
+type CSSUnit =
   | "px" | "rem" | "em" | "%" | "vh" | "vw"
   | "vmin" | "vmax" | "ch" | "ex" | "pt"
   | "pc" | "cm" | "mm" | "in" | "svh" | "svw"
   | "dvh" | "dvw";
 
-export type CSSColor = string;
 export type CSSLength = `${number}${CSSUnit}` | "0";
 export type VarsCss = Record<string, string>;
 
-// ─── Scales Range ──────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── SCALE RANGE ───────
+// ════════════════════════════════════════════════════════════════════════════════════════
 // prettier-ignore
 export type Scales = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "full" | "none" | keyof ConsumerScales;
-export type BreakPointsScale = ScaleRange<"xs" | "sm" | "md" | "lg" | "xl">;
-export type ShadowScale = ScaleRange<BreakPointsScale>;
-export type SpacingScale = ScaleRange<BreakPointsScale | "2xl">;
-export type RadiiScale = ScaleRange<BreakPointsScale | "full" | "none">;
-export type FontSizeScale = ScaleRange<BreakPointsScale | "2xl" | "3xl" | "4xl">;
+type BreakPointsScale = ScaleRange<"xs" | "sm" | "md" | "lg" | "xl">;
 
-// ─── Variants ──────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── VARIANTS ───────
+// ════════════════════════════════════════════════════════════════════════════════════════
 // prettier-ignore
 export type ComponentVariants =
   | "Filled" | "Outlined" | "Elevated"
-  | "Ghost" | "Subtle"
-  | "Link" | "Tonal" | "Soft";
+  | "Ghost" | "Subtle" | "Link" | "Tonal" | "Soft";
 
-// ─── States ──────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── STATES ───────
+// ════════════════════════════════════════════════════════════════════════════════════════
 // prettier-ignore
 export type ComponentStates =
   // Interaction
@@ -54,67 +67,38 @@ export type ComponentStates =
   // Structural
   | "firstChild" | "lastChild" | "empty";
 
-// ─── Helpers ──────────────────────────────────────────────────────────
-export type MergeBaseCustoms<Base, Custom> = Prettify<
-  Base & {
-    [K in keyof Custom]: Custom[K];
-  }
->;
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────── NATIVE SYSTEM BASES ───────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════════════════
+type BaseSpacing = Record<ScaleRange<"2xl"> | BreakPointsScale, CSSLength>;
+type BaseRadius = Record<ScaleRange<"full" | "none"> | BreakPointsScale, CSSLength>;
+type BaseFontSizes = Record<ScaleRange<"2xl" | "3xl" | "4xl"> | BreakPointsScale, CSSLength>;
+type BaseBreakpoints = Record<BreakPointsScale, CSSLength>;
+type ColorsShades =
+  "50" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900" | "950";
+type ColorsNames = "primary" | "secondary" | "neutral" | "danger" | "success" | "warning" | "info";
+export type ColorScale = Record<ColorsShades, string>;
+type BaseColors = Record<ColorsNames, ColorScale>;
 
-export type MergeBaseCustomsOverride<Base, Custom> = Prettify<
-  Partial<Base> & Partial<{ [K in keyof Custom]: Custom[K] }>
->;
-
-export type MergeColorsOverride<Base, Custom> = Prettify<
-  { [K in keyof Base]?: DeepPartial<Base[K]> } & {
-    [K in keyof Custom]?: Custom[K];
-  }
->;
-
-// ─── Bases ───────────────────────────────────────────────────────────────
-export interface BaseRadius extends Record<RadiiScale, CSSLength> {}
-export interface BaseSpacing extends Record<SpacingScale, CSSLength> {}
-export interface BaseFontSizes extends Record<FontSizeScale, CSSLength> {}
-export interface BaseBreakpoints extends Record<BreakPointsScale, CSSLength> {}
-
-// ─── Base Color ───────────────────────────────────────────────────────────────
-export type ColorScale = {
-  50: CSSColor;
-  100: CSSColor;
-  200: CSSColor;
-  300: CSSColor;
-  400: CSSColor;
-  500: CSSColor;
-  600: CSSColor;
-  700: CSSColor;
-  800: CSSColor;
-  900: CSSColor;
-  950: CSSColor;
-};
-
-export interface BaseColors {
-  primary: ColorScale;
-  secondary: ColorScale;
-  neutral: ColorScale;
-  danger: ColorScale;
-  success: ColorScale;
-  warning: ColorScale;
-  info: ColorScale;
-}
-
-// ─── Base typography ───────────────────────────────────────────────────────────────
-export interface BaseTypography {
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── BASE TYPOGRAPHY ───────
+// ════════════════════════════════════════════════════════════════════════════════════════
+interface BaseTypography {
   fontSans: string;
   fontMono: string;
   trackingTight: string;
   weightHeading: number | string;
 }
 
-// ─── Shadow ──────────────────────────────────────────────────────────────────
-export interface BaseShadows extends Record<ShadowScale, CSSColor> {}
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── BASE SHADOW ───────
+// ════════════════════════════════════════════════════════════════════════════════════════
+interface BaseShadows extends Record<BreakPointsScale, string> {}
 
-// ─── Motion ──────────────────────────────────────────────────────────────────
-export interface BaseMotion {
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── BASE NOTION ───────
+// ════════════════════════════════════════════════════════════════════════════════════════
+interface BaseMotion {
   easeDefault: string;
   easeIn: string;
   durFast: string;
@@ -122,8 +106,10 @@ export interface BaseMotion {
   durLayout: string;
 }
 
-// ─── Semantic Colors ──────────────────────────────────────────────────────────────────
-export interface BaseSemanticColors {
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── BASE SEMANTIC COLORS ───────
+// ════════════════════════════════════════════════════════════════════════════════════════
+interface BaseSemanticColors {
   background: string;
   surface: string;
   surfaceRaised: string;
@@ -136,12 +122,14 @@ export interface BaseSemanticColors {
   textDisabled: string;
 }
 
-export interface ThemeSemanticLayer {
+interface ThemeSemanticLayer {
   dark: Partial<BaseSemanticColors>;
   light: Partial<BaseSemanticColors>;
 }
 
-// ─── Extensiónes por el usuario ─────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── EXTENSIONS FOR THE USER ───────
+// ════════════════════════════════════════════════════════════════════════════════════════
 export interface ConsumerTheme {}
 export interface ConsumerRadius {}
 export interface ConsumerScales {}
@@ -155,13 +143,28 @@ export interface ConsumerBreakPoints {}
 export interface ConsumerSemanticColors {}
 export interface ConsumerThemeComponents {}
 
-// ─── Values tokens ──────────────────────────────────────────────────────────
-export type FontValue = "sans" | "mono";
-export type RadiusValue = keyof ThemeRadii;
-export type ShadowValue = keyof ThemeShadows;
-export type FontSizesValue = keyof ThemeFontSizes;
-export type ColorsValue = `${keyof ThemeColors}.${keyof ThemeColors[keyof ThemeColors]}`;
-export type SpacingValue = keyof ThemeSpacing | "auto" | "full" | "screen" | "fit" | "inherit";
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── FINAL TYPES ───────
+// ════════════════════════════════════════════════════════════════════════════════════════
+type ThemeRadius = MergeBaseCustoms<BaseRadius, ConsumerRadius>;
+type ThemeMotion = MergeBaseCustoms<BaseMotion, ConsumerMotion>;
+type ThemeShadows = MergeBaseCustoms<BaseShadows, ConsumerShadows>;
+type ThemeSpacing = MergeBaseCustoms<BaseSpacing, ConsumerSpacing>;
+export type ThemeColors = MergeBaseCustoms<BaseColors, ConsumerColors>;
+type ThemeFontSizes = MergeBaseCustoms<BaseFontSizes, ConsumerFontSizes>;
+type ThemeTypography = MergeBaseCustoms<BaseTypography, ConsumerTypography>;
+export type ThemeBreakpoints = MergeBaseCustoms<BaseBreakpoints, ConsumerBreakPoints>;
+type ThemeSemanticColors = MergeBaseCustoms<BaseSemanticColors, ConsumerSemanticColors>;
+
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── VALUES TOKENS ───────
+// ════════════════════════════════════════════════════════════════════════════════════════
+type FontValue = "sans" | "mono";
+type RadiusValue = keyof ThemeRadius;
+type ShadowValue = keyof ThemeShadows;
+type FontSizesValue = keyof ThemeFontSizes;
+type ColorsValue = `${keyof ThemeColors}.${keyof ThemeColors[keyof ThemeColors]}`;
+type SpacingValue = keyof ThemeSpacing | "auto" | "full" | "screen" | "fit" | "inherit";
 export type CategoryTokens = {
   font: FontValue;
   colors: ColorsValue;
@@ -172,18 +175,9 @@ export type CategoryTokens = {
   raw: unknown;
 };
 
-// ─── Tipos finales ────────────────────────────────────────────────────────────
-export type ThemeRadii = MergeBaseCustoms<BaseRadius, ConsumerRadius>;
-export type ThemeMotion = MergeBaseCustoms<BaseMotion, ConsumerMotion>;
-export type ThemeColors = MergeBaseCustoms<BaseColors, ConsumerColors>;
-export type ThemeShadows = MergeBaseCustoms<BaseShadows, ConsumerShadows>;
-export type ThemeSpacing = MergeBaseCustoms<BaseSpacing, ConsumerSpacing>;
-export type ThemeFontSizes = MergeBaseCustoms<BaseFontSizes, ConsumerFontSizes>;
-export type ThemeTypography = MergeBaseCustoms<BaseTypography, ConsumerTypography>;
-export type ThemeBreakpoints = MergeBaseCustoms<BaseBreakpoints, ConsumerBreakPoints>;
-export type ThemeSemanticColors = MergeBaseCustoms<BaseSemanticColors, ConsumerSemanticColors>;
-
-// ─── Dark Theme ────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── DARK-THEME ───────
+// ════════════════════════════════════════════════════════════════════════════════════════
 export type DarkThemeOverride = {
   colors?: MergeColorsOverride<BaseColors, ConsumerColors>;
   shadow?: Partial<BaseShadows>;
@@ -206,9 +200,12 @@ export type ThemeOverride = {
   components?: ThemeComponents;
 };
 
+// ════════════════════════════════════════════════════════════════════════════════════════
+// ─── THEME ───────
+// ════════════════════════════════════════════════════════════════════════════════════════
 export interface Theme extends ConsumerTheme {
   macros: Macros;
-  radius: ThemeRadii;
+  radius: ThemeRadius;
   colors: ThemeColors;
   motion: ThemeMotion;
   prefix: string;

@@ -1,6 +1,6 @@
 import type { ArgTypes } from "@storybook/react";
 import type { Theme } from "../theme/core/theme.types";
-import { STYLE_PROPS_LOOKUP } from "../theme/generators/system-css.data";
+import { STYLE_PROPS_LOOKUP } from "../system/system-css.data";
 import { getOptions } from "./get-options";
 
 export function createStylePropsArgTypes(theme: Theme): ArgTypes {

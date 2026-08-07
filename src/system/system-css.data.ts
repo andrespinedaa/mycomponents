@@ -1,5 +1,6 @@
-import type { CategoryTokens, ComponentStates, CSSPropertyName } from "../core/theme.types";
-import { CSS_PROPERTY_NAMES } from "./css-property-names.data";
+import type { CategoryTokens, ComponentStates } from "../theme/core/theme.types";
+import { CSS_PROPERTY_NAMES } from "../theme/generators/css-property-names.data";
+import type { StylePropsToken } from "./system-css.types";
 
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── DSL LENGUAGE REGEX ───────
@@ -27,11 +28,14 @@ export const STATE_SELECTORS: Record<ComponentStates, string> = {
 // ─── Alias StyleProps ───────
 // ════════════════════════════════════════════════════════════════════════════════════════
 
-export type StylePropDef = {
-  properties: CSSPropertyName[];
-  category: keyof CategoryTokens;
+type StylePropDef = {
   responsive: boolean;
+  category: keyof CategoryTokens;
+  properties: Extract<keyof React.CSSProperties, string>[];
 };
+
+type StylePropsAlias = keyof StylePropsToken;
+type StylePropsRun = Record<StylePropsAlias, StylePropDef>;
 
 // prettier-ignore
 export const STYLE_PROPS_OVERRIDES = {
@@ -95,7 +99,7 @@ export const STYLE_PROPS_OVERRIDES = {
   flexGrow:    { properties: ["flexGrow"],                     category: "raw", responsive: true },
   flexShrink:  { properties: ["flexShrink"],                   category: "raw", responsive: true },
 
-} as const satisfies Record<string, StylePropDef>;
+} as const satisfies StylePropsRun;
 
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── STYLEPROPS RUNTIME ───────

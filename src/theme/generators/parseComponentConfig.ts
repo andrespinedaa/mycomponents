@@ -1,7 +1,7 @@
 import type { ComponentStates } from "../core/theme.types";
 import { type GeneratorConfig } from "./css-gen-utils";
-import { DOLLAR_DSL } from "./system-css.data";
-import { STATE_SELECTORS } from "./system-css.data";
+import { DOLLAR_DSL } from "../../system/system-css.data";
+import { STATE_SELECTORS } from "../../system/system-css.data";
 
 // ── IR types ──────────────────────────────────────────────────────────────────
 

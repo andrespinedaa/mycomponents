@@ -1,6 +1,6 @@
 import type { Theme } from "../core/theme.types";
 import { camelToKebab } from "../../utils/string";
-import { STYLE_PROPS_FLAT } from "./system-css.data";
+import { STYLE_PROPS_FLAT } from "../../system/system-css.data";
 
 const StylePropsResponsive: string[] = Array.from(
   new Set(STYLE_PROPS_FLAT.filter((entry) => entry.responsive).map((entry) => entry.prop)),

@@ -62,7 +62,7 @@ export function generateTokens(theme: Theme): TokensVarsReturn {
     { spacing: theme.spacing },
     { fontSizes: theme.fontSizes },
   ]) {
-    const tokenVars = createTokens(theme.prefix, category as Record<string, TokenValue>);
+    const tokenVars = createTokens(theme.prefix, category as TokenRecord);
     tokens += tokenVars.tokens;
     Object.assign(vars, tokenVars.vars);
   }
@@ -75,7 +75,7 @@ export function generateTokens(theme: Theme): TokensVarsReturn {
     tokens += "[data-color-scheme=dark]{";
     if (theme.dark.colors) {
       tokens += createTokens(theme.prefix, {
-        colors: theme.dark.colors as Record<string, TokenValue>,
+        colors: theme.dark.colors as TokenRecord,
       }).tokens;
     }
     if (theme.dark.shadow) {

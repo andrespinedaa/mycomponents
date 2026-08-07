@@ -16,7 +16,7 @@ import type {
 } from "../../components";
 import type { FactoryConfig, OrientationProp } from "../../factory";
 import type { Partialized } from "../../utils/utils.types";
-import type { StylePropsTokens } from "../generators/system-css.types";
+import type { StylePropsTokens } from "../../system/system-css.types";
 import type { ComponentStates, ComponentVariants } from "./theme.types";
 
 // ─── StyledBlock (SCSS-like) ───
@@ -83,8 +83,6 @@ export interface ComponentConfigs {
 };
 
 export type ComponentName = keyof ComponentConfigs;
-
-type AnyComponentConfig = ComponentConfigs[ComponentName];
 
 export type ThemeComponents = {
   [K in ComponentName]?: ThemeComponentOptions<ComponentConfigs[K]>;

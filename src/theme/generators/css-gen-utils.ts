@@ -1,7 +1,7 @@
 import { camelToKebab } from "../../utils/string";
-import { DOLLAR_DSL, STYLE_PROPS_LOOKUP } from "./system-css.data";
+import { DOLLAR_DSL, STYLE_PROPS_LOOKUP } from "../../system/system-css.data";
 import { resolveValue } from "../../factory/resolvers/resolve-value";
-import type { Theme } from "../core/theme.types";
+import type { Theme, VarsCss } from "../core/theme.types";
 import type { ComponentName } from "../core/theme.components.types";
 
 export type UsedKeys = Set<string>;
@@ -45,7 +45,7 @@ function resolveDollarProps(
 export function generateTokensCSS(
   tokens: Record<string, unknown>,
   prefix: string,
-  tokenVars: Record<string, string>,
+  tokenVars: VarsCss,
   prefixParent?: string,
 ): string {
   let css = "";

@@ -323,7 +323,6 @@ describe("parseStyleProps", () => {
 
     it("prop sin def en STYLE_PROPS_DATA se resuelve como CSS raw (pass-through)", () => {
       // parseStyleProps ya no filtra — confía en que extractStyleProps (vía
-      // STYLE_PROPS_KEYS) solo le pase props que son estilo real.
       const { styles } = parseStyleProps(
         { unknownProp: "value" } as any,
         tokenVars,

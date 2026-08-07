@@ -1,7 +1,7 @@
 import { camelToKebab } from "../../utils/string";
 import type { UsedKeys } from "./css-gen-utils";
 import type { GeneratorNames } from "./generateComponents";
-import { STYLE_PROPS_LOOKUP } from "./system-css.data";
+import { STYLE_PROPS_LOOKUP } from "../../system/system-css.data";
 
 export function generateComponentBases(names: GeneratorNames, usedKeys: UsedKeys): string {
   if (usedKeys.size === 0) return "";

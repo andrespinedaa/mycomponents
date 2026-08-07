@@ -2,7 +2,7 @@ import type { VarsCss } from "../core";
 import { generateTokensCSS, resolveTokenValue, resolveVarName } from "./css-gen-utils";
 import type { GeneratorNames } from "./generateComponents";
 import type { ParsedOrientationEntry } from "./parseComponentConfig";
-import { DOLLAR_DSL } from "./system-css.data";
+import { DOLLAR_DSL } from "../../system/system-css.data";
 
 function resolveSizeAwareBody(
   sizeAware: Record<string, string>,

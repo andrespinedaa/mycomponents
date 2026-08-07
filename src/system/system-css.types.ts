@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
-import type { Prettify } from "../../utils/utils.types";
-import type { CSSLength, CategoryTokens, PartialBreakPointKey } from "../core/theme.types";
+import type { CSSLength, CategoryTokens, PartialBreakPointKey } from "../theme";
 import type { EXCLUDED_STYLE_PROPS, STYLE_PROPS_OVERRIDES } from "./system-css.data";
+import type { Prettify } from "../utils/utils.types";
 
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── Types Alias StyleProps ───────
@@ -11,7 +11,7 @@ export type Responsive<T> = T | PartialBreakPointKey<T>;
 type WithTokens<T extends string> = T | CSSLength | (string & {});
 
 // prettier-ignore
-export type TokenStyleProps = {
+export type StylePropsToken = {
   // ────────────────────────────────────────────────── Margin ─────────────────────────────────────────────────────────
   m?: Responsive<WithTokens<CategoryTokens["spacing"]>>;       mx?: Responsive<WithTokens<CategoryTokens["spacing"]>>;
   my?: Responsive<WithTokens<CategoryTokens["spacing"]>>;      mt?: Responsive<WithTokens<CategoryTokens["spacing"]>>;
@@ -63,30 +63,30 @@ export type TokenStyleProps = {
 // ════════════════════════════════════════════════════════════════════════════════════════
 
 // prettier-ignore
-type OverriddenRawProps =
+type NoRepeatStyleProps =
   | "margin" | "marginLeft" | "marginRight" | "marginTop" | "marginBottom"
   | "padding" | "paddingLeft" | "paddingRight" | "paddingTop" | "paddingBottom"
   | "width" | "height" | "minWidth" | "maxWidth" | "minHeight" | "maxHeight"
-  | "background" | "borderRadius" | "boxShadow"
-  | "flexDirection" | "alignItems" | "justifyContent";
+  | "background" | "borderRadius" | "boxShadow" | "flexDirection" | "alignItems" | "justifyContent";
 
-type ExcludedProps = (typeof EXCLUDED_STYLE_PROPS)[number];
+type ExcludedStyleProps = (typeof EXCLUDED_STYLE_PROPS)[number];
 
-type StylePropsPassthrough = Omit<
+type StylePropsOmit = Omit<
   CSSProperties,
-  keyof TokenStyleProps | OverriddenRawProps | ExcludedProps
+  keyof StylePropsToken | NoRepeatStyleProps | ExcludedStyleProps
 >;
 
-export type StyleProps = Prettify<TokenStyleProps & StylePropsPassthrough>;
+export type StyleProps = Prettify<StylePropsToken & StylePropsOmit>;
 
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── SystemCss / CSS with Tokens ───────
 // ════════════════════════════════════════════════════════════════════════════════════════
 
 type CSSPropToCategory = {
-  [E in (typeof STYLE_PROPS_OVERRIDES)[keyof typeof STYLE_PROPS_OVERRIDES] as E["category"] extends "raw"
-    ? never
-    : E["properties"][number]
+  [
+    E in (typeof STYLE_PROPS_OVERRIDES)[keyof typeof STYLE_PROPS_OVERRIDES] as E["category"] extends "raw"
+      ? never
+      : E["properties"][number]
   ]: Exclude<E["category"], "raw">;
 };
 
