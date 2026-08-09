@@ -1,8 +1,7 @@
 import type { VarsCss } from "../../theme/core";
-import { generateTokensCSS, resolveTokenValue, resolveVarName } from "./css-gen-utils";
+import { generateTokensCSS, DSLDollar, resolveTokenValue, resolveVarNames } from "./css-gen-utils";
 import type { GeneratorNames } from "./generateComponents";
 import type { ParsedOrientationEntry } from "./parseComponentConfig";
-import { DOLLAR_DSL } from "../system.data";
 
 function resolveSizeAwareBody(
   sizeAware: Record<string, string>,
@@ -12,13 +11,14 @@ function resolveSizeAwareBody(
 ): string {
   let body = "";
   for (const [key, dslValue] of Object.entries(sizeAware)) {
-    const resolved = dslValue.replace(DOLLAR_DSL, (_, prop) => {
+    const resolved = DSLDollar(dslValue, prefix, undefined, (prop) => {
       const raw = sizeTokens[prop];
       return raw == null ? "" : resolveTokenValue(prop, String(raw), tokenVars);
     });
-    DOLLAR_DSL.lastIndex = 0;
     if (!resolved || resolved.includes("$")) continue;
-    body += `${resolveVarName(key, prefix)}:${resolved};`;
+    for (const varName of resolveVarNames(key, prefix)) {
+      body += `${varName}:${resolved};`;
+    }
   }
   return body;
 }

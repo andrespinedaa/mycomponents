@@ -67,23 +67,21 @@ export function generateTokens(theme: Theme): TokensVarsReturn {
     Object.assign(vars, tokenVars.vars);
   }
 
-  if (theme.semantic?.dark) tokens += createSemanticTokens(theme.prefix, theme.semantic.dark);
-
   tokens += "}";
 
-  if (theme.dark?.colors || theme.dark?.shadow || theme.dark?.semantic) {
+  if (theme.dark?.colors || theme.dark?.shadow || theme.semantic?.dark) {
     tokens += "[data-color-scheme=dark]{";
-    if (theme.dark.colors) {
+    if (theme.dark?.colors) {
       tokens += createTokens(theme.prefix, {
         colors: theme.dark.colors as TokenRecord,
       }).tokens;
     }
-    if (theme.dark.shadow) {
+    if (theme.dark?.shadow) {
       tokens += createTokens(theme.prefix, {
         shadow: theme.dark.shadow as Record<string, string>,
       }).tokens;
     }
-    if (theme.dark.semantic) tokens += createSemanticTokens(theme.prefix, theme.dark.semantic);
+    if (theme.semantic?.dark) tokens += createSemanticTokens(theme.prefix, theme.semantic.dark);
     tokens += "}";
   }
 

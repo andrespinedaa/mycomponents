@@ -4,15 +4,22 @@ import { resolveValue } from "../../factory/resolvers/resolve-value";
 import type { Theme, VarsCss } from "../../theme/theme.types";
 import type { ComponentName } from "../../theme/core/theme.components.types";
 
-export type UsedKeys = Set<string>;
-
 export type GeneratorConfig = NonNullable<NonNullable<Theme["components"]>[ComponentName]>;
 
-export function resolveVarName(key: string, prefix: string): string {
-  const def = STYLE_PROPS_LOOKUP[key];
-  return def
-    ? `--${prefix}-${camelToKebab(def.properties[0])}`
-    : `--${prefix}-${camelToKebab(key)}`;
+export function resolveVarNames(key: string, prefix: string): string[] {
+  const properties = STYLE_PROPS_LOOKUP[key]?.properties ?? [key];
+  return properties.map((prop) => `--${prefix}-${camelToKebab(prop)}`);
+}
+
+export function DSLDollar(
+  value: string,
+  prefix: string,
+  prefixParent?: string,
+  resolver?: (prop: string) => string,
+): string {
+  const target = prefixParent ?? prefix;
+  const resolve = resolver ?? ((prop: string) => `var(${resolveVarNames(prop, target)[0]})`);
+  return value.replace(DOLLAR_DSL, (_, prop) => resolve(prop));
 }
 
 // ── moved from generateVariants ───────────────────────────────────────────────
@@ -29,15 +36,6 @@ export function resolveTokenValue(
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-function resolveDollarProps(
-  value: string,
-  prefix: string,
-  prefixParent: string | undefined, 
-): string {
-  const target = prefixParent ?? prefix;
-  return value.replace(DOLLAR_DSL, (_, prop) => `var(${resolveVarName(prop, target)})`);
-}
-
 export function generateTokensCSS(
   tokens: Record<string, unknown>,
   prefix: string,
@@ -47,20 +45,20 @@ export function generateTokensCSS(
   let css = "";
   for (const [key, value] of Object.entries(tokens)) {
     if (value == null) continue;
-    const strValue = String(value); 
-    const properties = STYLE_PROPS_LOOKUP[key]?.properties ?? [key];
+    const strValue = String(value);
+    const varNames = resolveVarNames(key, prefix);
 
     if (strValue.includes("$")) {
-      const resolved = resolveDollarProps(strValue, prefix, prefixParent);
-      for (const prop of properties) {
-        css += `--${prefix}-${camelToKebab(prop)}:${resolved};`;
+      const resolved = DSLDollar(strValue, prefix, prefixParent);
+      for (const varName of varNames) {
+        css += `${varName}:${resolved};`;
       }
       continue;
     }
 
     const resolved = resolveTokenValue(key, strValue, tokenVars);
-    for (const prop of properties) {
-      css += `--${prefix}-${camelToKebab(prop)}:${resolved};`;
+    for (const varName of varNames) {
+      css += `${varName}:${resolved};`;
     }
   }
   return css;

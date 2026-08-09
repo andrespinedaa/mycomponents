@@ -173,10 +173,9 @@ export type CategoryTokens = {
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── DARK-THEME ───────
 // ════════════════════════════════════════════════════════════════════════════════════════
-export type DarkThemeOverride = {
+type DarkThemeOverride = {
   colors?: MergeColorsOverride<BaseColors, ConsumerColors>;
   shadow?: Partial<BaseShadows>;
-  semantic?: Partial<BaseSemanticColors>;
 };
 
 export type ThemeOverride = {

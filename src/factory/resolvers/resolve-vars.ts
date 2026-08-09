@@ -1,6 +1,6 @@
-import { DOLLAR_DSL, type VarsCss } from "../../theme";
+import { type VarsCss } from "../../theme";
 import { camelToKebab, dotToKebab } from "../../utils/string";
-import { resolveVarName } from "../../system/generators/css-gen-utils";
+import { DSLDollar } from "../../system/generators/css-gen-utils";
 
 function resolveTokenValue(value: string, tokenVars: VarsCss): string | undefined {
   // Regla 2 — color: "primary.500" → colors-primary-500
@@ -25,7 +25,7 @@ export function resolveVars(
   for (const [key, value] of Object.entries(varsRaw)) {
     // Regla 1 — auto-referencia: "$borderColor" → var(--prefix-border-color)
     if (value.includes("$")) {
-      result[key] = value.replace(DOLLAR_DSL, (_, prop) => `var(${resolveVarName(prop, prefix)})`);
+      result[key] = DSLDollar(value, prefix);
       changed = true;
       continue;
     }

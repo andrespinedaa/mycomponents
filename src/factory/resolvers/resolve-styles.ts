@@ -1,15 +1,10 @@
 import type { CSSProperties } from "react";
 import type { ApplyProp, StyleProp } from "../factories.types";
-import {
-  type Theme,
-  type StyleProps,
-  type VarsCss,
-  type CategoryTokens,
-  STYLE_PROPS_FLAT,
-} from "../../theme";
+import { type Theme, type VarsCss, type CategoryTokens } from "../../theme";
 import { parseStyleProps } from "../parsers/parse-style-props";
 import { resolveMacros } from "../parsers/parse-macros";
 import { resolveValue } from "./resolve-value";
+import { STYLE_PROPS_FLAT, type StyleProps } from "../../system";
 
 interface ResolveStylesOptions {
   styleProps: StyleProps;

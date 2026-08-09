@@ -3,10 +3,11 @@ import userEvent from "@testing-library/user-event";
 import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { Box } from "../components/Primitives/Box/Box";
-import { ThemeProvider, useThemeContext } from "../theme";
+import { ThemeProvider } from "../theme";
 import { defaultTheme } from "../theme/themes/default-theme";
 import { ComponentFactory } from "./ComponentFactory";
 import type { ComponentConfig } from "./factories.types";
+import { useThemeContext } from "../context";
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>
@@ -207,7 +208,6 @@ describe("ComponentFactory", () => {
     });
 
     it("size responsive genera data-size y data-size-md", () => {
-      // @ts-expect-error responsive size objects not yet reflected in SizeProp type
       render(<TestComponent size={{ xs: "sm", md: "lg" }}>btn</TestComponent>, { wrapper });
       const el = screen.getByText("btn");
       expect(el).toHaveAttribute("data-size", "sm");

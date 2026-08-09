@@ -34,8 +34,6 @@ type StylePropDef = {
   properties: Extract<keyof React.CSSProperties, string>[];
 };
 
-type StylePropsAlias = keyof StylePropsToken;
-
 // prettier-ignore
 export const STYLE_PROPS_OVERRIDES = {
   // ─── Margin ──────────────────────────────
@@ -98,7 +96,7 @@ export const STYLE_PROPS_OVERRIDES = {
   flexGrow:    { properties: ["flexGrow"],                     category: "raw", responsive: true },
   flexShrink:  { properties: ["flexShrink"],                   category: "raw", responsive: true },
 
-} as const satisfies Record<StylePropsAlias, StylePropDef>;
+} as const satisfies Record<keyof StylePropsToken, StylePropDef>;
 
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── STYLEPROPS RUNTIME ───────

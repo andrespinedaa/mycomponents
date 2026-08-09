@@ -1,6 +1,5 @@
 import React from "react";
 import { resolveLayout, resolveStyle, resolveSystemStyles, resolveVars } from "./resolvers";
-import { useThemeContext, useSystemContext } from "../theme";
 import { camelToKebab } from "../utils";
 import type {
   ElementRefType,
@@ -11,6 +10,7 @@ import type {
   PolymorphicProps,
 } from "./factories.types";
 import { extractStyleProps, extractMod } from "./extractors";
+import { useSystemContext, useThemeContext } from "../context";
 
 export function ComponentFactory<Config extends FactoryConfig>({
   name,

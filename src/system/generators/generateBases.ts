@@ -1,17 +1,17 @@
 import { camelToKebab } from "../../utils/string";
-import type { UsedKeys } from "./css-gen-utils";
 import type { GeneratorNames } from "./generateComponents";
 import { STYLE_PROPS_LOOKUP } from "../system.data";
+import { resolveVarNames } from "./css-gen-utils";
 
-export function generateBases(names: GeneratorNames, usedKeys: UsedKeys): string {
+export function generateBases(names: GeneratorNames, usedKeys: Set<string>): string {
   if (usedKeys.size === 0) return "";
   let css = `${names.selector}{`;
   for (const key of usedKeys) {
     const properties = STYLE_PROPS_LOOKUP[key]?.properties ?? [key];
-    for (const prop of properties) {
-      const kebab = camelToKebab(prop);
-      css += `${kebab}:var(--${names.prefix}-${kebab},unset);`;
-    }
+    const varNames = resolveVarNames(key, names.prefix);
+    properties.forEach((prop, i) => {
+      css += `${camelToKebab(prop)}:var(${varNames[i]},unset);`;
+    });
   }
   return css + "}";
 }

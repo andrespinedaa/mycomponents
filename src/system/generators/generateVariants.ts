@@ -1,5 +1,7 @@
-import { STATE_SELECTORS, type ComponentStates, type GeneratorNames, type VarsCss } from "../../theme";
+import { type ComponentStates, type VarsCss } from "../../theme";
+import { STATE_SELECTORS } from "../system.data";
 import { generateTokensCSS } from "./css-gen-utils";
+import type { GeneratorNames } from "./generateComponents";
 import type { ParsedBlock, ParsedStateNode, ParsedVariants } from "./parseComponentConfig";
 
 function emitStateRules(

@@ -1,8 +1,8 @@
 import type { Preview } from "@storybook/react-vite";
 import { ThemeProvider } from "../src/theme";
-import { graphiteTheme } from "../src/themes/graphite";
-import { haloTheme } from "../src/themes/halo";
-import { terraTheme } from "../src/themes/terra";
+import { graphiteTheme } from "../src/theme/themes/graphite";
+import { haloTheme } from "../src/theme/themes/halo";
+import { terraTheme } from "../src/theme/themes/terra";
 import { createTheme } from "../src/theme/createTheme";
 
 const THEMES = {
