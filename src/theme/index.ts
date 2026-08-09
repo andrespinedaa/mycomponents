@@ -1,6 +1,7 @@
 export * from './createTheme';
 export * from './merge-theme';
 export * from './theme.types';
+export * from '../system';
 export * from './ThemeProvider';
 export * from './core/resolveBreakpoints';
 export * from './core/theme.components.data';
