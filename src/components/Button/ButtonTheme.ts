@@ -24,7 +24,7 @@ export const ButtonThemeComponent: ButtonThemeConfig = {
       color: "neutral.50",
       shadow: "none",
       hover: { bg: "primary.600" },
-      focus: { bg: "primary.600", outline: "2px solid", outlineColor: "primary.500", outlineOffset: "2px" },
+      focusVisible: { bg: "primary.600", outline: "2px solid", outlineColor: "primary.500", outlineOffset: "2px" },
       active: { bg: "primary.700" },
       disabled: { bg: "neutral.200" },
       loading: { bg: "primary.300", cursor: "wait" },
