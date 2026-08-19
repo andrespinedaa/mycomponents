@@ -15,7 +15,6 @@ import { useSystemContext, useThemeContext } from "../context";
 export function ComponentFactory<Config extends FactoryConfig>({
   name,
   render,
-  statics,
 }: FactoryOptions<Config>): FactoryReturn<Config> {
   const Component = React.forwardRef<
     ElementRefType<Config["tag"]>,
@@ -103,10 +102,6 @@ export function ComponentFactory<Config extends FactoryConfig>({
   });
 
   Component.displayName = name;
-
-  if (statics) {
-    Object.assign(Component, statics);
-  }
 
   return Component as unknown as FactoryReturn<Config>;
 }

@@ -73,26 +73,31 @@ export type GridConfig = ComponentConfig<{
   sizes: Scales;
   ownProps: GridBoxOwnProps;
   variants: ComponentVariants;
-  statics: { Item: typeof GridItem };
 }>;
 
-export const Grid = ComponentFactory<GridConfig>({
-  name: "Grid",
-  statics: { Item: GridItem },
-  render: function GridBoxRender({ columns, rows, autoColumns, autoRows, inline, ref, ...rest }) {
-    const resolveTemplate = (value?: number | string) =>
-      value === undefined ? undefined : typeof value === "number" ? `repeat(${value}, 1fr)` : value;
+export const Grid = Object.assign(
+  ComponentFactory<GridConfig>({
+    name: "Grid",
+    render: function GridBoxRender({ columns, rows, autoColumns, autoRows, inline, ref, ...rest }) {
+      const resolveTemplate = (value?: number | string) =>
+        value === undefined
+          ? undefined
+          : typeof value === "number"
+          ? `repeat(${value}, 1fr)`
+          : value;
 
-    return (
-      <Box
-        ref={ref}
-        display={inline ? "inline-grid" : "grid"}
-        gridTemplateColumns={resolveTemplate(columns)}
-        gridTemplateRows={resolveTemplate(rows)}
-        gridAutoColumns={autoColumns}
-        gridAutoRows={autoRows}
-        {...rest}
-      />
-    );
-  },
-});
+      return (
+        <Box
+          ref={ref}
+          display={inline ? "inline-grid" : "grid"}
+          gridTemplateColumns={resolveTemplate(columns)}
+          gridTemplateRows={resolveTemplate(rows)}
+          gridAutoColumns={autoColumns}
+          gridAutoRows={autoRows}
+          {...rest}
+        />
+      );
+    },
+  }),
+  { Item: GridItem },
+);

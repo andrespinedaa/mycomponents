@@ -9,14 +9,15 @@ export type CardConfig = ComponentConfig<{
   tag: LayoutConfig["tag"];
   ownProps: CardOwnProps;
   sizes: "xs" | "sm" | "md" | "lg" | "xl";
-  statics: { Section: typeof CardSection };
   variants: "Filled" | "Elevated" | "Outlined";
 }>;
 
-export const Card = ComponentFactory<CardConfig>({
-  name: "Card",
-  statics: { Section: CardSection },
-  render: ({ ref, variant = "Filled", ...rest }) => (
-    <Layout variant={variant} ref={ref} {...rest} />
-  ),
-});
+export const Card = Object.assign(
+  ComponentFactory<CardConfig>({
+    name: "Card",
+    render: ({ ref, variant = "Filled", ...rest }) => (
+      <Layout variant={variant} ref={ref} {...rest} />
+    ),
+  }),
+  { Section: CardSection },
+);

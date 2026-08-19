@@ -121,7 +121,7 @@ export const graphiteTheme: Theme = {
     md: "6px",
     lg: "8px",
     xl: "10px",
-    full: "9999px",
+    full: "100%",
   },
 
   // ─── Font sizes Tokens ────────────────────────────────────────────────────

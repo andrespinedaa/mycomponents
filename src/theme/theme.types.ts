@@ -79,7 +79,17 @@ interface BaseRadius extends Record<ScaleRange<"full" | "none"> | BreakPointsSca
 // prettier-ignore
 interface BaseFontSizes extends Record<ScaleRange<"2xl" | "3xl" | "4xl"> | BreakPointsScale, CSSLength> {}
 type ColorsShades =
-  "50" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900" | "950";
+  | "50"
+  | "100"
+  | "200"
+  | "300"
+  | "400"
+  | "500"
+  | "600"
+  | "700"
+  | "800"
+  | "900"
+  | "950";
 type ColorsNames = "primary" | "secondary" | "neutral" | "danger" | "success" | "warning" | "info";
 export type ColorScale = Record<ColorsShades, string>;
 interface BaseColors extends Record<ColorsNames, ColorScale> {}
@@ -89,7 +99,7 @@ interface BaseColors extends Record<ColorsNames, ColorScale> {}
 // ════════════════════════════════════════════════════════════════════════════════════════
 interface BaseTypography {
   fontSans: string;
-  fontMono: string; 
+  fontMono: string;
   trackingTight: string;
   weightHeading: number | string;
 }
@@ -108,19 +118,13 @@ interface BaseMotion extends Record<Motions, string> {}
 // ════════════════════════════════════════════════════════════════════════════════════════
 // ─── BASE SEMANTIC COLORS ───────
 // ════════════════════════════════════════════════════════════════════════════════════════
-interface BaseSemanticColors {
-  background: string;
-  surface: string;
-  surfaceRaised: string;
-  surfaceHover: string;
-  surfaceSunken: string;
-  border: string;
-  borderStrong: string;
-  text: string;
-  textSubtle: string;
-  textDisabled: string;
-}
+// prettier-ignore
+type SemanticColors = 
+  | "background" | "surface" | "surfaceRaised" | "surfaceHover"
+  | "surfaceSunken" | "border" | "borderStrong" | "text" | "textSubtle"
+  | "textDisabled";
 
+interface BaseSemanticColors extends Record<SemanticColors, string> {}
 interface ThemeSemanticLayer extends Record<ColorScheme, Partial<BaseSemanticColors>> {}
 
 // ════════════════════════════════════════════════════════════════════════════════════════
@@ -158,7 +162,9 @@ type FontValue = "sans" | "mono";
 type RadiusValue = keyof ThemeRadius;
 type ShadowValue = keyof ThemeShadows;
 type FontSizesValue = keyof ThemeFontSizes;
-type ColorsValue = `${keyof ThemeColors}.${keyof ThemeColors[keyof ThemeColors]}`;
+type ColorsValue =
+  | `${keyof ThemeColors}.${keyof ThemeColors[keyof ThemeColors]}`
+  | keyof ThemeSemanticColors;
 type SpacingValue = keyof ThemeSpacing | "auto" | "full" | "screen" | "fit" | "inherit";
 export type CategoryTokens = {
   font: FontValue;

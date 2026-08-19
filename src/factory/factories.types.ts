@@ -25,7 +25,6 @@ export type FactoryConfig = {
   slots?: Record<string, string>;
   tag: keyof React.JSX.IntrinsicElements;
   sizes: keyof ThemeBreakpoints | Scales;
-  statics?: Record<string, React.ComponentType<any>>;
 };
 
 export type ComponentConfig<Config extends FactoryConfig> = Config;
@@ -113,14 +112,12 @@ export type PolymorphicProps<Config extends FactoryConfig, E extends React.Eleme
 // ════════════════════════════════════════════════════════════════════════════════════════
 
 type FactoryProperties = { propTypes?: any; displayName?: string };
-type StaticsOrEmpty<T> = undefined extends T ? {} : NonNullable<T>;
 
 export type FactoryOptions<Config extends FactoryConfig> = {
   name: Config["name"];
   render:
     | Config["tag"]
     | ((renderProps: PolymorphicProps<Config, Config["tag"]>) => React.ReactNode);
-  statics?: Config["statics"];
 };
 
 // prettier-ignore
@@ -128,4 +125,4 @@ export type FactoryReturn<Config extends FactoryConfig> = {
   <E extends React.ElementType = Config["tag"]>(
     props: PolymorphicProps<Config, E>
   ): React.ReactElement | null;
-} & FactoryProperties & StaticsOrEmpty<Config["statics"]>;
+} & FactoryProperties;

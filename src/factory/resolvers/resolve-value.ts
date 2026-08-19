@@ -18,6 +18,10 @@ export function resolveValue(
   if (category === "raw") return v;
   if (category === "spacing" && v in SIZE_ALIASES) return SIZE_ALIASES[v];
 
+  if (category === "colors" && !v.includes(".")) {
+    return tokenVars[`color-${camelToKebab(v)}`] ?? v;
+  }
+
   const prefix = camelToKebab(category);
   const key = category === "colors" ? `${prefix}-${dotToKebab(v)}` : `${prefix}-${v}`;
 

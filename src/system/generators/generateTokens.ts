@@ -49,6 +49,18 @@ function createSemanticTokens(prefix: string, tokens: Record<string, string | un
   return css;
 }
 
+function collectSemanticVars(prefix: string, ...tokenSets: (Record<string, string | undefined> | undefined)[]): VarsCss {
+  const vars: VarsCss = {};
+  for (const tokens of tokenSets) {
+    if (!tokens) continue;
+    for (const key of Object.keys(tokens)) {
+      const varKey = `color-${camelToKebab(key)}`;
+      vars[varKey] = `var(--${prefix}-${varKey})`;
+    }
+  }
+  return vars;
+}
+
 export function generateTokens(theme: Theme): TokensVarsReturn {
   const vars: VarsCss = {};
   let tokens = ":root{";
@@ -68,6 +80,8 @@ export function generateTokens(theme: Theme): TokensVarsReturn {
   }
 
   tokens += "}";
+
+  Object.assign(vars, collectSemanticVars(theme.prefix, theme.semantic?.dark, theme.semantic?.light));
 
   if (theme.dark?.colors || theme.dark?.shadow || theme.semantic?.dark) {
     tokens += "[data-color-scheme=dark]{";

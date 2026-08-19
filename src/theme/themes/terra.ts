@@ -123,7 +123,7 @@ export const terraTheme: Theme = {
     md: "9px",
     lg: "14px",
     xl: "18px",
-    full: "9999px",
+    full: "100%",
   },
 
   // ─── Font sizes Tokens ────────────────────────────────────────────────────

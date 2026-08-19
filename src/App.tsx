@@ -5,28 +5,49 @@ import { createTheme } from "./theme/createTheme";
 import { graphiteTheme, haloTheme, terraTheme } from "./theme/themes";
 import bg1 from "./components/Card/background 2.jpg";
 import bg2 from "./components/Card/background.jpg";
+import { useThemeContext } from "./context";
+import { MdDarkMode } from "react-icons/md";
 
 const theme = createTheme(graphiteTheme);
 const badgeInfo = [{ data: "ice grey" }, { data: "3.2s" }, { data: "Manual" }];
+
+const Header = () => {
+  const { toggleColorScheme } = useThemeContext();
+
+  return (
+    <Box as="header">
+      <Box display="flex" gap="md">
+        <Button type="button" shadow="md" rounded="xs">
+          Sign Up
+        </Button>
+        <Button type="button" shadow="md" rounded="xs">
+          login
+        </Button>
+        <Button
+          shadow="md"
+          type="button"
+          rounded="full"
+          variant="Filled"
+          apply="@flexCenterCenter"
+          w="32px"
+          h="32px"
+          p="0"
+          onClick={() => toggleColorScheme()}
+        >
+          <MdDarkMode />
+        </Button>
+      </Box>
+    </Box>
+  );
+};
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <Box w="100vh">
-        <Box as="header">
-          <Box></Box>
-          <Box></Box>
-          <Box display="flex" gap="md">
-            <Button type="button" shadow="md" rounded="xs">
-              Sign Up
-            </Button>
-            <Button type="button" shadow="md" rounded="xs">
-              login
-            </Button>
-          </Box>
-        </Box>
+        <Header />
       </Box>
-      <Box minH="100vh" flexDir="column" apply="@flexCenterCenter">
+      <Box minH="100vh" flexDir="column" apply="@flexCenterCenter" bg="background">
         <Card
           p="sm"
           flexDir="column"

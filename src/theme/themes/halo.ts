@@ -128,7 +128,7 @@ export const haloTheme: Theme = {
     md:   "12px",
     lg:   "18px",
     xl:   "22px",
-    full: "9999px",
+    full: "100%",
   },
 
   // ─── Font sizes Tokens ────────────────────────────────────────────────────
